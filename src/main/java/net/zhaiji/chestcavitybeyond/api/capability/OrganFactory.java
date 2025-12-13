@@ -86,7 +86,7 @@ public class OrganFactory {
         }
 
         /**
-         * 设置器官移植（放入）触发器
+         * 设置器官移植触发器
          */
         public Builder added(OrganAddedConsumer organAddedConsumer) {
             this.organAddedConsumer = organAddedConsumer;
@@ -94,7 +94,7 @@ public class OrganFactory {
         }
 
         /**
-         * 设置器官摘除（取出）触发器
+         * 设置器官摘除触发器
          */
         public Builder removed(OrganRemovedConsumer organRemovedConsumer) {
             this.organRemovedConsumer = organRemovedConsumer;

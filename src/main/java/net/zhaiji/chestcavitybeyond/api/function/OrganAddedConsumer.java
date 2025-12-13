@@ -3,7 +3,7 @@ package net.zhaiji.chestcavitybeyond.api.function;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 
 /**
- * 用于添加器官移植（放入）触发器
+ * 用于添加器官移植触发器
  */
 @FunctionalInterface
 public interface OrganAddedConsumer {

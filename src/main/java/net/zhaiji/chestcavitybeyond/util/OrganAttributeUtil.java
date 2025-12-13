@@ -1,11 +1,13 @@
 package net.zhaiji.chestcavitybeyond.util;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
@@ -55,6 +57,52 @@ public class OrganAttributeUtil {
     }
 
     /**
+     * 添加或替换属性修饰符
+     *
+     * @param entity    目标实体
+     * @param attribute 属性
+     * @param modifier  修饰符
+     */
+    public static void updateAttributeModifier(LivingEntity entity, Holder<Attribute> attribute, AttributeModifier modifier) {
+        AttributeInstance instance = entity.getAttribute(attribute);
+        if (instance != null) {
+            instance.addOrReplacePermanentModifier(modifier);
+        }
+    }
+
+    /**
+     * 更新器官属性修饰符
+     *
+     * @param entity   目标实体
+     * @param oldStack 旧器官
+     * @param newStack 新器官
+     */
+    public static void updateOrganAttributeModifier(LivingEntity entity, ItemStack oldStack, ItemStack newStack) {
+        if (oldStack.equals(newStack)) return;
+        Multimap<Holder<Attribute>, AttributeModifier> removeModifiers = ChestCavityUtil.getAttributeModifiers(oldStack);
+        Multimap<Holder<Attribute>, AttributeModifier> addModifiers = ChestCavityUtil.getAttributeModifiers(newStack);
+        if (!removeModifiers.isEmpty()) {
+            for (Holder<Attribute> attribute : removeModifiers.keySet()) {
+                Collection<AttributeModifier> modifiers = removeModifiers.get(attribute);
+                for (AttributeModifier.Operation operation : AttributeModifier.Operation.values()) {
+                    removeModifier(entity, attribute, modifiers, operation);
+                }
+            }
+        }
+        if (!addModifiers.isEmpty()) {
+            for (Holder<Attribute> attribute : addModifiers.keySet()) {
+                Collection<AttributeModifier> modifiers = addModifiers.get(attribute);
+                for (AttributeModifier.Operation operation : AttributeModifier.Operation.values()) {
+                    addModifier(entity, attribute, modifiers, operation);
+                }
+            }
+        }
+        ChestCavityData data = ChestCavityUtil.getData(entity);
+        updateHealth(data, entity);
+        updateNerves(data, entity);
+    }
+
+    /**
      * 删除修饰符
      * <p>
      * 实际上只删除了这些修饰符的值
@@ -75,10 +123,10 @@ public class OrganAttributeUtil {
      * 实际上只添加了这些修饰符的值
      * </P>
      *
-     * @param entity      目标实体
-     * @param attribute   修饰符
+     * @param entity       目标实体
+     * @param attribute    修饰符
      * @param addModifiers 需要添加的修饰符
-     * @param operation   计算方式
+     * @param operation    计算方式
      */
     public static void addModifier(LivingEntity entity, Holder<Attribute> attribute, Collection<AttributeModifier> addModifiers, AttributeModifier.Operation operation) {
         modifyModifier(entity, attribute, addModifiers, operation, true);
@@ -89,6 +137,7 @@ public class OrganAttributeUtil {
      * <p>
      * 实际上只修改了这些修饰符的值
      * </P>
+     * TODO 修饰符用了一种很绕远路的方法进行统一，后续考虑重构或者删除这个方法
      *
      * @param entity    目标实体
      * @param attribute 修饰符
@@ -100,7 +149,7 @@ public class OrganAttributeUtil {
         if (instance != null) {
             AttributeModifier modifier = instance.getModifier(ChestCavityBeyond.of(operation.toString().toLowerCase()));
             if (modifier == null) {
-                modifier = OrganAttributeUtil.createModifier(0, operation);
+                modifier = createModifier(0, operation);
             }
             double newValue = modifier.amount();
             for (AttributeModifier removeModifier : modifiers) {
@@ -108,36 +157,39 @@ public class OrganAttributeUtil {
                     newValue += isAdd ? removeModifier.amount() : -removeModifier.amount();
                 }
             }
-            instance.addOrReplacePermanentModifier(OrganAttributeUtil.createModifier(newValue, operation));
+            instance.addOrReplacePermanentModifier(createModifier(newValue, operation));
         }
     }
 
     /**
      * 更新健康附带的属性（最大生命值）
      *
-     * @param data 胸腔数据
+     * @param data   胸腔数据
+     * @param entity 目标实体
      */
-    public static void updateHealth(ChestCavityData data) {
+    public static void updateHealth(ChestCavityData data, LivingEntity entity) {
         double health = data.getDifferenceValue(InitAttribute.HEALTH);
-        data.updateAttributeModifier(Attributes.MAX_HEALTH, createAddValueModifier(health));
+        updateAttributeModifier(entity, Attributes.MAX_HEALTH, createAddValueModifier(health));
     }
 
     /**
      * 更新神经效率附带的属性（移动速度，攻击速度，挖掘效率）
      *
-     * @param data 胸腔数据
+     * @param data   胸腔数据
+     * @param entity 目标实体
      */
-    public static void updateNerves(ChestCavityData data) {
+    public static void updateNerves(ChestCavityData data, LivingEntity entity) {
         double nerves = data.getDifferenceValue(InitAttribute.NERVES);
-        double factor = MathUtil.getLog1pScale(nerves);
+//        double factor = MathUtil.getLog1pScale(nerves);
         // 通过nerves属性的差值计算最终应用的数值
-        double value = nerves >= 0 ? factor : -factor;
+        double value = nerves >= 0 ? nerves : -nerves;
         // 移速做负值特殊处理，当前神经效率小于等于0就不允许移动了
         // 本来应该都不许的，但想了一下还是算了
         double moveValue = data.getCurrentValue(InitAttribute.NERVES) <= 0 ? -1 : value;
         // 使用最终乘算
-        data.updateAttributeModifier(Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier(moveValue));
-        data.updateAttributeModifier(Attributes.ATTACK_SPEED, createMultipliedTotalModifier(value));
-        data.updateAttributeModifier(Attributes.MINING_EFFICIENCY, createMultipliedTotalModifier(value));
+        // TODO 属性有点太呃呃了，之后写完器官再微调
+        updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier(moveValue / 10));
+        updateAttributeModifier(entity, Attributes.ATTACK_SPEED, createMultipliedTotalModifier(value / 4));
+        updateAttributeModifier(entity, Attributes.MINING_EFFICIENCY, createAddValueModifier(value));
     }
 }

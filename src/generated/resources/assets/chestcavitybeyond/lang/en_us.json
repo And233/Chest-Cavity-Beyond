@@ -13,5 +13,7 @@
   "attribute.chestcavitybeyond.water_breath": "Water Breath",
   "item.chestcavitybeyond.chest_opener": "Chest Opener",
   "item.chestcavitybeyond.heart": "Heart",
+  "item.chestcavitybeyond.lung": "Lung",
+  "item.chestcavitybeyond.spine": "Spine",
   "itemGroup.chestcavitybeyond": "Chest Cavity Beyond"
 }

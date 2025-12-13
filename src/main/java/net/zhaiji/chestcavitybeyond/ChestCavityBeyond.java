@@ -5,7 +5,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.zhaiji.chestcavitybeyond.client.event.ClientEventManager;
 import net.zhaiji.chestcavitybeyond.event.CommonEventManager;
 import net.zhaiji.chestcavitybeyond.register.*;
 

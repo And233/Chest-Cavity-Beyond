@@ -13,5 +13,7 @@
   "attribute.chestcavitybeyond.water_breath": "水下呼吸",
   "item.chestcavitybeyond.chest_opener": "开胸器",
   "item.chestcavitybeyond.heart": "心脏",
+  "item.chestcavitybeyond.lung": "肺脏",
+  "item.chestcavitybeyond.spine": "脊柱",
   "itemGroup.chestcavitybeyond": "胸腔"
 }

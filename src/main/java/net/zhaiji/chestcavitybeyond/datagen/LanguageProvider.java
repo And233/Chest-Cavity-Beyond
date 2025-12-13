@@ -22,6 +22,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
         add(InitItem.CHEST_OPENER.get(), "Chest Opener");
         add(InitItem.HEART.get(), "Heart");
+        add(InitItem.SPINE.get(), "Spine");
+        add(InitItem.LUNG.get(), "Lung");
 
         add(InitAttribute.HEALTH.value().getDescriptionId(), "Health");
         add(InitAttribute.NERVES.value().getDescriptionId(), "Nerves");
@@ -42,6 +44,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
         add(InitItem.CHEST_OPENER.get(), "开胸器");
         add(InitItem.HEART.get(), "心脏");
+        add(InitItem.SPINE.get(), "脊柱");
+        add(InitItem.LUNG.get(), "肺脏");
 
         add(InitAttribute.HEALTH.value().getDescriptionId(), "健康");
         add(InitAttribute.NERVES.value().getDescriptionId(), "神经效率");

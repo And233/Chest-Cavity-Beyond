@@ -1,6 +1,5 @@
 package net.zhaiji.chestcavitybeyond.attachment;
 
-import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -8,7 +7,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -20,8 +18,6 @@ import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
 import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 public class ChestCavityData extends ItemStackHandler {
     /**
@@ -83,47 +79,9 @@ public class ChestCavityData extends ItemStackHandler {
 
     public void tick() {
         applyFiltration();
-    }
-
-    /**
-     * 更新器官属性修饰符
-     */
-    public void updateOrganAttributeModifier(ItemStack oldStack, ItemStack newStack) {
-        if (oldStack.equals(newStack)) return;
-        Multimap<Holder<Attribute>, AttributeModifier> removeModifiers = ChestCavityUtil.getAttributeModifiers(oldStack);
-        Multimap<Holder<Attribute>, AttributeModifier> addModifiers = ChestCavityUtil.getAttributeModifiers(newStack);
-        if (!removeModifiers.isEmpty()) {
-            for (Holder<Attribute> attribute : removeModifiers.keySet()) {
-                Collection<AttributeModifier> modifiers = removeModifiers.get(attribute);
-                OrganAttributeUtil.removeModifier(owner, attribute, modifiers, AttributeModifier.Operation.ADD_VALUE);
-                OrganAttributeUtil.removeModifier(owner, attribute, modifiers, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-                OrganAttributeUtil.removeModifier(owner, attribute, modifiers, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-            }
-        }
-        if (!addModifiers.isEmpty()) {
-            for (Holder<Attribute> attribute : addModifiers.keySet()) {
-                Collection<AttributeModifier> modifiers = addModifiers.get(attribute);
-                OrganAttributeUtil.addModifier(owner, attribute, modifiers, AttributeModifier.Operation.ADD_VALUE);
-                OrganAttributeUtil.addModifier(owner, attribute, modifiers, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-                OrganAttributeUtil.addModifier(owner, attribute, modifiers, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-            }
-        }
-
-        OrganAttributeUtil.updateHealth(this);
-        // TODO 等我把器官搞完了来
-//        OrganAttributeUtil.updateNerves(this);
-    }
-
-    /**
-     * 添加或替换属性修饰符
-     *
-     * @param attribute 属性
-     * @param modifier  修饰符
-     */
-    public void updateAttributeModifier(Holder<Attribute> attribute, AttributeModifier modifier) {
-        AttributeInstance instance = owner.getAttribute(attribute);
-        if (instance != null) {
-            instance.addOrReplacePermanentModifier(modifier);
+        for (int i = 0; i < stacks.size(); i++) {
+            ItemStack stack = stacks.get(i);
+            ChestCavityUtil.organTick(this, owner, i, stack);
         }
     }
 
@@ -215,14 +173,19 @@ public class ChestCavityData extends ItemStackHandler {
     public void setStackInSlot(int slot, ItemStack stack) {
         ItemStack oldStack = getStackInSlot(slot).copy();
         super.setStackInSlot(slot, stack);
-        updateOrganAttributeModifier(oldStack, stack);
+        OrganAttributeUtil.updateOrganAttributeModifier(owner, oldStack, stack);
+        ChestCavityUtil.organRemoved(this, owner, slot, oldStack);
+        ChestCavityUtil.organAdded(this, owner, slot, stack);
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack removeStack = super.extractItem(slot, amount, simulate);
         if (!simulate) {
-            updateOrganAttributeModifier(removeStack, getStackInSlot(slot));
+            ItemStack addStack = getStackInSlot(slot);
+            OrganAttributeUtil.updateOrganAttributeModifier(owner, removeStack, addStack);
+            ChestCavityUtil.organRemoved(this, owner, slot, removeStack);
+            ChestCavityUtil.organAdded(this, owner, slot, addStack);
         }
         return removeStack;
     }

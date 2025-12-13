@@ -1,6 +1,6 @@
 package net.zhaiji.chestcavitybeyond.api;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -17,7 +17,6 @@ import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class ChestCavityType {
     private final String type;
@@ -90,15 +89,36 @@ public class ChestCavityType {
     }
 
     /**
-     * 为胸腔类型设置默认器官
+     * 为胸腔类型设置第一排默认器官
      *
-     * @param index 小于27
+     * @param index 0 ~ 8
      * @param organ 器官
      * @return 胸腔类型
      */
-    public ChestCavityType setOrgan(int index, Supplier<Item> organ) {
-        organs.set(index, organ.get());
-        return this;
+    public ChestCavityType setFirstRow(int index, Item organ) {
+        return setOrgan(index, organ);
+    }
+
+    /**
+     * 为胸腔类型设置第二排默认器官
+     *
+     * @param index 0 ~ 8
+     * @param organ 器官
+     * @return 胸腔类型
+     */
+    public ChestCavityType setSecondRow(int index, Item organ) {
+        return setOrgan(index + 9, organ);
+    }
+
+    /**
+     * 为胸腔类型设置第三排默认器官
+     *
+     * @param index 0 ~ 8
+     * @param organ 器官
+     * @return 胸腔类型
+     */
+    public ChestCavityType setThirdRow(int index, Item organ) {
+        return setOrgan(index + 18, organ);
     }
 
     /**
@@ -108,7 +128,9 @@ public class ChestCavityType {
      * @return 胸腔类型
      */
     public ChestCavityType builder(EntityType<? extends LivingEntity> entityType) {
-        Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = HashMultimap.create();
+        // 明明getDefaultInstance()是新建stack，但不知为何，getAttributeModifiers确会返回同一个修饰符
+        // 此处使用ArrayListMultimap
+        Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = ArrayListMultimap.create();
         Map<Holder<Attribute>, Double> defaultMap = new HashMap<>();
         for (Item item : organs) {
             modifierMultimap.putAll(ChestCavityUtil.getOrganCap(item.getDefaultInstance()).getAttributeModifiers());

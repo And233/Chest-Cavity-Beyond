@@ -26,4 +26,25 @@ public class InitItem {
                     })
                     .build()
     );
+
+    public static final Supplier<Item> LUNG = ITEM.register(
+            "lung",
+            () -> OrganFactory.builder()
+                    .modifiers(modifiers -> {
+                        modifiers.put(InitAttribute.BREATH_RECOVERY, OrganAttributeUtil.createAddValueModifier(1));
+                        modifiers.put(InitAttribute.BREATH_CAPACITY, OrganAttributeUtil.createAddValueModifier(1));
+                        modifiers.put(InitAttribute.ENDURANCE, OrganAttributeUtil.createAddValueModifier(1));
+                    })
+                    .build()
+    );
+
+    public static final Supplier<Item> SPINE = ITEM.register(
+            "spine",
+            () -> OrganFactory.builder()
+                    .modifiers(modifiers -> {
+                        modifiers.put(InitAttribute.NERVES, OrganAttributeUtil.createAddValueModifier(1));
+                        modifiers.put(InitAttribute.DEFENSE, OrganAttributeUtil.createAddValueModifier(0.5));
+                    })
+                    .build()
+    );
 }

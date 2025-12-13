@@ -16,7 +16,8 @@ public class ChestCavityManager {
     public static final Map<EntityType<?>, ChestCavityType> ENTITY_CHEST_CAVITY_TYPE_MAP = new HashMap<>();
 
     public static final ChestCavityType HUMAN = register("human")
-            .setOrgan(4, InitItem.HEART);
+            .setFirstRow(3, InitItem.LUNG.get()).setFirstRow(4, InitItem.HEART.get()).setFirstRow(5, InitItem.LUNG.get())
+            .setSecondRow(4, InitItem.SPINE.get());
 
     // 为实体类型添加胸腔类型
     // 后续考虑挪位置
@@ -26,6 +27,7 @@ public class ChestCavityManager {
 
     /**
      * 获取实体的胸腔类型
+     *
      * @param entity 实体
      * @return 胸腔类型
      */
@@ -35,7 +37,8 @@ public class ChestCavityManager {
 
     /**
      * 为实体类型注册胸腔类型
-     * @param entityType 实体类型
+     *
+     * @param entityType      实体类型
      * @param chestCavityType 胸腔类型
      */
     public static void registerEntity(EntityType<? extends LivingEntity> entityType, ChestCavityType chestCavityType) {
@@ -44,6 +47,7 @@ public class ChestCavityManager {
 
     /**
      * 注册胸腔类型
+     *
      * @param name 类型名称
      * @return 胸腔类型
      */

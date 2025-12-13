@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
 import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
@@ -22,10 +23,6 @@ import java.util.Objects;
 public class ChestCavityUtil {
     /**
      * 获取槽位id
-     *
-     * <p>
-     * TODO 目前没有使用，且修饰符用了一种很绕远路的方法进行统一，后续考虑重构或者删除这个方法
-     * </P>
      *
      * @param index 槽位索引
      * @return 槽位id
@@ -62,6 +59,30 @@ public class ChestCavityUtil {
      */
     public static Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(ItemStack stack) {
         return getOrganCap(stack).getAttributeModifiers();
+    }
+
+    /**
+     * 胸腔tick
+     */
+    public static void organTick(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
+        if (stack.isEmpty()) return;
+        getOrganCap(stack).tick(new ChestCavitySlotContext(data, entity, getSlotId(index), index, stack));
+    }
+
+    /**
+     * 胸腔移植时
+     */
+    public static void organAdded(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
+        if (stack.isEmpty()) return;
+        getOrganCap(stack).organAdded(new ChestCavitySlotContext(data, entity, getSlotId(index), index, stack));
+    }
+
+    /**
+     * 胸腔摘时
+     */
+    public static void organRemoved(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
+        if (stack.isEmpty()) return;
+        getOrganCap(stack).organRemoved(new ChestCavitySlotContext(data, entity, getSlotId(index), index, stack));
     }
 
     /**
