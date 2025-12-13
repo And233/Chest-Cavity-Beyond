@@ -12,7 +12,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.zhaiji.chestcavitybeyond.item.BaseOrganItem;
+import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -79,6 +79,7 @@ public class ChestCavityType {
 
     /**
      * 为胸腔类型设置默认器官
+     *
      * @param index 小于27
      * @param organ 器官
      * @return 胸腔类型
@@ -90,6 +91,7 @@ public class ChestCavityType {
 
     /**
      * 为胸腔类型设置默认器官
+     *
      * @param index 小于27
      * @param organ 器官
      * @return 胸腔类型
@@ -109,9 +111,7 @@ public class ChestCavityType {
         Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = HashMultimap.create();
         Map<Holder<Attribute>, Double> defaultMap = new HashMap<>();
         for (Item item : organs) {
-            if (item instanceof BaseOrganItem organ) {
-                modifierMultimap.putAll(organ.getAttributeModifiers());
-            }
+            modifierMultimap.putAll(ChestCavityUtil.getOrganCap(item.getDefaultInstance()).getAttributeModifiers());
         }
         for (Holder<Attribute> attribute : modifierMultimap.keySet()) {
             double value = calculateValue(entityType, attribute, modifierMultimap.get(attribute));
@@ -123,6 +123,7 @@ public class ChestCavityType {
 
     /**
      * 获取实体类型的默认胸腔属性
+     *
      * @param entityType 实体类型
      * @return 默认胸腔属性
      */

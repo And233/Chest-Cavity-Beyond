@@ -2,12 +2,15 @@ package net.zhaiji.chestcavitybeyond.event;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
+import net.zhaiji.chestcavitybeyond.manager.CapabilityManager;
 import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
@@ -15,6 +18,17 @@ import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
 
 public class CommonEventHandler {
+    /**
+     * 为物品注册器官capability
+     *
+     * @param event 注册capability事件
+     */
+    public static void handlerRegisterCapabilitiesEvent(RegisterCapabilitiesEvent event) {
+        OrganFactory.ORGAN_REGISTRY.forEach(((item, organ) -> {
+            event.registerItem(CapabilityManager.ORGAN, (itemStack, context) -> organ, item);
+        }));
+    }
+
     /**
      * 当实体第一次生成时，为其附加胸腔数据
      *

@@ -9,6 +9,7 @@ public class CommonEventManager {
     }
 
     public static void modBusListener(IEventBus modEventBus) {
+        modEventBus.addListener(CommonEventHandler::handlerRegisterCapabilitiesEvent);
         modEventBus.addListener(CommonEventHandler::handlerEntityAttributeModificationEvent);
     }
 

@@ -86,9 +86,9 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
-     * 添加或更新器官属性修饰符
+     * 更新器官属性修饰符
      */
-    public void updateOrganAttribute(ItemStack oldStack, ItemStack newStack) {
+    public void updateOrganAttributeModifier(ItemStack oldStack, ItemStack newStack) {
         if (oldStack.equals(newStack)) return;
         Multimap<Holder<Attribute>, AttributeModifier> removeModifiers = ChestCavityUtil.getAttributeModifiers(oldStack);
         Multimap<Holder<Attribute>, AttributeModifier> addModifiers = ChestCavityUtil.getAttributeModifiers(newStack);
@@ -109,18 +109,18 @@ public class ChestCavityData extends ItemStackHandler {
             }
         }
 
-        OrganAttributeUtil.updateHealth(owner);
+        OrganAttributeUtil.updateHealth(this);
         // TODO 等我把器官搞完了来
-//        OrganAttributeUtil.updateNerves(owner);
+//        OrganAttributeUtil.updateNerves(this);
     }
 
     /**
-     * 添加或更新属性修饰符
+     * 添加或替换属性修饰符
      *
      * @param attribute 属性
      * @param modifier  修饰符
      */
-    public void updateAttribute(Holder<Attribute> attribute, AttributeModifier modifier) {
+    public void updateAttributeModifier(Holder<Attribute> attribute, AttributeModifier modifier) {
         AttributeInstance instance = owner.getAttribute(attribute);
         if (instance != null) {
             instance.addOrReplacePermanentModifier(modifier);
@@ -215,14 +215,14 @@ public class ChestCavityData extends ItemStackHandler {
     public void setStackInSlot(int slot, ItemStack stack) {
         ItemStack oldStack = getStackInSlot(slot).copy();
         super.setStackInSlot(slot, stack);
-        updateOrganAttribute(oldStack, stack);
+        updateOrganAttributeModifier(oldStack, stack);
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack removeStack = super.extractItem(slot, amount, simulate);
         if (!simulate) {
-            updateOrganAttribute(removeStack, getStackInSlot(slot));
+            updateOrganAttributeModifier(removeStack, getStackInSlot(slot));
         }
         return removeStack;
     }

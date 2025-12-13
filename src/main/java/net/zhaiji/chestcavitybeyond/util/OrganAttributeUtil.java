@@ -66,20 +66,7 @@ public class OrganAttributeUtil {
      * @param operation       计算方式
      */
     public static void removeModifier(LivingEntity entity, Holder<Attribute> attribute, Collection<AttributeModifier> removeModifiers, AttributeModifier.Operation operation) {
-        AttributeInstance instance = entity.getAttribute(attribute);
-        if (instance != null) {
-            AttributeModifier modifier = instance.getModifier(ChestCavityBeyond.of(operation.toString().toLowerCase()));
-            if (modifier == null) {
-                modifier = OrganAttributeUtil.createModifier(0, operation);
-            }
-            double newValue = modifier.amount();
-            for (AttributeModifier removeModifier : removeModifiers) {
-                if (removeModifier.operation() == operation) {
-                    newValue -= removeModifier.amount();
-                }
-            }
-            instance.addOrReplacePermanentModifier(OrganAttributeUtil.createModifier(newValue, operation));
-        }
+        modifyModifier(entity, attribute, removeModifiers, operation, false);
     }
 
     /**
@@ -90,10 +77,25 @@ public class OrganAttributeUtil {
      *
      * @param entity      目标实体
      * @param attribute   修饰符
-     * @param addModifier 需要添加的修饰符
+     * @param addModifiers 需要添加的修饰符
      * @param operation   计算方式
      */
-    public static void addModifier(LivingEntity entity, Holder<Attribute> attribute, Collection<AttributeModifier> addModifier, AttributeModifier.Operation operation) {
+    public static void addModifier(LivingEntity entity, Holder<Attribute> attribute, Collection<AttributeModifier> addModifiers, AttributeModifier.Operation operation) {
+        modifyModifier(entity, attribute, addModifiers, operation, true);
+    }
+
+    /**
+     * 修改修饰符
+     * <p>
+     * 实际上只修改了这些修饰符的值
+     * </P>
+     *
+     * @param entity    目标实体
+     * @param attribute 修饰符
+     * @param modifiers 需要添加的修饰符
+     * @param operation 计算方式
+     */
+    public static void modifyModifier(LivingEntity entity, Holder<Attribute> attribute, Collection<AttributeModifier> modifiers, AttributeModifier.Operation operation, boolean isAdd) {
         AttributeInstance instance = entity.getAttribute(attribute);
         if (instance != null) {
             AttributeModifier modifier = instance.getModifier(ChestCavityBeyond.of(operation.toString().toLowerCase()));
@@ -101,9 +103,9 @@ public class OrganAttributeUtil {
                 modifier = OrganAttributeUtil.createModifier(0, operation);
             }
             double newValue = modifier.amount();
-            for (AttributeModifier removeModifier : addModifier) {
+            for (AttributeModifier removeModifier : modifiers) {
                 if (removeModifier.operation() == operation) {
-                    newValue += removeModifier.amount();
+                    newValue += isAdd ? removeModifier.amount() : -removeModifier.amount();
                 }
             }
             instance.addOrReplacePermanentModifier(OrganAttributeUtil.createModifier(newValue, operation));
@@ -111,12 +113,21 @@ public class OrganAttributeUtil {
     }
 
     /**
+     * 更新健康附带的属性（最大生命值）
+     *
+     * @param data 胸腔数据
+     */
+    public static void updateHealth(ChestCavityData data) {
+        double health = data.getDifferenceValue(InitAttribute.HEALTH);
+        data.updateAttributeModifier(Attributes.MAX_HEALTH, createAddValueModifier(health));
+    }
+
+    /**
      * 更新神经效率附带的属性（移动速度，攻击速度，挖掘效率）
      *
-     * @param entity 目标实体
+     * @param data 胸腔数据
      */
-    public static void updateNerves(LivingEntity entity) {
-        ChestCavityData data = ChestCavityUtil.getData(entity);
+    public static void updateNerves(ChestCavityData data) {
         double nerves = data.getDifferenceValue(InitAttribute.NERVES);
         double factor = MathUtil.getLog1pScale(nerves);
         // 通过nerves属性的差值计算最终应用的数值
@@ -125,19 +136,8 @@ public class OrganAttributeUtil {
         // 本来应该都不许的，但想了一下还是算了
         double moveValue = data.getCurrentValue(InitAttribute.NERVES) <= 0 ? -1 : value;
         // 使用最终乘算
-        data.updateAttribute(Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier(moveValue));
-        data.updateAttribute(Attributes.ATTACK_SPEED, createMultipliedTotalModifier(value));
-        data.updateAttribute(Attributes.MINING_EFFICIENCY, createMultipliedTotalModifier(value));
-    }
-
-    /**
-     * 更新健康附带的属性（最大生命值）
-     *
-     * @param entity 目标实体
-     */
-    public static void updateHealth(LivingEntity entity) {
-        ChestCavityData data = ChestCavityUtil.getData(entity);
-        double health = data.getDifferenceValue(InitAttribute.HEALTH);
-        data.updateAttribute(Attributes.MAX_HEALTH, createAddValueModifier(health));
+        data.updateAttributeModifier(Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier(moveValue));
+        data.updateAttributeModifier(Attributes.ATTACK_SPEED, createMultipliedTotalModifier(value));
+        data.updateAttributeModifier(Attributes.MINING_EFFICIENCY, createMultipliedTotalModifier(value));
     }
 }

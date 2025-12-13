@@ -19,6 +19,7 @@ public class ChestCavityManager {
             .setOrgan(4, InitItem.HEART);
 
     // 为实体类型添加胸腔类型
+    // 后续考虑挪位置
     static {
         registerEntity(EntityType.PLAYER, HUMAN);
     }

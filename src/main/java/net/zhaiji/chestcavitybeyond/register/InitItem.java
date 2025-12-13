@@ -4,7 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
-import net.zhaiji.chestcavitybeyond.item.BaseOrganItem;
+import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.item.ChestOpenerItem;
 import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 
@@ -20,8 +20,10 @@ public class InitItem {
 
     public static final Supplier<Item> HEART = ITEM.register(
             "heart",
-            () -> new BaseOrganItem()
-                    .addAttributeModifier(InitAttribute.HEALTH, OrganAttributeUtil.createAddValueModifier(1))
-                    .builder()
+            () -> OrganFactory.builder()
+                    .modifiers(modifiers -> {
+                        modifiers.put(InitAttribute.HEALTH, OrganAttributeUtil.createAddValueModifier(1));
+                    })
+                    .build()
     );
 }
