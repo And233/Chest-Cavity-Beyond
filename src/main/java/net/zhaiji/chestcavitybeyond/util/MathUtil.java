@@ -10,14 +10,14 @@ public class MathUtil {
      * <pre>
      *  input | output
      * -------|---------
-     *   4.0  | 7.389
-     *   3.5  | 5.755
-     *   3.0  | 4.482
-     *   2.5  | 3.490
-     *   2.0  | 2.718
-     *   1.5  | 2.117
-     *   1.0  | 1.649
-     *   0.5  | 1.284
+     *   4.0  | 7.438
+     *   3.5  | 6.264
+     *   3.0  | 5.159
+     *   2.5  | 4.132
+     *   2.0  | 3.197
+     *   1.5  | 2.374
+     *   1.0  | 1.693
+     *   0.5  | 1.203
      *   0.0  | 1.000
      *  -0.5  | 0.779
      *  -1.0  | 0.607
@@ -32,8 +32,12 @@ public class MathUtil {
      * @param input 输入值
      * @return 缩放因子
      */
-    public static double getDirectExpScale(double input) {
-        return Math.exp(0.5 * input);
+    public static double getDirectScale(double input) {
+        if (input <= 0) {
+            return Math.exp(0.5 * input);
+        } else {
+            return 1 + input * Math.log1p(input);
+        }
     }
 
     /**
@@ -51,21 +55,25 @@ public class MathUtil {
      *   1.0  | 0.607
      *   0.5  | 0.779
      *   0.0  | 1.000
-     *  -0.5  | 1.284
-     *  -1.0  | 1.649
-     *  -1.5  | 2.117
-     *  -2.0  | 2.718
-     *  -2.5  | 3.490
-     *  -3.0  | 4.482
-     *  -3.5  | 5.755
-     *  -4.0  | 7.389
+     *  -0.5  | 1.203
+     *  -1.0  | 1.693
+     *  -1.5  | 2.374
+     *  -2.0  | 3.197
+     *  -2.5  | 4.132
+     *  -3.0  | 5.159
+     *  -3.5  | 6.264
+     *  -4.0  | 7.438
      * </pre>
      *
      * @param input 输入值
      * @return 缩放因子
      */
-    public static double getInverseExpScale(double input) {
-        return Math.exp(-0.5 * input);
+    public static double getInverseScale(double input) {
+        if (input >= 0) {
+            return Math.exp(-0.5 * input);
+        } else {
+            return 1 + -input * Math.log1p(-input);
+        }
     }
 
     /**
@@ -75,22 +83,22 @@ public class MathUtil {
      *  input | output
      * -------|--------
      *   0.0  | 0.000
-     *   0.5  | 0.223
-     *   1.0  | 0.405
-     *   1.5  | 0.560
-     *   2.0  | 0.693
-     *   2.5  | 0.811
-     *   3.0  | 0.916
-     *   3.5  | 1.013
-     *   4.0  | 1.099
+     *   0.5  | 0.176
+     *   1.0  | 0.301
+     *   1.5  | 0.398
+     *   2.0  | 0.477
+     *   2.5  | 0.544
+     *   3.0  | 0.602
+     *   3.5  | 0.653
+     *   4.0  | 0.699
      * </pre>
      *
      * @param input 输入值
      * @return 缩放因子
      */
-    public static double getLog1pScale(double input) {
+    public static double getLog10Scale(double input) {
         // 使用input的绝对值，忽略负数
-        return Math.log1p(Math.abs(input) / 2);
+        return Math.log10(1 + Math.abs(input));
     }
 
     /**
@@ -114,7 +122,7 @@ public class MathUtil {
      * input <0
      * value\input | -0.5  | -1.0  | -1.5  | -2.0  | -2.5  | -3.0  | -3.5  | -4.0
      * ------------|-------|-------|-------|-------|-------|-------|-------|------
-     *     any     | 1.223 | 1.405 | 1.560 | 1.693 | 1.811 | 1.916 | 2.013 | 2.099
+     *     any     | 1.406 | 1.693 | 1.916 | 2.099 | 2.253 | 2.386 | 2.504 | 2.609
      * </pre>
      *
      * @param value 衰减基准值
@@ -128,6 +136,6 @@ public class MathUtil {
         if (input > 0) {
             return value / (value + input);
         }
-        return 1 + getLog1pScale(input);
+        return 1 + Math.log1p(-input);
     }
 }

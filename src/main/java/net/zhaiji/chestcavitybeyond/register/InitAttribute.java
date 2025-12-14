@@ -33,6 +33,10 @@ public class InitAttribute {
     public static final Holder<Attribute> DETOXIFICATION = registerRangedAttribute("detoxification");
     // 血液过滤效率
     public static final Holder<Attribute> FILTRATION = registerRangedAttribute("filtration");
+    // 力量
+    public static final Holder<Attribute> STRENGTH = registerRangedAttribute("strength");
+    // 速度
+    public static final Holder<Attribute> SPEED = registerRangedAttribute("speed");
 
     public static Holder<Attribute> registerRangedAttribute(String name) {
         return ATTRIBUTE.register(

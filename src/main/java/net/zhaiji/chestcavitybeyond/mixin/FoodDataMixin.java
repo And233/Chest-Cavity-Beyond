@@ -5,7 +5,6 @@ import net.minecraft.world.food.FoodData;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.mixinapi.IFoodData;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
-import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,14 +18,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class FoodDataMixin implements IFoodData {
     @Shadow
     private int tickTimer;
+    @Shadow
+    private int foodLevel;
     @Unique
-    private Player player;
+    private ChestCavityData data;
 
     @Unique
     @Override
-    public void setPlayer(Player player) {
-        if (this.player == null) {
-            this.player = player;
+    public void setChestCavityData(ChestCavityData data) {
+        if (this.data == null) {
+            this.data = data;
         }
     }
 
@@ -39,8 +40,11 @@ public abstract class FoodDataMixin implements IFoodData {
             argsOnly = true
     )
     public int chestCavityBeyond$modifyFoodLevel(int value) {
-        double digestion = ChestCavityUtil.getData(player).getDifferenceValue(InitAttribute.DIGESTION);
-        return (int) (value * MathUtil.getDirectExpScale(digestion));
+        if (data.getCurrentValue(InitAttribute.DIGESTION) <= 0) {
+            return 0;
+        }
+        double digestion = data.getDifferenceValue(InitAttribute.DIGESTION);
+        return (int) (value * MathUtil.getDirectScale(digestion));
     }
 
     /**
@@ -52,8 +56,11 @@ public abstract class FoodDataMixin implements IFoodData {
             argsOnly = true
     )
     public float chestCavityBeyond$modifySaturationLevel(float value) {
-        double nutrition = ChestCavityUtil.getData(player).getDifferenceValue(InitAttribute.NUTRITION);
-        return (float) (value * MathUtil.getDirectExpScale(nutrition));
+        if (data.getCurrentValue(InitAttribute.NUTRITION) <= 0) {
+            return 0;
+        }
+        double nutrition = data.getDifferenceValue(InitAttribute.NUTRITION);
+        return (float) (value * MathUtil.getDirectScale(nutrition));
     }
 
     /**
@@ -64,10 +71,10 @@ public abstract class FoodDataMixin implements IFoodData {
             at = @At("HEAD")
     )
     public void chestCavityBeyond$tick(Player player, CallbackInfo ci) {
-        ChestCavityData data = ChestCavityUtil.getData(player);
         double metabolism = data.getDifferenceValue(InitAttribute.METABOLISM);
-        if (metabolism != 0) {
-            double addTimer = MathUtil.getDirectExpScale(metabolism);
+        // 我不理解，为什么回血有时候会突破检测下限，
+        if (metabolism != 0 && (foodLevel >= 18 || foodLevel <= 0)) {
+            double addTimer = MathUtil.getDirectScale(metabolism);
             if (metabolism > 0) {
                 data.metabolismRemainder += addTimer;
             } else {
@@ -87,6 +94,6 @@ public abstract class FoodDataMixin implements IFoodData {
             argsOnly = true
     )
     public float chestCavityBeyond$modifyExhaustion(float value) {
-        return (float) (value * MathUtil.getInverseExpScale(ChestCavityUtil.getData(player).getDifferenceValue(InitAttribute.ENDURANCE)));
+        return (float) (value * MathUtil.getInverseScale(data.getDifferenceValue(InitAttribute.ENDURANCE)));
     }
 }

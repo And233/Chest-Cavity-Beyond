@@ -15,8 +15,10 @@ public class CommonEventManager {
 
     public static void gameBusListener(IEventBus gameBus) {
         gameBus.addListener(CommonEventHandler::handlerEntityJoinLevelEvent);
+        gameBus.addListener(CommonEventHandler::handlerPlayerEvent$PlayerRespawnEvent);
         gameBus.addListener(CommonEventHandler::handlerMobEffectEvent$Added);
         gameBus.addListener(CommonEventHandler::handlerLivingDamageEvent$Pre);
+        gameBus.addListener(CommonEventHandler::handlerPlayerEvent$BreakSpeed);
         gameBus.addListener(CommonEventHandler::handlerEntityTickEvent$Post);
     }
 }

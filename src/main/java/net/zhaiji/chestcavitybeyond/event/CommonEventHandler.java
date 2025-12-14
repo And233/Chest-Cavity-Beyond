@@ -7,6 +7,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
@@ -54,6 +55,15 @@ public class CommonEventHandler {
     }
 
     /**
+     * 重置玩家器官属性
+     *
+     * @param event 玩家重生事件
+     */
+    public static void handlerPlayerEvent$PlayerRespawnEvent(PlayerEvent.PlayerRespawnEvent event) {
+        ChestCavityUtil.getData(event.getEntity()).resetAttributeModifier();
+    }
+
+    /**
      * 应用实体解毒效率属性的更改
      *
      * @param event 效果添加事件
@@ -63,7 +73,7 @@ public class CommonEventHandler {
         double difference = data.getDifferenceValue(InitAttribute.DETOXIFICATION);
         MobEffectInstance instance = event.getEffectInstance();
         if (difference != 0 && instance instanceof IMobEffectInstance mobEffectInstance && mobEffectInstance.isHarmful()) {
-            mobEffectInstance.setDuration(instance.mapDuration(duration -> (int) (duration * MathUtil.getInverseExpScale(difference))));
+            mobEffectInstance.setDuration(instance.mapDuration(duration -> (int) (duration * MathUtil.getInverseScale(difference))));
         }
     }
 
@@ -79,6 +89,21 @@ public class CommonEventHandler {
         damage *= MathUtil.getAttenuationScale(damage, defense);
         // TODO 未检测伤害类型
         event.setNewDamage((float) damage);
+    }
+
+    /**
+     * 应用神经效率的挖掘速度改变
+     *
+     * @param event 玩家破坏速度事件
+     */
+    public static void handlerPlayerEvent$BreakSpeed(PlayerEvent.BreakSpeed event) {
+        ChestCavityData data = ChestCavityUtil.getData(event.getEntity());
+        double nerves = data.getDifferenceValue(InitAttribute.NERVES);
+        if (nerves != 0) {
+            double factor = 1 + MathUtil.getLog10Scale(nerves);
+            double value = nerves > 0 ? factor : 1 / factor;
+            event.setNewSpeed((float) (event.getOriginalSpeed() * value));
+        }
     }
 
     /**

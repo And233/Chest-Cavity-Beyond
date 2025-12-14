@@ -128,8 +128,7 @@ public class ChestCavityType {
      * @return 胸腔类型
      */
     public ChestCavityType builder(EntityType<? extends LivingEntity> entityType) {
-        // 明明getDefaultInstance()是新建stack，但不知为何，getAttributeModifiers确会返回同一个修饰符
-        // 此处使用ArrayListMultimap
+        // 由于同种器官返回的修饰符相同，所以此处使用ArrayListMultimap
         Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = ArrayListMultimap.create();
         Map<Holder<Attribute>, Double> defaultMap = new HashMap<>();
         for (Item item : organs) {

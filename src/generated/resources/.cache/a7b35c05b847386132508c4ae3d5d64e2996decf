@@ -1,5 +1,13 @@
-// 1.21.1	2025-12-14T01:37:12.6156298	Item Models: chestcavitybeyond
+// 1.21.1	2025-12-14T23:59:09.1170525	Item Models: chestcavitybeyond
+88cf3974b484531ec07f9798b8d27b1c0c88c6b2 assets/chestcavitybeyond/models/item/appendix.json
 3d4d2320ce6ed627d1a715a8c72f90ee2fae530e assets/chestcavitybeyond/models/item/chest_opener.json
 62c9852f05f1e117787f28fe40da6cd1e4470316 assets/chestcavitybeyond/models/item/heart.json
+1c46b0643cf17a786b555efa8cdcd3de28fe303f assets/chestcavitybeyond/models/item/intestine.json
+c2841842a4f3664c97f460bcdf4a81b51f46b33b assets/chestcavitybeyond/models/item/kidney.json
+aae4a93ad3915e1cbf4ca02a949c376ddf3aba05 assets/chestcavitybeyond/models/item/liver.json
 5f31cc88d4e25c6b803e3c0e31e9a017ff244723 assets/chestcavitybeyond/models/item/lung.json
+06a4d3939a3d9089e97d9354491f2a66fa2c7586 assets/chestcavitybeyond/models/item/muscle.json
+5db862908f0207566e377097beb485c3eb8a2bb6 assets/chestcavitybeyond/models/item/rib.json
 c7860ceb28528450ec48190047ee4569357a9971 assets/chestcavitybeyond/models/item/spine.json
+3fe7beb6e6bba83cac483fa8c211b02be2922c08 assets/chestcavitybeyond/models/item/spleen.json
+9b88aaafb7ddf6f80fe64802292021c5e45bb22c assets/chestcavitybeyond/models/item/stomach.json

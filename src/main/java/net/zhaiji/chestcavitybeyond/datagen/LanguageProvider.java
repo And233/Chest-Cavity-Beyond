@@ -24,6 +24,14 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.HEART.get(), "Heart");
         add(InitItem.SPINE.get(), "Spine");
         add(InitItem.LUNG.get(), "Lung");
+        add(InitItem.STOMACH.get(), "Stomach");
+        add(InitItem.INTESTINE.get(), "Intestine");
+        add(InitItem.KIDNEY.get(), "Kidney");
+        add(InitItem.SPLEEN.get(), "Spleen");
+        add(InitItem.LIVER.get(), "Liver");
+        add(InitItem.APPENDIX.get(), "Appendix");
+        add(InitItem.RIB.get(), "RIB");
+        add(InitItem.MUSCLE.get(), "Muscle");
 
         add(InitAttribute.HEALTH.value().getDescriptionId(), "Health");
         add(InitAttribute.NERVES.value().getDescriptionId(), "Nerves");
@@ -37,6 +45,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitAttribute.WATER_BREATH.value().getDescriptionId(), "Water Breath");
         add(InitAttribute.DETOXIFICATION.value().getDescriptionId(), "Detoxification");
         add(InitAttribute.FILTRATION.value().getDescriptionId(), "Filtration");
+        add(InitAttribute.STRENGTH.value().getDescriptionId(), "Strength");
+        add(InitAttribute.SPEED.value().getDescriptionId(), "Speed");
     }
 
     public void Chinese() {
@@ -46,6 +56,14 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.HEART.get(), "心脏");
         add(InitItem.SPINE.get(), "脊柱");
         add(InitItem.LUNG.get(), "肺脏");
+        add(InitItem.STOMACH.get(), "胃");
+        add(InitItem.INTESTINE.get(), "肠子");
+        add(InitItem.KIDNEY.get(), "肾脏");
+        add(InitItem.SPLEEN.get(), "脾脏");
+        add(InitItem.LIVER.get(), "肝脏");
+        add(InitItem.APPENDIX.get(), "阑尾");
+        add(InitItem.RIB.get(), "肋骨");
+        add(InitItem.MUSCLE.get(), "肌肉");
 
         add(InitAttribute.HEALTH.value().getDescriptionId(), "健康");
         add(InitAttribute.NERVES.value().getDescriptionId(), "神经效率");
@@ -59,6 +77,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitAttribute.WATER_BREATH.value().getDescriptionId(), "水下呼吸");
         add(InitAttribute.DETOXIFICATION.value().getDescriptionId(), "解毒效率");
         add(InitAttribute.FILTRATION.value().getDescriptionId(), "血液过滤效率");
+        add(InitAttribute.STRENGTH.value().getDescriptionId(), "力量");
+        add(InitAttribute.SPEED.value().getDescriptionId(), "速度");
     }
 
     @Override

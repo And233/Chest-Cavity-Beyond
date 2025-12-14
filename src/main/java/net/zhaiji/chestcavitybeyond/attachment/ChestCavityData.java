@@ -77,6 +77,18 @@ public class ChestCavityData extends ItemStackHandler {
         init = true;
     }
 
+    /**
+     * 重置修饰符
+     */
+    public void resetAttributeModifier() {
+        for (int i = 0; i < getSlots(); i++) {
+            OrganAttributeUtil.updateOrganAttributeModifier(owner, ItemStack.EMPTY, getStackInSlot(i));
+        }
+    }
+
+    /**
+     * 器官tick
+     */
     public void tick() {
         applyFiltration();
         for (int i = 0; i < stacks.size(); i++) {
@@ -92,20 +104,20 @@ public class ChestCavityData extends ItemStackHandler {
      *  filtration |  duration
      * ------------|--------------
      *    0.0      | 30 (1.5s)
-     *   -0.5      | 38 (1.9s)
-     *   -1.0      | 49 (2.45s)
-     *   -1.5      | 63 (3.15s)
-     *   -2.0      | 81 (4.05s)
-     *   -2.5      | 104 (5.2s)
-     *   -3.0      | 134 (6.7s)
-     *   -3.5      | 172 (8.6s)
-     *   -4.0      | 221 (11.05s)
+     *   -0.5      | 36 (1.8s)
+     *   -1.0      | 51 (2.55s)
+     *   -1.5      | 71 (3.55s)
+     *   -2.0      | 96 (4.8s)
+     *   -2.5      | 124 (6.2s)
+     *   -3.0      | 155 (7.75s)
+     *   -3.5      | 188 (9.4s)
+     *   -4.0      | 223 (11.15s)
      * </pre>
      */
     public void applyFiltration() {
         double filtration = getDifferenceValue(InitAttribute.FILTRATION);
         if (filtration < 0 && owner.tickCount % filtrationPeriod == filtrationTickOffset) {
-            owner.addEffect(new MobEffectInstance(MobEffects.POISON, (int) (30 * MathUtil.getInverseExpScale(filtration))));
+            owner.addEffect(new MobEffectInstance(MobEffects.POISON, (int) (30 * MathUtil.getInverseScale(filtration))));
         }
     }
 

@@ -83,23 +83,23 @@ public class OrganAttributeUtil {
         Multimap<Holder<Attribute>, AttributeModifier> addModifiers = ChestCavityUtil.getAttributeModifiers(newStack);
         if (!removeModifiers.isEmpty()) {
             for (Holder<Attribute> attribute : removeModifiers.keySet()) {
-                Collection<AttributeModifier> modifiers = removeModifiers.get(attribute);
                 for (AttributeModifier.Operation operation : AttributeModifier.Operation.values()) {
-                    removeModifier(entity, attribute, modifiers, operation);
+                    removeModifier(entity, attribute, removeModifiers.get(attribute), operation);
                 }
             }
         }
         if (!addModifiers.isEmpty()) {
             for (Holder<Attribute> attribute : addModifiers.keySet()) {
-                Collection<AttributeModifier> modifiers = addModifiers.get(attribute);
                 for (AttributeModifier.Operation operation : AttributeModifier.Operation.values()) {
-                    addModifier(entity, attribute, modifiers, operation);
+                    addModifier(entity, attribute, addModifiers.get(attribute), operation);
                 }
             }
         }
         ChestCavityData data = ChestCavityUtil.getData(entity);
         updateHealth(data, entity);
         updateNerves(data, entity);
+        updateStrength(data, entity);
+        updateSpeed(data, entity);
     }
 
     /**
@@ -173,23 +173,45 @@ public class OrganAttributeUtil {
     }
 
     /**
-     * 更新神经效率附带的属性（移动速度，攻击速度，挖掘效率）
+     * 更新神经效率附带的属性（移动速度，攻击速度）
      *
      * @param data   胸腔数据
      * @param entity 目标实体
      */
     public static void updateNerves(ChestCavityData data, LivingEntity entity) {
         double nerves = data.getDifferenceValue(InitAttribute.NERVES);
-//        double factor = MathUtil.getLog1pScale(nerves);
+        double factor = MathUtil.getLog10Scale(nerves);
         // 通过nerves属性的差值计算最终应用的数值
-        double value = nerves >= 0 ? nerves : -nerves;
+        double value = nerves >= 0 ? factor : -factor;
         // 移速做负值特殊处理，当前神经效率小于等于0就不允许移动了
         // 本来应该都不许的，但想了一下还是算了
-        double moveValue = data.getCurrentValue(InitAttribute.NERVES) <= 0 ? -1 : value;
+        double moveValue = data.getCurrentValue(InitAttribute.NERVES) <= 0 ? -1 : nerves / 10;
         // 使用最终乘算
-        // TODO 属性有点太呃呃了，之后写完器官再微调
-        updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier(moveValue / 10));
-        updateAttributeModifier(entity, Attributes.ATTACK_SPEED, createMultipliedTotalModifier(value / 4));
-        updateAttributeModifier(entity, Attributes.MINING_EFFICIENCY, createAddValueModifier(value));
+        updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier(moveValue));
+        updateAttributeModifier(entity, Attributes.ATTACK_SPEED, createMultipliedBaseModifier(value));
+    }
+
+    /**
+     * 更新力量附带的属性（攻击力）
+     *
+     * @param data   胸腔数据
+     * @param entity 目标实体
+     */
+    public static void updateStrength(ChestCavityData data, LivingEntity entity) {
+        double strength = data.getDifferenceValue(InitAttribute.STRENGTH);
+        double factor = strength != 0 ? MathUtil.getDirectScale(strength) : 0;
+        updateAttributeModifier(entity, Attributes.ATTACK_DAMAGE, createAddValueModifier(strength >= 0 ? factor : -factor));
+    }
+
+    /**
+     * 更新神经效率附带的属性（移动速度）
+     *
+     * @param data   胸腔数据
+     * @param entity 目标实体
+     */
+    public static void updateSpeed(ChestCavityData data, LivingEntity entity) {
+        double speed = data.getDifferenceValue(InitAttribute.SPEED);
+        double factor = MathUtil.getLog10Scale(speed) / 10;
+        updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedBaseModifier(speed >= 0 ? factor : -factor));
     }
 }
