@@ -30,8 +30,32 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.SPLEEN.get(), "Spleen");
         add(InitItem.LIVER.get(), "Liver");
         add(InitItem.APPENDIX.get(), "Appendix");
-        add(InitItem.RIB.get(), "RIB");
+        add(InitItem.RIB.get(), "Rib");
         add(InitItem.MUSCLE.get(), "Muscle");
+
+        add(InitItem.ANIMAL_HEART.get(), "Animal Heart");
+        add(InitItem.ANIMAL_SPINE.get(), "Animal Spine");
+        add(InitItem.ANIMAL_LUNG.get(), "Animal Lung");
+        add(InitItem.ANIMAL_STOMACH.get(), "Animal Stomach");
+        add(InitItem.ANIMAL_INTESTINE.get(), "Animal Intestine");
+        add(InitItem.ANIMAL_KIDNEY.get(), "Animal Kidney");
+        add(InitItem.ANIMAL_SPLEEN.get(), "Animal Spleen");
+        add(InitItem.ANIMAL_LIVER.get(), "Animal Liver");
+        add(InitItem.ANIMAL_APPENDIX.get(), "Animal Appendix");
+        add(InitItem.ANIMAL_RIB.get(), "Animal Rib");
+        add(InitItem.ANIMAL_MUSCLE.get(), "Animal Muscle");
+
+        add(InitItem.SMALL_ANIMAL_HEART.get(), "Small Animal Heart");
+        add(InitItem.SMALL_ANIMAL_SPINE.get(), "Small Animal Spine");
+        add(InitItem.SMALL_ANIMAL_LUNG.get(), "Small Animal Lung");
+        add(InitItem.SMALL_ANIMAL_STOMACH.get(), "Small Animal Stomach");
+        add(InitItem.SMALL_ANIMAL_INTESTINE.get(), "Small Animal Intestine");
+        add(InitItem.SMALL_ANIMAL_KIDNEY.get(), "Small Animal Kidney");
+        add(InitItem.SMALL_ANIMAL_SPLEEN.get(), "Small Animal Spleen");
+        add(InitItem.SMALL_ANIMAL_LIVER.get(), "Small Animal Liver");
+        add(InitItem.SMALL_ANIMAL_APPENDIX.get(), "Small Animal Appendix");
+        add(InitItem.SMALL_ANIMAL_RIB.get(), "Small Animal Rib");
+        add(InitItem.SMALL_ANIMAL_MUSCLE.get(), "Small Animal Muscle");
 
         add(InitAttribute.HEALTH.value().getDescriptionId(), "Health");
         add(InitAttribute.NERVES.value().getDescriptionId(), "Nerves");
@@ -64,6 +88,30 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.APPENDIX.get(), "阑尾");
         add(InitItem.RIB.get(), "肋骨");
         add(InitItem.MUSCLE.get(), "肌肉");
+
+        add(InitItem.ANIMAL_HEART.get(), "动物心脏");
+        add(InitItem.ANIMAL_SPINE.get(), "动物脊柱");
+        add(InitItem.ANIMAL_LUNG.get(), "动物肺脏");
+        add(InitItem.ANIMAL_STOMACH.get(), "动物胃");
+        add(InitItem.ANIMAL_INTESTINE.get(), "动物肠子");
+        add(InitItem.ANIMAL_KIDNEY.get(), "动物肾脏");
+        add(InitItem.ANIMAL_SPLEEN.get(), "动物脾脏");
+        add(InitItem.ANIMAL_LIVER.get(), "动物肝脏");
+        add(InitItem.ANIMAL_APPENDIX.get(), "动物阑尾");
+        add(InitItem.ANIMAL_RIB.get(), "动物肋骨");
+        add(InitItem.ANIMAL_MUSCLE.get(), "动物肌肉");
+
+        add(InitItem.SMALL_ANIMAL_HEART.get(), "小型动物心脏");
+        add(InitItem.SMALL_ANIMAL_SPINE.get(), "小型动物脊柱");
+        add(InitItem.SMALL_ANIMAL_LUNG.get(), "小型动物肺脏");
+        add(InitItem.SMALL_ANIMAL_STOMACH.get(), "小型动物胃");
+        add(InitItem.SMALL_ANIMAL_INTESTINE.get(), "小型动物肠子");
+        add(InitItem.SMALL_ANIMAL_KIDNEY.get(), "小型动物肾脏");
+        add(InitItem.SMALL_ANIMAL_SPLEEN.get(), "小型动物脾脏");
+        add(InitItem.SMALL_ANIMAL_LIVER.get(), "小型动物肝脏");
+        add(InitItem.SMALL_ANIMAL_APPENDIX.get(), "小型动物阑尾");
+        add(InitItem.SMALL_ANIMAL_RIB.get(), "小型动物肋骨");
+        add(InitItem.SMALL_ANIMAL_MUSCLE.get(), "小型动物肌肉");
 
         add(InitAttribute.HEALTH.value().getDescriptionId(), "健康");
         add(InitAttribute.NERVES.value().getDescriptionId(), "神经效率");

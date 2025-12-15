@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -25,9 +26,6 @@ public class ChestCavityData extends ItemStackHandler {
      */
     public double oxygenRemainder;
 
-    /**
-     * 由于player的特殊性，每次进入游戏都会触发初始化，所以需要加个初始化标记
-     */
     private boolean init = false;
 
     private ChestCavityType type;
@@ -86,6 +84,7 @@ public class ChestCavityData extends ItemStackHandler {
      */
     public void tick() {
         applyFiltration();
+        applyHealth();
         for (int i = 0; i < stacks.size(); i++) {
             ItemStack stack = stacks.get(i);
             ChestCavityUtil.organTick(this, owner, i, stack);
@@ -93,7 +92,19 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
-     * 根据{@link InitAttribute#FILTRATION}属性，应用血液过滤效果
+     * 如果健康小于等于0，就会持续受伤
+     */
+    private void applyHealth() {
+        double health = getCurrentValue(InitAttribute.HEALTH);
+        if (health <= 0) {
+            // TODO 还没把器官属性缺失伤害类型注册
+            // 这里是测试
+            owner.hurt(owner.damageSources().wither(), 1);
+        }
+    }
+
+    /**
+     * 应用血液过滤效果
      *
      * <pre>
      *  filtration |  duration
@@ -109,9 +120,9 @@ public class ChestCavityData extends ItemStackHandler {
      *   -4.0      | 223 (11.15s)
      * </pre>
      */
-    public void applyFiltration() {
+    private void applyFiltration() {
         double filtration = getDifferenceValue(InitAttribute.FILTRATION);
-        if (filtration < 0 && owner.tickCount % filtrationPeriod == filtrationTickOffset) {
+        if (filtration < 0 && owner.tickCount % filtrationPeriod == filtrationTickOffset && !(owner instanceof Player player && player.getAbilities().invulnerable)) {
             owner.addEffect(new MobEffectInstance(MobEffects.POISON, (int) (30 * MathUtil.getInverseScale(filtration))));
         }
     }

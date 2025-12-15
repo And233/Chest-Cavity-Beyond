@@ -10,6 +10,7 @@ public class CommonEventManager {
 
     public static void modBusListener(IEventBus modEventBus) {
         modEventBus.addListener(CommonEventHandler::handlerRegisterCapabilitiesEvent);
+        modEventBus.addListener(CommonEventHandler::handlerFMLLoadCompleteEvent);
         modEventBus.addListener(CommonEventHandler::handlerEntityAttributeModificationEvent);
     }
 

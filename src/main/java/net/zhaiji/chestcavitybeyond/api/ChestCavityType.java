@@ -37,11 +37,11 @@ public class ChestCavityType {
      * @param modifiers  修饰符集合
      * @return 胸腔类型默认属性值
      */
-    private static double calculateValue(EntityType<? extends LivingEntity> entityType, Holder<Attribute> attribute, Collection<AttributeModifier> modifiers) {
+    private static double calculateValue(EntityType<?> entityType, Holder<Attribute> attribute, Collection<AttributeModifier> modifiers) {
         double value = 0;
         boolean hasAttribute = false;
         if (DefaultAttributes.hasSupplier(entityType)) {
-            AttributeSupplier attributeSupplier = DefaultAttributes.getSupplier(entityType);
+            AttributeSupplier attributeSupplier = DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) entityType);
             if (attributeSupplier.hasAttribute(attribute)) {
                 hasAttribute = true;
                 value = attributeSupplier.getValue(attribute);
@@ -128,7 +128,7 @@ public class ChestCavityType {
      * @param entityType 实体类型
      * @return 胸腔类型
      */
-    public ChestCavityType builder(EntityType<? extends LivingEntity> entityType) {
+    public ChestCavityType builder(EntityType<?> entityType) {
         // 由于同种器官返回的修饰符相同，所以此处使用ArrayListMultimap
         Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = ArrayListMultimap.create();
         Map<Holder<Attribute>, Double> defaultMap = new HashMap<>();

@@ -169,9 +169,9 @@ public class OrganAttributeUtil {
         AttributeInstance instance = entity.getAttribute(attribute);
         if (instance != null) {
             if (isAdd) {
-                modifiers.forEach(instance::removeModifier);
-            } else {
                 modifiers.forEach(instance::addOrUpdateTransientModifier);
+            } else {
+                modifiers.forEach(instance::removeModifier);
             }
         }
     }

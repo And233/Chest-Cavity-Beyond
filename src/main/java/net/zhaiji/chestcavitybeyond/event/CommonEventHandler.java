@@ -1,7 +1,9 @@
 package net.zhaiji.chestcavitybeyond.event;
 
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -12,6 +14,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.manager.CapabilityManager;
+import net.zhaiji.chestcavitybeyond.manager.ChestCavityManager;
 import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
@@ -31,12 +34,21 @@ public class CommonEventHandler {
     }
 
     /**
+     * 注册实体类型关联胸腔类型
+     *
+     * @param event FML完成事件
+     */
+    public static void handlerFMLLoadCompleteEvent(FMLLoadCompleteEvent event) {
+        ChestCavityManager.registerEntity(EntityType.PLAYER, ChestCavityManager.HUMAN);
+    }
+
+    /**
      * 当实体第一次生成时，为其附加胸腔数据
      *
      * @param event 实体加入维度事件
      */
     public static void handlerEntityJoinLevelEvent(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide() && !event.loadedFromDisk() && event.getEntity() instanceof LivingEntity entity) {
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof LivingEntity entity) {
             entity.getData(InitAttachmentType.CHEST_CAVITY).init();
         }
     }
