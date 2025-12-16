@@ -1,6 +1,6 @@
 package net.zhaiji.chestcavitybeyond.api;
 
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -129,8 +129,7 @@ public class ChestCavityType {
      * @return 胸腔类型
      */
     public ChestCavityType builder(EntityType<?> entityType) {
-        // 由于同种器官返回的修饰符相同，所以此处使用ArrayListMultimap
-        Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = ArrayListMultimap.create();
+        Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = HashMultimap.create();
         Map<Holder<Attribute>, Double> defaultMap = new HashMap<>();
         for (int i = 0; i < organs.size(); i++) {
             ItemStack organ = organs.get(i).getDefaultInstance();

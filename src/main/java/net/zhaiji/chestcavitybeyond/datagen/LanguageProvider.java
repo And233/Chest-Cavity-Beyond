@@ -57,6 +57,13 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.SMALL_ANIMAL_RIB.get(), "Small Animal Rib");
         add(InitItem.SMALL_ANIMAL_MUSCLE.get(), "Small Animal Muscle");
 
+        add(InitItem.GILLS.get(), "Gills");
+        add(InitItem.SMALL_GILLS.get(), "Small Gills");
+        add(InitItem.AQUATIC_MUSCLE.get(), "Aquatic Muscle");
+        add(InitItem.SMALL_AQUATIC_MUSCLE.get(), "Small Aquatic Muscle");
+        add(InitItem.FISH_MUSCLE.get(), "Fish Muscle");
+        add(InitItem.SMALL_FISH_MUSCLE.get(), "Small Fish Muscle");
+
         add(InitAttribute.HEALTH.value().getDescriptionId(), "Health");
         add(InitAttribute.NERVES.value().getDescriptionId(), "Nerves");
         add(InitAttribute.DEFENSE.value().getDescriptionId(), "Defense");
@@ -112,6 +119,13 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.SMALL_ANIMAL_APPENDIX.get(), "小型动物阑尾");
         add(InitItem.SMALL_ANIMAL_RIB.get(), "小型动物肋骨");
         add(InitItem.SMALL_ANIMAL_MUSCLE.get(), "小型动物肌肉");
+
+        add(InitItem.GILLS.get(), "鳃");
+        add(InitItem.SMALL_GILLS.get(), "小型鳃");
+        add(InitItem.AQUATIC_MUSCLE.get(), "水生生物肌肉");
+        add(InitItem.SMALL_AQUATIC_MUSCLE.get(), "小型水生生物肌肉");
+        add(InitItem.FISH_MUSCLE.get(), "鱼类肌肉");
+        add(InitItem.SMALL_FISH_MUSCLE.get(), "小型鱼类肌肉");
 
         add(InitAttribute.HEALTH.value().getDescriptionId(), "健康");
         add(InitAttribute.NERVES.value().getDescriptionId(), "神经效率");

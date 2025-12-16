@@ -28,35 +28,48 @@ public abstract class CommonHooksMixin {
     public static void onLivingBreathe(LivingEntity entity, int consumeAirAmount, int refillAirAmount) {
         boolean isAir = entity.getEyeInFluidType().isAir() || entity.level().getBlockState(BlockPos.containing(entity.getX(), entity.getEyeY(), entity.getZ())).is(Blocks.BUBBLE_COLUMN);
         ChestCavityData data = ChestCavityUtil.getData(entity);
+        double currRecovery = data.getCurrentValue(InitAttribute.BREATH_RECOVERY);
+        double currWaterBreath = data.getCurrentValue(InitAttribute.WATER_BREATH);
+        boolean isInvulnerable = entity instanceof Player player && player.getAbilities().invulnerable;
         // 检测呼吸功能
         boolean canBreathe =
-                (entity instanceof Player player && player.getAbilities().invulnerable)
+                isInvulnerable
                         || (
                         data.getCurrentValue(InitAttribute.BREATH_CAPACITY) > 0
                                 && (
                                 isAir
-                                        ? data.getCurrentValue(InitAttribute.BREATH_RECOVERY) > 0
-                                        : data.getCurrentValue(InitAttribute.WATER_BREATH) > 0
-                                        || (MobEffectUtil.hasWaterBreathing(entity) && data.getCurrentValue(InitAttribute.BREATH_RECOVERY) > 0)
+                                        ? currRecovery > 0
+                                        : (currWaterBreath > 0 || (MobEffectUtil.hasWaterBreathing(entity) && data.getCurrentValue(InitAttribute.BREATH_RECOVERY) > 0))
                         )
                 );
         double consumer = consumeAirAmount;
         double refill = 4;
         if (canBreathe) {
-            double waterBreath = data.getDifferenceValue(InitAttribute.WATER_BREATH);
-            double recovery = data.getDifferenceValue(InitAttribute.BREATH_RECOVERY);
-            // 水中用水下呼吸，否则使用呼吸效率
-            double factor = !isAir ? waterBreath : recovery;
+            double defRecovery = data.getDefaultValue(InitAttribute.BREATH_RECOVERY);
+            double defWaterBreath = data.getDefaultValue(InitAttribute.WATER_BREATH);
+            double diffWaterBreath = currWaterBreath - defWaterBreath;
+            double diffRecovery = currRecovery - defRecovery;
+            double factor;
+            if (isAir && defWaterBreath > 0) {
+                // 是水生生物且在空气中，检测默认水下呼吸和当前呼吸回复的差值
+                factor = (currRecovery - defWaterBreath);
+            } else if (!isAir && defRecovery > 0) {
+                // 是陆生生物且在水中，检测默认默认呼吸回复和当前水下呼吸的差值
+                factor = (currWaterBreath - defRecovery);
+            } else {
+                // 陆上用呼吸效率，水中用水下呼吸
+                factor = isAir ? diffRecovery : diffWaterBreath;
+            }
             if (factor != 0) {
                 refill *= 1 + factor / 2;
-                // 如果因子为负数，则代表效率低下，增加额外惩罚
-                if (factor < 0 && (entity.isSprinting() || entity.isSwimming())) {
+                // 如果因子为负数，则代表回复低下，增加额外惩罚
+                if (!isInvulnerable && factor < 0 && (entity.isSprinting() || entity.isSwimming())) {
                     refill -= 4;
                 }
+                // residueOxygen为小数缓存
+                refill += data.oxygenRemainder;
+                data.oxygenRemainder = refill % 1;
             }
-            // residueOxygen为小数缓存
-            refill += data.oxygenRemainder;
-            data.oxygenRemainder = refill % 1;
         } else {
             double capacity = data.getDifferenceValue(InitAttribute.BREATH_CAPACITY);
             consumer *= MathUtil.getInverseScale(capacity);

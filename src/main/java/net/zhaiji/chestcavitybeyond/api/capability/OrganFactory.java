@@ -74,7 +74,7 @@ public class OrganFactory {
         /**
          * 设置器官提供的属性修饰符
          */
-        public Builder organModifier(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer) {
+        public Builder modifier(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer) {
             this.organModifierConsumer = organModifierConsumer;
             return this;
         }

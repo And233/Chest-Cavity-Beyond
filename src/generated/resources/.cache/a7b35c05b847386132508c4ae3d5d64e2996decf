@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-15T22:29:59.3946417	Item Models: chestcavitybeyond
+// 1.21.1	2025-12-16T22:17:13.0904805	Item Models: chestcavitybeyond
 1179a0b4daef7f6507c16b9ccb1651c79aa079b4 assets/chestcavitybeyond/models/item/animal_appendix.json
 00cca18ba2522d946fc1b3aae5088e80327ed5fd assets/chestcavitybeyond/models/item/animal_heart.json
 2774a5ea950050eb83c792d720e8a40243767dbb assets/chestcavitybeyond/models/item/animal_intestine.json
@@ -11,7 +11,10 @@ eb697009f0ae4ad9b9c9eae26ea93f71e29e715a assets/chestcavitybeyond/models/item/an
 993f2dce2111db697903dba52952cd37ce18cfee assets/chestcavitybeyond/models/item/animal_spleen.json
 9867c9b134bc4b3fc96c90554b83e83f1774b72d assets/chestcavitybeyond/models/item/animal_stomach.json
 88cf3974b484531ec07f9798b8d27b1c0c88c6b2 assets/chestcavitybeyond/models/item/appendix.json
+e7caae4abd9d279fde804333de002c7d0588dab6 assets/chestcavitybeyond/models/item/aquatic_muscle.json
 3d4d2320ce6ed627d1a715a8c72f90ee2fae530e assets/chestcavitybeyond/models/item/chest_opener.json
+20a0b5e6c318e0008f85695dbb0e1fec731d6401 assets/chestcavitybeyond/models/item/fish_muscle.json
+515d76559e6ef8fc4280ae2f40360e98117295a6 assets/chestcavitybeyond/models/item/gills.json
 62c9852f05f1e117787f28fe40da6cd1e4470316 assets/chestcavitybeyond/models/item/heart.json
 1c46b0643cf17a786b555efa8cdcd3de28fe303f assets/chestcavitybeyond/models/item/intestine.json
 c2841842a4f3664c97f460bcdf4a81b51f46b33b assets/chestcavitybeyond/models/item/kidney.json
@@ -30,6 +33,9 @@ d07fdee8c46d040210c2ab73096b5b9340409134 assets/chestcavitybeyond/models/item/sm
 86afd043693d57f603481878247ff37ef40b7311 assets/chestcavitybeyond/models/item/small_animal_spine.json
 6f4b40be94854728c7986f2d2f17e2fe0a8917b3 assets/chestcavitybeyond/models/item/small_animal_spleen.json
 17380750a657a6e83911fa8601c9778f37268028 assets/chestcavitybeyond/models/item/small_animal_stomach.json
+8c2f52b4972ec46d1f3e2a357ee77cddfde8653a assets/chestcavitybeyond/models/item/small_aquatic_muscle.json
+4a0868d16c27300d3787f5750b957965abe04497 assets/chestcavitybeyond/models/item/small_fish_muscle.json
+eb38a7c5d74ff7373bcdae124f1b6b319737d861 assets/chestcavitybeyond/models/item/small_gills.json
 c7860ceb28528450ec48190047ee4569357a9971 assets/chestcavitybeyond/models/item/spine.json
 3fe7beb6e6bba83cac483fa8c211b02be2922c08 assets/chestcavitybeyond/models/item/spleen.json
 9b88aaafb7ddf6f80fe64802292021c5e45bb22c assets/chestcavitybeyond/models/item/stomach.json

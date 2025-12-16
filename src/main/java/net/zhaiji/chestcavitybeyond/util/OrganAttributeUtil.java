@@ -169,7 +169,7 @@ public class OrganAttributeUtil {
         AttributeInstance instance = entity.getAttribute(attribute);
         if (instance != null) {
             if (isAdd) {
-                modifiers.forEach(instance::addOrUpdateTransientModifier);
+                modifiers.forEach(instance::addOrReplacePermanentModifier);
             } else {
                 modifiers.forEach(instance::removeModifier);
             }
@@ -226,7 +226,7 @@ public class OrganAttributeUtil {
      */
     public static void updateSpeed(ChestCavityData data, LivingEntity entity) {
         double speed = data.getDifferenceValue(InitAttribute.SPEED);
-        double factor = MathUtil.getLog10Scale(speed) / 10;
+        double factor = MathUtil.getLog10Scale(speed) / 2;
         updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedBaseModifier("speed", speed >= 0 ? factor : -factor));
     }
 }
