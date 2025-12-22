@@ -44,8 +44,8 @@ public class ChestCavityData extends ItemStackHandler {
      */
     private int filtrationTickOffset;
 
-    public ChestCavityData(IAttachmentHolder attachmentHolder, int count) {
-        super(count);
+    public ChestCavityData(IAttachmentHolder attachmentHolder) {
+        super(27);
         if (attachmentHolder instanceof LivingEntity entity) {
             this.owner = entity;
             type = ChestCavityManager.getType(entity);
@@ -65,6 +65,42 @@ public class ChestCavityData extends ItemStackHandler {
             setStackInSlot(i, organs.get(i).getDefaultInstance());
         }
         init = true;
+    }
+
+    /**
+     * 获取胸腔类型
+     *
+     * @return 胸腔类型
+     */
+    public ChestCavityType getType() {
+        return type;
+    }
+
+    /**
+     * 获取胸腔主人
+     *
+     * @return 胸腔主人
+     */
+    public @Nullable LivingEntity getOwner() {
+        return owner;
+    }
+
+    /**
+     * 获取所有器官
+     *
+     * @return 器官列表
+     */
+    public NonNullList<ItemStack> getOrgans() {
+        return stacks;
+    }
+
+    /**
+     * 设置所有器官（同步用）
+     */
+    public void setOrgans(NonNullList<ItemStack> organs) {
+        for (int i = 0; i < organs.size(); i++) {
+            stacks.set(i, organs.get(i));
+        }
     }
 
     /**
@@ -133,24 +169,6 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
-     * 获取胸腔类型
-     *
-     * @return 胸腔类型
-     */
-    public ChestCavityType getType() {
-        return type;
-    }
-
-    /**
-     * 获取胸腔主人
-     *
-     * @return 胸腔主人
-     */
-    public @Nullable LivingEntity getOwner() {
-        return owner;
-    }
-
-    /**
      * 获取当前属性和默认属性的差值
      *
      * @param attribute 属性
@@ -194,6 +212,8 @@ public class ChestCavityData extends ItemStackHandler {
     public void setStackInSlot(int slot, ItemStack stack) {
         ItemStack oldStack = getStackInSlot(slot).copy();
         super.setStackInSlot(slot, stack);
+        // 可能会出现两个都是空的情况
+        if (oldStack.isEmpty() && stack.isEmpty()) return;
         OrganAttributeUtil.updateOrganAttributeModifier(this, owner, slot, oldStack, stack);
         ChestCavityUtil.organRemoved(this, owner, slot, oldStack);
         ChestCavityUtil.organAdded(this, owner, slot, stack);

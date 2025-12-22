@@ -42,12 +42,10 @@ public class InitAttribute {
     // 水过敏
     // TODO 水过敏伤害没有应用函数计算进行增减，后续考虑进行计算
     public static final Holder<Attribute> WATER_ALLERGY = registerRangedAttribute("water_allergy");
-    // 恐水
-    // 此属性的传送能力分离给了末影
-    public static final Holder<Attribute> HYDROPHOBIA = registerRangedAttribute("hydrophobia");
     // 末影
     public static final Holder<Attribute> ENDER = registerRangedAttribute("ender");
     // 弹射物闪避
+    // 拥有末影属性才能触发
     public static final Holder<Attribute> PROJECTILE_DODGE = registerRangedAttribute("projectile_dodge");
     // 跳跃力
     public static final Holder<Attribute> LEAPING = registerRangedAttribute("leaping");

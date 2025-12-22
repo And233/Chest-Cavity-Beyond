@@ -2,6 +2,7 @@ package net.zhaiji.chestcavitybeyond.datagen;
 
 import net.minecraft.data.PackOutput;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
+import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.register.InitCreativeModeTab;
 import net.zhaiji.chestcavitybeyond.register.InitItem;
@@ -19,6 +20,9 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
     public void English() {
         add(InitCreativeModeTab.CHEST_CAVITY_BEYOND_TAB_TRANSLATABLE, "Chest Cavity Beyond");
+
+        add(KeyMappings.OPEN_SKILL_GUI_TRANSLATABLE, "Open Skill Gui");
+        add(KeyMappings.USE_ORGAN_SKILL_TRANSLATABLE, "Use Organ Skill");
 
         add(InitItem.CHEST_OPENER.get(), "Chest Opener");
 
@@ -81,6 +85,18 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.FIREPROOF_RIB.get(), "Fireproof Rib");
         add(InitItem.FIREPROOF_MUSCLE.get(), "Fireproof Muscle");
 
+        add(InitItem.ENDER_HEART.get(), "Ender Heart");
+        add(InitItem.ENDER_LUNG.get(), "Ender Lung");
+        add(InitItem.ENDER_SPINE.get(), "Ender Spine");
+        add(InitItem.ENDER_STOMACH.get(), "Ender Stomach");
+        add(InitItem.ENDER_INTESTINE.get(), "Ender Intestine");
+        add(InitItem.ENDER_KIDNEY.get(), "Ender Kidney");
+        add(InitItem.ENDER_SPLEEN.get(), "Ender Spleen");
+        add(InitItem.ENDER_LIVER.get(), "Ender Liver");
+        add(InitItem.ENDER_APPENDIX.get(), "Ender Appendix");
+        add(InitItem.ENDER_RIB.get(), "Ender Rib");
+        add(InitItem.ENDER_MUSCLE.get(), "Ender Muscle");
+
         add(InitAttribute.HEALTH.value().getDescriptionId(), "Health");
         add(InitAttribute.NERVES.value().getDescriptionId(), "Nerves");
         add(InitAttribute.DEFENSE.value().getDescriptionId(), "Defense");
@@ -97,7 +113,6 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitAttribute.SPEED.value().getDescriptionId(), "Speed");
         add(InitAttribute.FIRE_RESISTANCE.value().getDescriptionId(), "Fire Resistance");
         add(InitAttribute.WATER_ALLERGY.value().getDescriptionId(), "Water Allergy");
-        add(InitAttribute.HYDROPHOBIA.value().getDescriptionId(), "Hydrophobia");
         add(InitAttribute.ENDER.value().getDescriptionId(), "Ender");
         add(InitAttribute.PROJECTILE_DODGE.value().getDescriptionId(), "Projectile Dodge");
         add(InitAttribute.LEAPING.value().getDescriptionId(), "Leaping");
@@ -105,6 +120,9 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
     public void Chinese() {
         add(InitCreativeModeTab.CHEST_CAVITY_BEYOND_TAB_TRANSLATABLE, "胸腔");
+
+        add(KeyMappings.OPEN_SKILL_GUI_TRANSLATABLE, "打开技能界面");
+        add(KeyMappings.USE_ORGAN_SKILL_TRANSLATABLE, "使用器官技能");
 
         add(InitItem.CHEST_OPENER.get(), "开胸器");
 
@@ -166,6 +184,18 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitItem.FIREPROOF_RIB.get(), "抗火生物肋骨");
         add(InitItem.FIREPROOF_MUSCLE.get(), "抗火生物肌肉");
 
+        add(InitItem.ENDER_HEART.get(), "末影心脏");
+        add(InitItem.ENDER_LUNG.get(), "末影肺脏");
+        add(InitItem.ENDER_SPINE.get(), "末影脊柱");
+        add(InitItem.ENDER_STOMACH.get(), "末影胃");
+        add(InitItem.ENDER_INTESTINE.get(), "末影肠子");
+        add(InitItem.ENDER_KIDNEY.get(), "末影肾脏");
+        add(InitItem.ENDER_SPLEEN.get(), "末影脾脏");
+        add(InitItem.ENDER_LIVER.get(), "末影肝脏");
+        add(InitItem.ENDER_APPENDIX.get(), "末影阑尾");
+        add(InitItem.ENDER_RIB.get(), "末影肋骨");
+        add(InitItem.ENDER_MUSCLE.get(), "末影肌肉");
+
         add(InitAttribute.HEALTH.value().getDescriptionId(), "健康");
         add(InitAttribute.NERVES.value().getDescriptionId(), "神经效率");
         add(InitAttribute.DEFENSE.value().getDescriptionId(), "防御");
@@ -182,7 +212,6 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitAttribute.SPEED.value().getDescriptionId(), "速度");
         add(InitAttribute.FIRE_RESISTANCE.value().getDescriptionId(), "火焰抗性");
         add(InitAttribute.WATER_ALLERGY.value().getDescriptionId(), "水过敏");
-        add(InitAttribute.HYDROPHOBIA.value().getDescriptionId(), "恐水");
         add(InitAttribute.ENDER.value().getDescriptionId(), "末影");
         add(InitAttribute.PROJECTILE_DODGE.value().getDescriptionId(), "弹射物闪避");
         add(InitAttribute.LEAPING.value().getDescriptionId(), "跳跃力");

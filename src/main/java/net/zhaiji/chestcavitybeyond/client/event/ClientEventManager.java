@@ -10,8 +10,12 @@ public class ClientEventManager {
 
     public static void modBusListener(IEventBus modEventBus) {
         modEventBus.addListener(ClientEventHandler::handlerRegisterMenuScreensEvent);
+        modEventBus.addListener(ClientEventHandler::handlerRegisterKeyMappingsEvent);
     }
 
     public static void gameBusListener(IEventBus gameBus) {
+        gameBus.addListener(ClientEventHandler::handlerInputEvent$Key);
+        gameBus.addListener(ClientEventHandler::handlerRenderGuiLayerEvent$Pre);
+        gameBus.addListener(ClientEventHandler::handlerMovementInputUpdateEvent);
     }
 }

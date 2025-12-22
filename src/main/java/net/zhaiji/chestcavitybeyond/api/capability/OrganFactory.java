@@ -39,20 +39,16 @@ public class OrganFactory {
     }
 
     public static class Builder {
-        private final Item.Properties properties;
-        private OrganTooltipsConsumer organTooltipsConsumer;
-        private BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer;
-        private Consumer<ChestCavitySlotContext> organTickConsumer;
-        private Consumer<ChestCavitySlotContext> organAddedConsumer;
-        private Consumer<ChestCavitySlotContext> organRemovedConsumer;
+        private final Item.Properties properties = new Item.Properties().stacksTo(1);
+        private OrganTooltipsConsumer organTooltipsConsumer = ChestCavityClientUtil::addOrganTooltips;
+        private BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer = EMPTY_MODIFIER;
+        private Consumer<ChestCavitySlotContext> organTickConsumer = EMPTY_CONSUMER;
+        private Consumer<ChestCavitySlotContext> organAddedConsumer = EMPTY_CONSUMER;
+        private Consumer<ChestCavitySlotContext> organRemovedConsumer = EMPTY_CONSUMER;
+        private boolean hasSkill = false;
+        private Consumer<ChestCavitySlotContext> organSkillConsumer = EMPTY_CONSUMER;
 
         private Builder() {
-            this.properties = new Item.Properties().stacksTo(1);
-            this.organTooltipsConsumer = ChestCavityClientUtil::addOrganTooltips;
-            this.organModifierConsumer = EMPTY_MODIFIER;
-            this.organTickConsumer = EMPTY_CONSUMER;
-            this.organAddedConsumer = EMPTY_CONSUMER;
-            this.organRemovedConsumer = EMPTY_CONSUMER;
         }
 
         /**
@@ -104,11 +100,30 @@ public class OrganFactory {
         }
 
         /**
+         * 设置器官技能
+         */
+        public Builder skill(Consumer<ChestCavitySlotContext> organSkillConsumer) {
+            hasSkill = true;
+            this.organSkillConsumer = organSkillConsumer;
+            return this;
+        }
+
+        /**
          * 构建
          */
         public OrganItem build() {
             OrganItem organItem = new OrganItem(properties, organTooltipsConsumer);
-            ORGAN_REGISTRY.put(organItem, new Organ(organModifierConsumer, organTickConsumer, organAddedConsumer, organRemovedConsumer));
+            ORGAN_REGISTRY.put(
+                    organItem,
+                    new Organ(
+                            organModifierConsumer,
+                            organTickConsumer,
+                            organAddedConsumer,
+                            organRemovedConsumer,
+                            hasSkill,
+                            organSkillConsumer
+                    )
+            );
             return organItem;
         }
     }

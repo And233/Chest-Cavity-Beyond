@@ -1,5 +1,6 @@
 package net.zhaiji.chestcavitybeyond.event;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,11 +14,13 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.manager.CapabilityManager;
 import net.zhaiji.chestcavitybeyond.manager.ChestCavityManager;
 import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
+import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
@@ -51,8 +54,12 @@ public class CommonEventHandler {
      * @param event 实体加入维度事件
      */
     public static void handlerEntityJoinLevelEvent(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide() && event.getEntity() instanceof LivingEntity entity) {
-            entity.getData(InitAttachmentType.CHEST_CAVITY).init();
+        if (!event.getLevel().isClientSide() && !event.loadedFromDisk() && event.getEntity() instanceof LivingEntity entity) {
+            ChestCavityData data = entity.getData(InitAttachmentType.CHEST_CAVITY);
+            data.init();
+            if (entity instanceof ServerPlayer player) {
+                PacketDistributor.sendToPlayer(player, new SyncChestCavityDataPacket(data.getOrgans()));
+            }
         }
     }
 

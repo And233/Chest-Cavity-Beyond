@@ -2,6 +2,7 @@ package net.zhaiji.chestcavitybeyond.register;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -9,6 +10,7 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.item.ChestOpenerItem;
 import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
+import net.zhaiji.chestcavitybeyond.util.OrganSkillUtil;
 
 import java.util.function.Supplier;
 
@@ -594,6 +596,135 @@ public class InitItem {
                         modifiers.put(InitAttribute.STRENGTH, OrganAttributeUtil.createAddValueModifier(id, 0.75));
                         modifiers.put(InitAttribute.SPEED, OrganAttributeUtil.createAddValueModifier(id, 0.75));
                         modifiers.put(InitAttribute.FIRE_RESISTANCE, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影心脏
+    public static final Supplier<Item> ENDER_HEART = ITEM.register(
+            "ender_heart",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.HEALTH, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 2));
+                        modifiers.put(InitAttribute.WATER_ALLERGY, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影肺脏
+    public static final Supplier<Item> ENDER_LUNG = ITEM.register(
+            "ender_lung",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.BREATH_RECOVERY, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.BREATH_CAPACITY, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.ENDURANCE, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影脊柱
+    public static final Supplier<Item> ENDER_SPINE = ITEM.register(
+            "ender_spine",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.NERVES, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.DEFENSE, OrganAttributeUtil.createAddValueModifier(id, 0.625));
+                    })
+                    .build()
+    );
+
+    // 末影胃
+    public static final Supplier<Item> ENDER_STOMACH = ITEM.register(
+            "ender_stomach",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.DIGESTION, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影肠子
+    public static final Supplier<Item> ENDER_INTESTINE = ITEM.register(
+            "ender_intestine",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.NUTRITION, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影肾脏
+    public static final Supplier<Item> ENDER_KIDNEY = ITEM.register(
+            "ender_kidney",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.FILTRATION, OrganAttributeUtil.createAddValueModifier(id, 1));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影脾脏
+    public static final Supplier<Item> ENDER_SPLEEN = ITEM.register(
+            "ender_spleen",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.METABOLISM, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影肝脏
+    public static final Supplier<Item> ENDER_LIVER = ITEM.register(
+            "ender_liver",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.DETOXIFICATION, OrganAttributeUtil.createAddValueModifier(id, 1));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .build()
+    );
+
+    // 末影阑尾
+    public static final Supplier<Item> ENDER_APPENDIX = ITEM.register(
+            "ender_appendix",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(Attributes.LUCK, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.ENDER, OrganAttributeUtil.createAddValueModifier(id, 8));
+                    })
+                    .skill(context -> {
+                        if (context.entity() instanceof Player player) {
+                            OrganSkillUtil.teleport(player);
+                        }
+                    })
+                    .build()
+    );
+
+    // 末影肋骨
+    public static final Supplier<Item> ENDER_RIB = ITEM.register(
+            "ender_rib",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.DEFENSE, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                    })
+                    .build()
+    );
+
+    // 末影肌肉
+    public static final Supplier<Item> ENDER_MUSCLE = ITEM.register(
+            "ender_muscle",
+            () -> OrganFactory.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.STRENGTH, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.SPEED, OrganAttributeUtil.createAddValueModifier(id, 1.25));
+                        modifiers.put(InitAttribute.WATER_ALLERGY, OrganAttributeUtil.createAddValueModifier(id, 1));
                     })
                     .build()
     );

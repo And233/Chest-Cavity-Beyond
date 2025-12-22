@@ -44,4 +44,21 @@ public interface IOrgan {
      */
     default void organRemoved(ChestCavitySlotContext context) {
     }
+
+    /**
+     * 器官是否有技能
+     *
+     * @return 是否有技能
+     */
+    default boolean hasSkill() {
+        return false;
+    }
+
+    /**
+     * 器官技能
+     *
+     * @param context 胸腔槽位上下文
+     */
+    default void organSkill(ChestCavitySlotContext context) {
+    }
 }

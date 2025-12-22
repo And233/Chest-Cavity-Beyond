@@ -76,7 +76,7 @@ public class ChestCavityUtil {
     }
 
     /**
-     * 胸腔tick
+     * 器官tick
      */
     public static void organTick(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
         if (stack.isEmpty()) return;
@@ -84,7 +84,7 @@ public class ChestCavityUtil {
     }
 
     /**
-     * 胸腔移植时
+     * 器官移植时
      */
     public static void organAdded(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
         if (stack.isEmpty()) return;
@@ -92,11 +92,19 @@ public class ChestCavityUtil {
     }
 
     /**
-     * 胸腔摘时
+     * 器官摘除时
      */
     public static void organRemoved(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
         if (stack.isEmpty()) return;
         getOrganCap(stack).organRemoved(createContext(data, entity, index, stack));
+    }
+
+    /**
+     * 器官技能
+     */
+    public static void organSkill(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
+        if (stack.isEmpty()) return;
+        getOrganCap(stack).organSkill(createContext(data, entity, index, stack));
     }
 
     /**

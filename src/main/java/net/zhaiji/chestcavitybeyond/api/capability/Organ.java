@@ -16,12 +16,16 @@ public class Organ implements IOrgan {
     private final Consumer<ChestCavitySlotContext> organTickConsumer;
     private final Consumer<ChestCavitySlotContext> organAddedConsumer;
     private final Consumer<ChestCavitySlotContext> organRemovedConsumer;
+    private final boolean hasSkill;
+    private final Consumer<ChestCavitySlotContext> organSkillConsumer;
 
-    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer) {
+    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer, boolean hasSkill, Consumer<ChestCavitySlotContext> organSkillConsumer) {
         this.organModifierConsumer = organModifierConsumer;
         this.organTickConsumer = organTickConsumer;
         this.organAddedConsumer = organAddedConsumer;
         this.organRemovedConsumer = organRemovedConsumer;
+        this.hasSkill = hasSkill;
+        this.organSkillConsumer = organSkillConsumer;
     }
 
     @Override
@@ -44,5 +48,15 @@ public class Organ implements IOrgan {
     @Override
     public void organRemoved(ChestCavitySlotContext context) {
         organRemovedConsumer.accept(context);
+    }
+
+    @Override
+    public boolean hasSkill() {
+        return hasSkill;
+    }
+
+    @Override
+    public void organSkill(ChestCavitySlotContext context) {
+        organSkillConsumer.accept(context);
     }
 }

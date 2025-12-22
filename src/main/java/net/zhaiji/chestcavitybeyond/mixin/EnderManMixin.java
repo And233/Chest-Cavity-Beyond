@@ -29,4 +29,6 @@ public abstract class EnderManMixin extends Monster {
     public boolean chestCavityBeyond$aiStep(boolean original) {
         return original && ChestCavityUtil.getData(this).getCurrentValue(InitAttribute.ENDER) > 0;
     }
+
+    // TODO 关于传送的检测还没有全部更改，还有潜影贝的也是
 }

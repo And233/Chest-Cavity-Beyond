@@ -190,7 +190,9 @@ public class TeleportUtil {
 
     /**
      * 检查指定位置是否可以传送，并计算玩家应站立的高度
-     * 此方法可以将玩家从方块中拔出来
+     * <p>
+     * 此方法可以将玩家从方块中推上去
+     * </P>
      */
     private static Optional<Double> isTeleportPositionClear(Level level, BlockPos target) {
         if (level.isOutsideBuildHeight(target)) {
