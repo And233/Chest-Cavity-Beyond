@@ -1,5 +1,6 @@
 package net.zhaiji.chestcavitybeyond.client.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,7 +9,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
+import net.zhaiji.chestcavitybeyond.network.server.packet.SyncSelectedSlotPacket;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 
 import java.util.ArrayList;
@@ -43,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 public class OrganSkillScreen extends Screen {
     // TODO 当前关于器官技能的检测太粗糙了，后续考虑更改
     public static int selectedSlot = -1;
-    private static int selected = -1;
+    public static int selected = -1;
     private int centerX;
     private int centerY;
     private List<Integer> indices = new ArrayList<>();
@@ -95,7 +98,6 @@ public class OrganSkillScreen extends Screen {
             mouseAngle += 360;
         }
         selected = -1;
-        selectedSlot = -1;
         // 检测鼠标在哪个扇形区域
         for (int i = 0; i < count; i++) {
             float sliceLeft = (((i - 0.5f) / count) - 0.25f) * 360;
@@ -115,7 +117,6 @@ public class OrganSkillScreen extends Screen {
 
         BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         boolean hasMouseOver = false;
-        List<Integer> organIndex = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             float sliceLeft = (((i - 0.5f) / count) - 0.25f) * 360;
             float sliceRight = (((i + 0.5f) / count) - 0.25f) * 360;
@@ -129,7 +130,6 @@ public class OrganSkillScreen extends Screen {
         RenderSystem.disableBlend();
         if (hasMouseOver && selected != -1) {
             guiGraphics.drawCenteredString(font, organs.get(selected).getHoverName(), centerX, (height - font.lineHeight) / 2, 16777215);
-            selectedSlot = indices.get(selected);
         }
         poseStack.popPose();
 
@@ -194,6 +194,25 @@ public class OrganSkillScreen extends Screen {
         poseStack.scale(3, 3, 1);
         guiGraphics.drawString(font, "DVD", 0, 0, -1);
         poseStack.popPose();
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode))) {
+            onClose();
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    /**
+     * 根据选择区域，设置对应槽位索引
+     */
+    public void setSelectedSlot() {
+        if (selected != -1) {
+            selectedSlot = indices.get(selected);
+            PacketDistributor.sendToServer(new SyncSelectedSlotPacket(selectedSlot));
+        }
     }
 
     @Override

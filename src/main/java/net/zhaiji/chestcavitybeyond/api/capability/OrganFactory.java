@@ -7,9 +7,9 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
-import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipsConsumer;
+import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
 import net.zhaiji.chestcavitybeyond.item.OrganItem;
-import net.zhaiji.chestcavitybeyond.util.ChestCavityClientUtil;
+import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +24,9 @@ public class OrganFactory {
 
     public static final IOrgan EMPTY_ORGAN = new IOrgan() {
     };
-    private static final Consumer<ChestCavitySlotContext> EMPTY_CONSUMER = context -> {
-    };
     private static final BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> EMPTY_MODIFIER = (id, modifiers) -> {
+    };
+    private static final Consumer<ChestCavitySlotContext> EMPTY_CONSUMER = context -> {
     };
 
     /**
@@ -40,8 +40,9 @@ public class OrganFactory {
 
     public static class Builder {
         private final Item.Properties properties = new Item.Properties().stacksTo(1);
-        private OrganTooltipsConsumer organTooltipsConsumer = ChestCavityClientUtil::addOrganTooltips;
+        private Item item;
         private BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer = EMPTY_MODIFIER;
+        private OrganTooltipConsumer organTooltipConsumer = TooltipUtil::addOrganTooltip;
         private Consumer<ChestCavitySlotContext> organTickConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organAddedConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organRemovedConsumer = EMPTY_CONSUMER;
@@ -62,8 +63,8 @@ public class OrganFactory {
         /**
          * 设置器官工具提示
          */
-        public Builder tooltips(OrganTooltipsConsumer organTooltipsConsumer) {
-            this.organTooltipsConsumer = organTooltipsConsumer;
+        public Builder tooltips(OrganTooltipConsumer organTooltipConsumer) {
+            this.organTooltipConsumer = organTooltipConsumer;
             return this;
         }
 
@@ -112,11 +113,12 @@ public class OrganFactory {
          * 构建
          */
         public OrganItem build() {
-            OrganItem organItem = new OrganItem(properties, organTooltipsConsumer);
+            OrganItem organItem = new OrganItem(properties);
             ORGAN_REGISTRY.put(
                     organItem,
                     new Organ(
                             organModifierConsumer,
+                            organTooltipConsumer,
                             organTickConsumer,
                             organAddedConsumer,
                             organRemovedConsumer,

@@ -21,7 +21,7 @@ public class KeyMappings {
     // 使用器官技能
     public static final KeyMapping USE_ORGAN_SKILL = new KeyMapping(
             USE_ORGAN_SKILL_TRANSLATABLE,
-            KeyConflictContext.UNIVERSAL,
+            KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             InputConstants.KEY_C,
             KEY_CATEGORY_TRANSLATABLE

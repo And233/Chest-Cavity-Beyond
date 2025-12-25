@@ -4,16 +4,22 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.player.Input;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
+import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
+import net.zhaiji.chestcavitybeyond.api.capability.OrganFactory;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
 import net.zhaiji.chestcavitybeyond.client.screen.ChestCavityScreen;
 import net.zhaiji.chestcavitybeyond.client.screen.OrganSkillScreen;
+import net.zhaiji.chestcavitybeyond.client.util.ChestCavityClientUtil;
 import net.zhaiji.chestcavitybeyond.network.server.packet.UseSkillPacket;
 import net.zhaiji.chestcavitybeyond.register.InitMenuType;
-import net.zhaiji.chestcavitybeyond.util.ChestCavityClientUtil;
+import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
+import org.lwjgl.glfw.GLFW;
 
 public class ClientEventHandler {
     /**
@@ -31,26 +37,67 @@ public class ClientEventHandler {
     }
 
     /**
+     * 触发器官的工具提示
+     *
+     * @param event 物品工具提示事件
+     */
+    public static void handlerItemTooltipEvent(ItemTooltipEvent event) {
+        IOrgan organ = ChestCavityUtil.getOrganCap(event.getItemStack());
+        if (organ == OrganFactory.EMPTY_ORGAN) return;
+        Minecraft minecraft = Minecraft.getInstance();
+        Options options = minecraft.options;
+        Player player = event.getEntity();
+        if (player == null) {
+            player = minecraft.player;
+        }
+        organ.organTooltip(
+                ChestCavityUtil.getData(player),
+                event.getItemStack(),
+                new TooltipsKeyContext(
+                        ChestCavityClientUtil.isKeyDown(options.keyShift),
+                        ChestCavityClientUtil.isKeyDown(options.keySprint)
+                ),
+                event.getContext(),
+                event.getToolTip(),
+                event.getFlags()
+        );
+    }
+
+    /**
      * 设置自定义按键的功能
      *
-     * @param event 按键输入事件
+     * @param event 键盘按键输入事件
      */
     public static void handlerInputEvent$Key(InputEvent.Key event) {
         if (event.getAction() != InputConstants.PRESS) return;
-        int key = event.getKey();
         Minecraft minecraft = Minecraft.getInstance();
-        if (key == KeyMappings.OPEN_SKILL_GUI.getKey().getValue()) {
-            if (minecraft.screen instanceof OrganSkillScreen) {
-                minecraft.screen.onClose();
+        InputConstants.Key key = InputConstants.getKey(event.getKey(), event.getScanCode());
+        if (KeyMappings.OPEN_SKILL_GUI.isActiveAndMatches(key)) {
+            if (minecraft.screen instanceof OrganSkillScreen screen) {
+                screen.onClose();
             } else if (minecraft.screen == null) {
                 minecraft.setScreen(new OrganSkillScreen());
             }
         }
-
-        if (key == KeyMappings.USE_ORGAN_SKILL.getKey().getValue()) {
+        if (KeyMappings.USE_ORGAN_SKILL.isActiveAndMatches(key)) {
             if (OrganSkillScreen.selectedSlot != -1) {
                 PacketDistributor.sendToServer(new UseSkillPacket(OrganSkillScreen.selectedSlot));
             }
+        }
+    }
+
+    /**
+     * 设置技能界面鼠标按键的功能
+     *
+     * @param event 鼠标按键输入事件
+     */
+    public static void handlerInputEvent$MouseButton$Pre(InputEvent.MouseButton.Pre event) {
+        if (Minecraft.getInstance().screen instanceof OrganSkillScreen screen && event.getAction() == InputConstants.PRESS) {
+            if (event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                screen.setSelectedSlot();
+            }
+            screen.onClose();
+            event.setCanceled(true);
         }
     }
 

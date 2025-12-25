@@ -58,7 +58,7 @@ public class CommonEventHandler {
             ChestCavityData data = entity.getData(InitAttachmentType.CHEST_CAVITY);
             data.init();
             if (entity instanceof ServerPlayer player) {
-                PacketDistributor.sendToPlayer(player, new SyncChestCavityDataPacket(data.getOrgans()));
+                PacketDistributor.sendToPlayer(player, new SyncChestCavityDataPacket(data.getOrgans(), data.selectedSlot));
             }
         }
     }

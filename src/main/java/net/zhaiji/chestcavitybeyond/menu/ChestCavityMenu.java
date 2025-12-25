@@ -1,7 +1,6 @@
 package net.zhaiji.chestcavitybeyond.menu;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,29 +8,24 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
-import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitMenuType;
-import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
+import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 
 public class ChestCavityMenu extends AbstractContainerMenu {
-    private final ItemStackHandler container;
+    private final ChestCavityData data;
 
     // 客户端使用的构造函数
-    // 仅需要容器的槽位数量
     public ChestCavityMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
-        this(containerId, playerInventory, new ItemStackHandler(extraData.readInt()));
+        this(containerId, playerInventory, (LivingEntity) playerInventory.player.level().getEntity(extraData.readInt()));
     }
 
-    public ChestCavityMenu(int containerId, Inventory playerInventory, ItemStackHandler container) {
+    public ChestCavityMenu(int containerId, Inventory playerInventory, LivingEntity entity) {
         super(InitMenuType.CHEST_CAVITY.get(), containerId);
-        this.container = container;
+        data = ChestCavityUtil.getData(entity);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
-                this.addSlot(new SlotItemHandler(container, j + i * 9, 8 + j * 18, 18 + i * 18));
+                this.addSlot(new ChestCavitySlot(data, j + i * 9, 8 + j * 18, 18 + i * 18));
             }
         }
         for (int i = 0; i < 3; ++i) {
@@ -41,14 +35,6 @@ public class ChestCavityMenu extends AbstractContainerMenu {
         }
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 143));
-        }
-    }
-
-    @Override
-    public void removed(Player player) {
-        super.removed(player);
-        if (container instanceof ChestCavityData data && data.getOwner() instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncChestCavityDataPacket(data.getOrgans()));
         }
     }
 
@@ -71,9 +57,9 @@ public class ChestCavityMenu extends AbstractContainerMenu {
             } else {
                 slot.setChanged();
             }
-            // 因为moveItemStackTo使用shrink减少物品数量，所以当选择的是胸腔槽位时，需要额外更新属性
-            if (index < 27 && container instanceof ChestCavityData data) {
-                OrganAttributeUtil.updateOrganAttributeModifier(data, data.getOwner(), index, itemstack, itemstack1);
+            // 因为moveItemStackTo使用shrink减少物品数量，所以当选择的是胸腔槽位时，需要额外更新器官
+            if (index < 27 && !player.level().isClientSide()) {
+                ChestCavityUtil.changeOrgan(data, data.getOwner(), index, itemstack, itemstack1);
             }
         }
         return itemstack;
@@ -82,8 +68,7 @@ public class ChestCavityMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return player.level().isClientSide()
-                || container instanceof ChestCavityData data
-                && data.getOwner() instanceof LivingEntity entity
+                || data.getOwner() instanceof LivingEntity entity
                 && entity.isAlive()
                 // 最大距离为实体交互距离的2倍
                 && player.canInteractWithEntity(entity, player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue() * 2);

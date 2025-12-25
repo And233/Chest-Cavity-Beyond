@@ -3,9 +3,17 @@ package net.zhaiji.chestcavitybeyond.api.capability;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
+import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
+import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
+
+import java.util.List;
 
 /**
  * 器官
@@ -19,6 +27,19 @@ public interface IOrgan {
      */
     default Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(ChestCavitySlotContext context) {
         return HashMultimap.create();
+    }
+
+    /**
+     * 器官物品提示
+     *
+     * @param data              胸腔数据
+     * @param stack             器官物品
+     * @param keyContext        工具提示按键上下文
+     * @param context           工具提示上下文
+     * @param tooltipComponents 工具提示组件列表
+     * @param tooltipFlag       工具提示标识符
+     */
+    default void organTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
     }
 
     /**

@@ -1,7 +1,9 @@
 package net.zhaiji.chestcavitybeyond.attachment;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
+import net.zhaiji.chestcavitybeyond.client.screen.OrganSkillScreen;
 import net.zhaiji.chestcavitybeyond.manager.ChestCavityManager;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
@@ -21,6 +24,14 @@ import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 import org.jetbrains.annotations.Nullable;
 
 public class ChestCavityData extends ItemStackHandler {
+    /**
+     * 选择使用技能的槽位索引
+     * <p>
+     * 此项仅用于序列化存储，具体使用请看{@link OrganSkillScreen}
+     * </p>
+     */
+    public int selectedSlot = -1;
+
     /**
      * 剩余氧气缓存
      */
@@ -62,8 +73,9 @@ public class ChestCavityData extends ItemStackHandler {
         if (init) return;
         NonNullList<Item> organs = type.getOrgans();
         for (int i = 0; i < getSlots(); i++) {
-            setStackInSlot(i, organs.get(i).getDefaultInstance());
+            stacks.set(i, organs.get(i).getDefaultInstance());
         }
+        resetAttributeModifier();
         init = true;
     }
 
@@ -118,7 +130,6 @@ public class ChestCavityData extends ItemStackHandler {
     public void tick() {
         applyHealth();
         applyFiltration();
-        applyHydrophobia();
         for (int i = 0; i < stacks.size(); i++) {
             ItemStack stack = stacks.get(i);
             ChestCavityUtil.organTick(this, owner, i, stack);
@@ -162,13 +173,6 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
-     * 应用恐水效果
-     */
-    private void applyHydrophobia() {
-        //TODO
-    }
-
-    /**
      * 获取当前属性和默认属性的差值
      *
      * @param attribute 属性
@@ -209,25 +213,15 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     @Override
-    public void setStackInSlot(int slot, ItemStack stack) {
-        ItemStack oldStack = getStackInSlot(slot).copy();
-        super.setStackInSlot(slot, stack);
-        // 可能会出现两个都是空的情况
-        if (oldStack.isEmpty() && stack.isEmpty()) return;
-        OrganAttributeUtil.updateOrganAttributeModifier(this, owner, slot, oldStack, stack);
-        ChestCavityUtil.organRemoved(this, owner, slot, oldStack);
-        ChestCavityUtil.organAdded(this, owner, slot, stack);
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag compoundTag = super.serializeNBT(provider);
+        compoundTag.putInt("selectedSlot", selectedSlot);
+        return compoundTag;
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        ItemStack removeStack = super.extractItem(slot, amount, simulate);
-        if (!simulate) {
-            ItemStack addStack = getStackInSlot(slot);
-            OrganAttributeUtil.updateOrganAttributeModifier(this, owner, slot, removeStack, addStack);
-            ChestCavityUtil.organRemoved(this, owner, slot, removeStack);
-            ChestCavityUtil.organAdded(this, owner, slot, addStack);
-        }
-        return removeStack;
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        super.deserializeNBT(provider, nbt);
+        selectedSlot = nbt.getInt("selectedSlot");
     }
 }

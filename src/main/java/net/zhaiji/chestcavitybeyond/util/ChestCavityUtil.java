@@ -76,6 +76,15 @@ public class ChestCavityUtil {
     }
 
     /**
+     * 器官更换
+     */
+    public static void changeOrgan(ChestCavityData data, LivingEntity entity, int index, ItemStack oldStack, ItemStack newStack) {
+        OrganAttributeUtil.updateOrganAttributeModifier(data, entity, index, oldStack, newStack);
+        ChestCavityUtil.organRemoved(data, entity, index, oldStack);
+        ChestCavityUtil.organAdded(data, entity, index, newStack);
+    }
+
+    /**
      * 器官tick
      */
     public static void organTick(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
@@ -114,14 +123,13 @@ public class ChestCavityUtil {
      * @param entity 被打开的目标
      */
     public static void openChestCavity(Player player, LivingEntity entity) {
-        ChestCavityData data = getData(entity);
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, playerInventory, player1) ->
-                                new ChestCavityMenu(containerId, playerInventory, data),
+                                new ChestCavityMenu(containerId, playerInventory, entity),
                         entity.getName()
                 ),
-                (extraData) -> extraData.writeInt(data.getSlots())
+                (extraData) -> extraData.writeInt(entity.getId())
         );
     }
 
