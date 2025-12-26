@@ -79,6 +79,8 @@ public class ChestCavityUtil {
      * 器官更换
      */
     public static void changeOrgan(ChestCavityData data, LivingEntity entity, int index, ItemStack oldStack, ItemStack newStack) {
+        // 有时候会出来新旧都为空的情况
+        if (entity.level().isClientSide() || oldStack.isEmpty() && newStack.isEmpty()) return;
         OrganAttributeUtil.updateOrganAttributeModifier(data, entity, index, oldStack, newStack);
         ChestCavityUtil.organRemoved(data, entity, index, oldStack);
         ChestCavityUtil.organAdded(data, entity, index, newStack);

@@ -1,5 +1,6 @@
 package net.zhaiji.chestcavitybeyond.mixinapi;
 
+import net.minecraft.world.item.ItemStack;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 
 public interface IFoodData {
@@ -12,4 +13,11 @@ public interface IFoodData {
      * @param data 胸腔数据
      */
     void setChestCavityData(ChestCavityData data);
+
+    /**
+     * 设置当前食用食物
+     *
+     * @param food 食物
+     */
+    void setFood(ItemStack food);
 }

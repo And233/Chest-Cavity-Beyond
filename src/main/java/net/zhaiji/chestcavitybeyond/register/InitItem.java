@@ -632,6 +632,7 @@ public class InitItem {
                     .modifier((id, modifiers) -> {
                         modifiers.put(InitAttribute.NERVES, OrganAttributeUtil.createAddValueModifier(id, 1.25));
                         modifiers.put(InitAttribute.DEFENSE, OrganAttributeUtil.createAddValueModifier(id, 0.625));
+                        modifiers.put(InitAttribute.PROJECTILE_DODGE, OrganAttributeUtil.createAddValueModifier(id, 1));
                     })
                     .build()
     );

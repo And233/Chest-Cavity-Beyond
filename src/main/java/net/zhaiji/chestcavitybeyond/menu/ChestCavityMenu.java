@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.register.InitMenuType;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
@@ -25,7 +26,7 @@ public class ChestCavityMenu extends AbstractContainerMenu {
         data = ChestCavityUtil.getData(entity);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
-                this.addSlot(new ChestCavitySlot(data, j + i * 9, 8 + j * 18, 18 + i * 18));
+                this.addSlot(new SlotItemHandler(data, j + i * 9, 8 + j * 18, 18 + i * 18));
             }
         }
         for (int i = 0; i < 3; ++i) {
@@ -53,12 +54,13 @@ public class ChestCavityMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
             if (itemstack1.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY);
+                itemstack1 = ItemStack.EMPTY;
+                slot.setByPlayer(itemstack1);
             } else {
                 slot.setChanged();
             }
             // 因为moveItemStackTo使用shrink减少物品数量，所以当选择的是胸腔槽位时，需要额外更新器官
-            if (index < 27 && !player.level().isClientSide()) {
+            if (index < 27) {
                 ChestCavityUtil.changeOrgan(data, data.getOwner(), index, itemstack, itemstack1);
             }
         }

@@ -8,7 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
-import net.zhaiji.chestcavitybeyond.item.OrganItem;
 import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
 import java.util.HashMap;
@@ -38,6 +37,10 @@ public class OrganFactory {
         return new Builder();
     }
 
+    public static Builder builder(Item item) {
+        return new Builder(item);
+    }
+
     public static class Builder {
         private final Item.Properties properties = new Item.Properties().stacksTo(1);
         private Item item;
@@ -50,6 +53,10 @@ public class OrganFactory {
         private Consumer<ChestCavitySlotContext> organSkillConsumer = EMPTY_CONSUMER;
 
         private Builder() {
+        }
+
+        private Builder(Item item) {
+            this.item = item;
         }
 
         /**
@@ -112,10 +119,12 @@ public class OrganFactory {
         /**
          * 构建
          */
-        public OrganItem build() {
-            OrganItem organItem = new OrganItem(properties);
+        public Item build() {
+            if (item == null) {
+                item = new Item(properties);
+            }
             ORGAN_REGISTRY.put(
-                    organItem,
+                    item,
                     new Organ(
                             organModifierConsumer,
                             organTooltipConsumer,
@@ -126,7 +135,7 @@ public class OrganFactory {
                             organSkillConsumer
                     )
             );
-            return organItem;
+            return item;
         }
     }
 }

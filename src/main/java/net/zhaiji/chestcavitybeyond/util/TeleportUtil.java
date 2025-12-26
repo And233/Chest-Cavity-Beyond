@@ -156,6 +156,10 @@ public class TeleportUtil {
                         return traversalCheck(level, traversePos);
                     }, (failContext) -> failPosition);
             if (newTarget != failPosition) {
+                // 多检查一次下方是否为可以传送，防止顶头
+                if (traversalCheck(level, newTarget.below()) != null) {
+                    newTarget = newTarget.below();
+                }
                 targetPos = newTarget.immutable();
             }
         }
@@ -176,7 +180,7 @@ public class TeleportUtil {
     }
 
     /**
-     * 检测是否可以穿墙
+     * 是否可以传送
      */
     @Nullable
     private static BlockPos traversalCheck(Level level, BlockPos traversePos) {

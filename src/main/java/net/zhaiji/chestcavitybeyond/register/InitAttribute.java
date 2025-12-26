@@ -49,6 +49,19 @@ public class InitAttribute {
     public static final Holder<Attribute> PROJECTILE_DODGE = registerRangedAttribute("projectile_dodge");
     // 跳跃力
     public static final Holder<Attribute> LEAPING = registerRangedAttribute("leaping");
+    // 肉食消化
+    public static final Holder<Attribute> CARNIVOROUS_DIGESTION = registerRangedAttribute("carnivorous_digestion");
+    // 肉食营养
+    public static final Holder<Attribute> CARNIVOROUS_NUTRITION = registerRangedAttribute("carnivorous_nutrition");
+    // 草食消化
+    public static final Holder<Attribute> HERBIVOROUS_DIGESTION = registerRangedAttribute("herbivorous_digestion");
+    // 草食营养
+    public static final Holder<Attribute> HERBIVOROUS_NUTRITION = registerRangedAttribute("herbivorous_nutrition");
+    // 腐食消化
+    public static final Holder<Attribute> SCAVENGER_DIGESTION = registerRangedAttribute("scavenger_digestion");
+    // 腐食营养
+    public static final Holder<Attribute> SCAVENGER_NUTRITION = registerRangedAttribute("scavenger_nutrition");
+
 
     public static Holder<Attribute> registerRangedAttribute(String name) {
         return ATTRIBUTE.register(

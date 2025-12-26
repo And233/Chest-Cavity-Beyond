@@ -10,7 +10,6 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 
 /**
  * 同步胸腔数据
- * TODO 选择技能的同步
  */
 public record SyncChestCavityDataPacket(NonNullList<ItemStack> organs, int slot) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncChestCavityDataPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ChestCavityBeyond.MOD_ID, "sync_chestcavitydata"));

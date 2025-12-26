@@ -47,15 +47,14 @@ public class OrganSkillScreen extends Screen {
     // TODO 当前关于器官技能的检测太粗糙了，后续考虑更改
     public static int selectedSlot = -1;
     public static int selected = -1;
+    private final List<Integer> indices = new ArrayList<>();
+    private final List<ItemStack> organs = new ArrayList<>();
     private int centerX;
     private int centerY;
-    private List<Integer> indices = new ArrayList<>();
-    private List<ItemStack> organs = new ArrayList<>();
-
     private double dvdX = 0;
     private double dvdY = 0;
-    private int dvdXSpeed = 2;
-    private int dvdYSpeed = 2;
+    private double dvdXSpeed = 1.5;
+    private double dvdYSpeed = 1.5;
 
     public OrganSkillScreen() {
         super(Component.literal(""));
@@ -116,19 +115,17 @@ public class OrganSkillScreen extends Screen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        boolean hasMouseOver = false;
         for (int i = 0; i < count; i++) {
             float sliceLeft = (((i - 0.5f) / count) - 0.25f) * 360;
             float sliceRight = (((i + 0.5f) / count) - 0.25f) * 360;
             if (selected == i) {
                 drawSlice(buffer, centerX, centerY, 10, radiusIn, radiusOut, sliceLeft, sliceRight, 63, 161, 191, 60);
-                hasMouseOver = true;
             } else
                 drawSlice(buffer, centerX, centerY, 10, radiusIn, radiusOut, sliceLeft, sliceRight, 0, 0, 0, 64);
         }
         BufferUploader.drawWithShader(buffer.buildOrThrow());
         RenderSystem.disableBlend();
-        if (hasMouseOver && selected != -1) {
+        if (selected != -1) {
             guiGraphics.drawCenteredString(font, organs.get(selected).getHoverName(), centerX, (height - font.lineHeight) / 2, 16777215);
         }
         poseStack.popPose();
@@ -175,12 +172,13 @@ public class OrganSkillScreen extends Screen {
     }
 
     /**
-     * MEME
+     * meme
      */
     public void DVDRender(GuiGraphics guiGraphics, float partialTick) {
         PoseStack poseStack = guiGraphics.pose();
+        String DVD = "DVD";
         poseStack.pushPose();
-        int textWidth = font.width("DVD") * 3;
+        int textWidth = font.width(DVD) * 3;
         int textHeight = font.lineHeight * 3;
         if (dvdX + textWidth > width || dvdX < 0) {
             dvdXSpeed *= -1;
@@ -190,14 +188,17 @@ public class OrganSkillScreen extends Screen {
             dvdYSpeed *= -1;
             dvdY = Math.max(0, Math.min(dvdY, height - textHeight));
         }
-        poseStack.translate(dvdX += dvdXSpeed * partialTick, dvdY += dvdYSpeed * partialTick, 0);
+        dvdX += dvdXSpeed * partialTick;
+        dvdY += dvdYSpeed * partialTick;
+        poseStack.translate(dvdX, dvdY, 0);
         poseStack.scale(3, 3, 1);
-        guiGraphics.drawString(font, "DVD", 0, 0, -1);
+        guiGraphics.drawString(font, DVD, 0, 0, -1);
         poseStack.popPose();
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // 个人习惯，按e键也会关闭此界面
         if (minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode))) {
             onClose();
             return true;
@@ -208,7 +209,7 @@ public class OrganSkillScreen extends Screen {
     /**
      * 根据选择区域，设置对应槽位索引
      */
-    public void setSelectedSlot() {
+    public void changeSelectedSlot() {
         if (selected != -1) {
             selectedSlot = indices.get(selected);
             PacketDistributor.sendToServer(new SyncSelectedSlotPacket(selectedSlot));

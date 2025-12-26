@@ -1,9 +1,14 @@
 package net.zhaiji.chestcavitybeyond.mixin;
 
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.Tags;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.mixinapi.IFoodData;
+import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,10 +28,18 @@ public abstract class FoodDataMixin implements IFoodData {
     @Unique
     private ChestCavityData data;
     /**
+     * 缓存当前食用食物
+     */
+    @Unique
+    private ItemStack food = ItemStack.EMPTY;
+    /**
      * 剩余新陈代谢缓存
      */
     @Unique
     private double metabolismRemainder;
+
+    @Shadow
+    protected abstract void add(int foodLevel, float saturationLevel);
 
     @Unique
     @Override
@@ -36,36 +49,72 @@ public abstract class FoodDataMixin implements IFoodData {
         }
     }
 
-    /**
-     * 修改饥饿值的增加，受{@link InitAttribute#DIGESTION}属性影响
-     */
-    @ModifyVariable(
-            method = "add",
-            at = @At("HEAD"),
-            argsOnly = true
-    )
-    public int chestCavityBeyond$modifyFoodLevel(int value) {
-        if (data.getCurrentValue(InitAttribute.DIGESTION) <= 0) {
-            return 0;
-        }
-        double digestion = data.getDifferenceValue(InitAttribute.DIGESTION);
-        return (int) (value * MathUtil.getDirectScale(digestion));
+    @Unique
+    @Override
+    public void setFood(ItemStack food) {
+        this.food = food;
     }
 
     /**
-     * 修改饱和度的增加，受{@link InitAttribute#NUTRITION}属性影响
+     * 修改食物获取到的饥饿值和饱食度
      */
-    @ModifyVariable(
-            method = "add",
-            at = @At("HEAD"),
-            argsOnly = true
+    @Inject(
+            method = "eat(Lnet/minecraft/world/food/FoodProperties;)V",
+            at = @At("HEAD")
     )
-    public float chestCavityBeyond$modifySaturationLevel(float value) {
-        if (data.getCurrentValue(InitAttribute.NUTRITION) <= 0) {
-            return 0;
+    public void chestCavityBeyond$eat(FoodProperties foodProperties, CallbackInfo ci) {
+        int foodLevel = foodProperties.nutrition();
+        float saturation = foodProperties.saturation();
+        float saturationAdd = 0;
+        boolean isPoisoning = food.is(Tags.Items.FOODS_FOOD_POISONING);
+        boolean isMeat = food.is(ItemTags.MEAT);
+        if (data.getCurrentValue(InitAttribute.DIGESTION) <= 0
+                && data.getCurrentValue(InitAttribute.CARNIVOROUS_DIGESTION) <= 0
+                && data.getCurrentValue(InitAttribute.HERBIVOROUS_DIGESTION) <= 0
+                && (!isPoisoning || data.getCurrentValue(InitAttribute.SCAVENGER_DIGESTION) <= 0)
+        ) {
+            foodLevel = 0;
         }
+        if (data.getCurrentValue(InitAttribute.NUTRITION) <= 0
+                && data.getCurrentValue(InitAttribute.CARNIVOROUS_NUTRITION) <= 0
+                && data.getCurrentValue(InitAttribute.HERBIVOROUS_NUTRITION) <= 0
+                && (!isPoisoning || data.getCurrentValue(InitAttribute.SCAVENGER_NUTRITION) <= 0)
+        ) {
+            saturation = 0;
+        }
+        double digestion = data.getDifferenceValue(InitAttribute.DIGESTION);
+        double carnivorousDigestion = data.getDifferenceValue(InitAttribute.CARNIVOROUS_DIGESTION);
+        double herbivorousDigestion = data.getDifferenceValue(InitAttribute.HERBIVOROUS_DIGESTION);
+        double scavengerDigestion = data.getDifferenceValue(InitAttribute.SCAVENGER_DIGESTION);
+
         double nutrition = data.getDifferenceValue(InitAttribute.NUTRITION);
-        return (float) (value * MathUtil.getDirectScale(nutrition));
+        double carnivorousNutrition = data.getDifferenceValue(InitAttribute.CARNIVOROUS_NUTRITION);
+        double herbivorousNutrition = data.getDifferenceValue(InitAttribute.HERBIVOROUS_NUTRITION);
+        double scavengerNutrition = data.getDifferenceValue(InitAttribute.SCAVENGER_NUTRITION);
+
+        double digestionDiff = isMeat
+                ? digestion + carnivorousDigestion
+                : digestion + herbivorousDigestion;
+        double nutritionDiff = isMeat
+                ? nutrition + carnivorousNutrition
+                : nutrition + herbivorousNutrition;
+
+        if (isPoisoning) {
+            digestionDiff = digestionDiff + scavengerDigestion;
+            nutritionDiff = nutritionDiff + scavengerNutrition;
+            // 有毒食物额外加饱和
+            for (FoodProperties.PossibleEffect possibleEffect : foodProperties.effects()) {
+                if (((IMobEffectInstance) possibleEffect.effect()).isHarmful()) {
+                    saturationAdd += (float) (possibleEffect.probability() * scavengerNutrition);
+                }
+            }
+        }
+        digestionDiff = Math.max(0, digestionDiff);
+        nutritionDiff = Math.max(0, nutritionDiff);
+        foodLevel = (int) (foodLevel * MathUtil.getDirectScale(digestionDiff));
+        saturation = (float) (saturation * MathUtil.getDirectScale(nutritionDiff) + saturationAdd);
+        add(foodLevel, saturation);
+        food = ItemStack.EMPTY;
     }
 
     /**

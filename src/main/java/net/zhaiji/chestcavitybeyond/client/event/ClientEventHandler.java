@@ -94,7 +94,7 @@ public class ClientEventHandler {
     public static void handlerInputEvent$MouseButton$Pre(InputEvent.MouseButton.Pre event) {
         if (Minecraft.getInstance().screen instanceof OrganSkillScreen screen && event.getAction() == InputConstants.PRESS) {
             if (event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                screen.setSelectedSlot();
+                screen.changeSelectedSlot();
             }
             screen.onClose();
             event.setCanceled(true);

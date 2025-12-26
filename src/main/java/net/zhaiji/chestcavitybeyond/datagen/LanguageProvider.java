@@ -116,6 +116,12 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitAttribute.ENDER.value().getDescriptionId(), "Ender");
         add(InitAttribute.PROJECTILE_DODGE.value().getDescriptionId(), "Projectile Dodge");
         add(InitAttribute.LEAPING.value().getDescriptionId(), "Leaping");
+        add(InitAttribute.CARNIVOROUS_DIGESTION.value().getDescriptionId(), "Carnivorous Digestion");
+        add(InitAttribute.CARNIVOROUS_NUTRITION.value().getDescriptionId(), "Carnivorous Nutrition");
+        add(InitAttribute.HERBIVOROUS_DIGESTION.value().getDescriptionId(), "Herbivorous Digestion");
+        add(InitAttribute.HERBIVOROUS_NUTRITION.value().getDescriptionId(), "Herbivorous Nutrition");
+        add(InitAttribute.SCAVENGER_DIGESTION.value().getDescriptionId(), "Scavenger Digestion");
+        add(InitAttribute.SCAVENGER_NUTRITION.value().getDescriptionId(), "Scavenger Nutrition");
     }
 
     public void Chinese() {
@@ -215,6 +221,12 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(InitAttribute.ENDER.value().getDescriptionId(), "末影");
         add(InitAttribute.PROJECTILE_DODGE.value().getDescriptionId(), "弹射物闪避");
         add(InitAttribute.LEAPING.value().getDescriptionId(), "跳跃力");
+        add(InitAttribute.CARNIVOROUS_DIGESTION.value().getDescriptionId(), "肉食消化");
+        add(InitAttribute.CARNIVOROUS_NUTRITION.value().getDescriptionId(), "肉食营养");
+        add(InitAttribute.HERBIVOROUS_DIGESTION.value().getDescriptionId(), "草食消化");
+        add(InitAttribute.HERBIVOROUS_NUTRITION.value().getDescriptionId(), "草食营养");
+        add(InitAttribute.SCAVENGER_DIGESTION.value().getDescriptionId(), "腐食消化");
+        add(InitAttribute.SCAVENGER_NUTRITION.value().getDescriptionId(), "腐食营养");
     }
 
     @Override

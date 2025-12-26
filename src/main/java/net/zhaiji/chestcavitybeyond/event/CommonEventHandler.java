@@ -1,16 +1,21 @@
 package net.zhaiji.chestcavitybeyond.event;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -25,7 +30,7 @@ import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
-import net.zhaiji.chestcavitybeyond.util.TeleportUtil;
+import net.zhaiji.chestcavitybeyond.util.OrganSkillUtil;
 
 public class CommonEventHandler {
     /**
@@ -100,6 +105,25 @@ public class CommonEventHandler {
     }
 
     /**
+     * 应用弹射物闪避效果
+     *
+     * @param event 实体即将受伤事件
+     */
+    public static void handlerLivingIncomingDamageEvent(LivingIncomingDamageEvent event) {
+        DamageSource source = event.getSource();
+        boolean isProjectile = source.is(DamageTypeTags.IS_PROJECTILE);
+        boolean isWaterPotion = source.getDirectEntity() instanceof ThrownPotion potion && potion.getItem().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).is(Potions.WATER);
+        if (isProjectile || isWaterPotion) {
+            LivingEntity entity = event.getEntity();
+            ChestCavityData data = ChestCavityUtil.getData(entity);
+            if (data.getCurrentValue(InitAttribute.PROJECTILE_DODGE) > 0 && data.getCurrentValue(InitAttribute.ENDER) > 0) {
+                OrganSkillUtil.randomTeleport(entity);
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    /**
      * 应用实体防御属性的增减伤
      *
      * @param event 实体受伤前事件
@@ -115,17 +139,11 @@ public class CommonEventHandler {
             damage *= MathUtil.getAttenuationScale(damage, fireResistance);
             flag = true;
         }
+
         // 应用溺水伤害修改
         if (source.is(DamageTypeTags.IS_DROWNING)) {
             double ender = data.getCurrentValue(InitAttribute.ENDER);
-            if (ender > 0) {
-                // TODO 尝试循环次数写入配置
-                for (int i = 0; i < 16; i++) {
-                    if (TeleportUtil.randomTeleport(event.getEntity())) {
-                        break;
-                    }
-                }
-            }
+            if (ender > 0) OrganSkillUtil.randomTeleport(event.getEntity());
         }
 
         // 当以上伤害类型都未检测通过时，应用防御减伤

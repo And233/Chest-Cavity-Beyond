@@ -5,12 +5,14 @@
   "mixins": [
     "CommonHooksMixin",
     "EnderManMixin",
+    "EnderManMixin$EndermanLookForPlayerGoalMixin",
     "FoodDataMixin",
     "LivingBreatheEventMixin",
     "LivingEntityMixin",
     "MobEffectInstanceMixin",
     "PlayerMixin",
     "RandomSwimmingGoalMixin",
+    "ShulkerMixin",
     "SnowballMixin",
     "WaterAllergyManager",
     "WaterAnimalMixin"

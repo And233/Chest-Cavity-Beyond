@@ -15,7 +15,13 @@ public class OrganSkillUtil {
      * @return 传送是否成功
      */
     public static boolean randomTeleport(LivingEntity entity) {
-        return TeleportUtil.randomTeleport(entity);
+        // TODO 尝试循环次数写入配置
+        for (int i = 0; i < 16; i++) {
+            if (TeleportUtil.randomTeleport(entity)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

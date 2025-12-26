@@ -17,6 +17,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.client.screen.OrganSkillScreen;
 import net.zhaiji.chestcavitybeyond.manager.ChestCavityManager;
+import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
@@ -107,11 +108,12 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
-     * 设置所有器官（同步用）
+     * 客户端同步用
      */
-    public void setOrgans(NonNullList<ItemStack> organs) {
+    public void sync(SyncChestCavityDataPacket packet) {
+        NonNullList<ItemStack> organs = packet.organs();
         for (int i = 0; i < organs.size(); i++) {
-            stacks.set(i, organs.get(i));
+            setStackInSlot(i, organs.get(i));
         }
     }
 
@@ -210,6 +212,13 @@ public class ChestCavityData extends ItemStackHandler {
     protected void onLoad() {
         super.onLoad();
         init = true;
+    }
+
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack) {
+        ItemStack oldStack = getStackInSlot(slot);
+        super.setStackInSlot(slot, stack);
+        ChestCavityUtil.changeOrgan(this, owner, slot, oldStack, stack);
     }
 
     @Override
