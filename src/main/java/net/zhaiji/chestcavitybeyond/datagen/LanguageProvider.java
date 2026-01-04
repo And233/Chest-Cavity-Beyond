@@ -152,6 +152,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addItem(InitItem.BLAZE_SHELL, "Blaze Shell");
         addItem(InitItem.ACTIVE_BLAZE_ROD, "Active Blaze Rod");
 
+        addItem(InitItem.SNOW_HEART, "Snow Heart");
+
         addAttribute(InitAttribute.HEALTH, "Health");
         addAttribute(InitAttribute.NERVES, "Nerves");
         addAttribute(InitAttribute.DEFENSE, "Defense");
@@ -320,6 +322,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addItem(InitItem.BLAZE_CORE, "烈焰核心");
         addItem(InitItem.BLAZE_SHELL, "烈焰外壳");
         addItem(InitItem.ACTIVE_BLAZE_ROD, "活性烈焰棒");
+
+        addItem(InitItem.SNOW_HEART, "雪之星");
 
         addAttribute(InitAttribute.HEALTH, "健康");
         addAttribute(InitAttribute.NERVES, "神经效率");

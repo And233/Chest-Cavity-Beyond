@@ -21,6 +21,7 @@
     "RandomSwimmingGoalMixin",
     "ShulkerMixin",
     "SnowballMixin",
+    "SnowGolemMixin",
     "WaterAllergyManager",
     "WaterAnimalMixin",
     "WitherBossMixin",

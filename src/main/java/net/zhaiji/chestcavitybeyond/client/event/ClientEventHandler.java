@@ -14,6 +14,7 @@ import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
 import net.zhaiji.chestcavitybeyond.builder.OrganBuilder;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
+import net.zhaiji.chestcavitybeyond.client.overlay.OrganSelectedOverlay;
 import net.zhaiji.chestcavitybeyond.client.screen.ChestCavityScreen;
 import net.zhaiji.chestcavitybeyond.client.screen.OrganSkillScreen;
 import net.zhaiji.chestcavitybeyond.client.util.ChestCavityClientUtil;
@@ -43,6 +44,13 @@ public class ClientEventHandler {
      */
     public static void handlerEntityRenderersEvent$RegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(InitEntityType.THROWN_COBWEB.get(), ThrownItemRenderer::new);
+    }
+
+    /**
+     * @param event 注册gui覆层事件
+     */
+    public static void handlerRegisterGuiLayersEvent(RegisterGuiLayersEvent event) {
+        event.registerBelow(VanillaGuiLayers.HOTBAR, OrganSelectedOverlay.ORGAN_SELECTED, OrganSelectedOverlay::render);
     }
 
     /**

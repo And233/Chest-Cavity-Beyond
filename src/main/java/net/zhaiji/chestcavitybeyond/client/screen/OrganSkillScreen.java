@@ -69,7 +69,7 @@ public class OrganSkillScreen extends Screen {
         for (int i = 0; i < 27; i++) {
             ItemStack stack = list.get(i);
             IOrgan organ = ChestCavityUtil.getOrganCap(stack);
-            if (organ.hasSkill()) {
+            if (organ.hasSkill() && organs.stream().noneMatch(itemStack -> itemStack.is(stack.getItem()))) {
                 indices.add(i);
                 organs.add(stack);
             }

@@ -1,23 +1,29 @@
 package net.zhaiji.chestcavitybeyond.api.task;
 
-import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
-import net.zhaiji.chestcavitybeyond.register.InitAttribute;
-import net.zhaiji.chestcavitybeyond.util.OrganSkillUtil;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class BlazeFireballTask implements IChestCavityTask {
-    private final ChestCavityData data;
-    private int cooldown = 0;
-    private int count = 0;
+    private final LivingEntity entity;
+    private int cooldown;
+    private int count;
 
-    public BlazeFireballTask(ChestCavityData data) {
-        this.data = data;
-        count = (int) Math.ceil(data.getCurrentValue(InitAttribute.VOMIT_FIREBALL));
+    public BlazeFireballTask(LivingEntity entity, int count) {
+        this.entity = entity;
+        this.count = count;
     }
 
     @Override
     public void tick() {
         if (cooldown <= 0) {
-            OrganSkillUtil.smallFireball(data.getOwner());
+            Level level = entity.level();
+            level.levelEvent(null, 1018, entity.blockPosition(), 0);
+            Vec3 lookAngle = entity.getLookAngle();
+            SmallFireball smallfireball = new SmallFireball(level, entity, lookAngle.normalize());
+            smallfireball.setPos(entity.getX() + lookAngle.x, entity.getEyeY() - 0.4, entity.getZ() + lookAngle.z);
+            level.addFreshEntity(smallfireball);
             count--;
             cooldown = 6;
         }

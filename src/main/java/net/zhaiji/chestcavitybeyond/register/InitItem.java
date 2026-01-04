@@ -11,7 +11,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
-import net.zhaiji.chestcavitybeyond.api.task.BlazeFireballTask;
 import net.zhaiji.chestcavitybeyond.builder.OrganBuilder;
 import net.zhaiji.chestcavitybeyond.item.ChestOpenerItem;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
@@ -1286,7 +1285,24 @@ public class InitItem {
                         modifiers.put(InitAttribute.WATER_ALLERGY, OrganAttributeUtil.createAddValueModifier(id, 3));
                     })
                     .skill(context -> {
-                        context.data().addTask(new BlazeFireballTask(context.data()));
+                        OrganSkillUtil.smallFireball(
+                                context.data(),
+                                context.entity(),
+                                context.data().getCurrentValue(InitAttribute.VOMIT_FIREBALL)
+                        );
+                    })
+                    .build()
+    );
+
+    public static final Supplier<Item> SNOW_HEART = ITEM.register(
+            "snow_heart",
+            () -> OrganBuilder.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.HEALTH, OrganAttributeUtil.createAddValueModifier(id, 0.25));
+                        modifiers.put(InitAttribute.WATER_ALLERGY, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .skill(context -> {
+                        OrganSkillUtil.snowball(context.entity());
                     })
                     .build()
     );

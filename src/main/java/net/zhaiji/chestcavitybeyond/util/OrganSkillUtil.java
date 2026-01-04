@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LlamaSpit;
-import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +26,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.zhaiji.chestcavitybeyond.api.task.BlazeFireballTask;
+import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.entity.ThrownCobweb;
 import net.zhaiji.chestcavitybeyond.register.InitEffect;
 
@@ -243,19 +245,33 @@ public class OrganSkillUtil {
         Level level = entity.level();
         level.levelEvent(null, 1024, entity.blockPosition(), 0);
         Vec3 lookAngle = entity.getLookAngle();
-        WitherSkull witherSkull = new WitherSkull(level, entity, lookAngle);
-        witherSkull.setPos(entity.getX() + lookAngle.x / 2, entity.getEyeY() - 0.5, entity.getZ() + lookAngle.z / 2);
+        WitherSkull witherSkull = new WitherSkull(level, entity, lookAngle.normalize());
+        witherSkull.setPos(entity.getX() + lookAngle.x, entity.getEyeY() - 0.5, entity.getZ() + lookAngle.z);
         level.addFreshEntity(witherSkull);
     }
 
     /**
      * 发射小火球
      */
-    public static void smallFireball(LivingEntity entity) {
+    public static void smallFireball(ChestCavityData data, LivingEntity entity, double vomitFireball) {
+        data.addTask(new BlazeFireballTask(entity, (int) vomitFireball));
+    }
+
+    /**
+     * 发射雪球
+     */
+    public static void snowball(LivingEntity entity) {
         Level level = entity.level();
-        level.levelEvent(null, 1018, entity.blockPosition(), 0);
-        SmallFireball smallfireball = new SmallFireball(level, entity, entity.getLookAngle().normalize());
-        smallfireball.setPos(entity.getX(), entity.getEyeY() - 0.2, entity.getZ());
-        level.addFreshEntity(smallfireball);
+        level.playSound(
+                null,
+                entity.blockPosition(),
+                SoundEvents.SNOW_GOLEM_SHOOT,
+                entity.getSoundSource(),
+                1,
+                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+        );
+        Snowball snowball = new Snowball(level, entity);
+        snowball.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0, 1.6F, 12);
+        level.addFreshEntity(snowball);
     }
 }
