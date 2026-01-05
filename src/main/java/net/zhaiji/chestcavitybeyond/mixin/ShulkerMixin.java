@@ -2,13 +2,19 @@ package net.zhaiji.chestcavitybeyond.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.level.Level;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
+import net.zhaiji.chestcavitybeyond.register.InitItem;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Shulker.class)
 public abstract class ShulkerMixin extends AbstractGolem {
@@ -43,5 +49,26 @@ public abstract class ShulkerMixin extends AbstractGolem {
     )
     public boolean chestCavityBeyond$teleportSomewhere(boolean original) {
         return original && ChestCavityUtil.getData(this).getCurrentValue(InitAttribute.ENDER) > 0;
+    }
+
+    @Mixin(Shulker.ShulkerAttackGoal.class)
+    public abstract static class ShulkerAttackGoalMixin extends Goal {
+        @Shadow
+        @Final
+        Shulker this$0;
+
+        /**
+         * 没有潜隐脾脏禁止发射子弹
+         */
+        @Inject(
+                method = "tick",
+                at = @At("HEAD"),
+                cancellable = true
+        )
+        public void chestCavityBeyond$tick(CallbackInfo ci) {
+            if (!ChestCavityUtil.getData(this$0).hasOrgan(InitItem.SHULKER_SPLEEN.get())) {
+                ci.cancel();
+            }
+        }
     }
 }

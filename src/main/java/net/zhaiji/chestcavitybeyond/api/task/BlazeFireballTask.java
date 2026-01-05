@@ -22,7 +22,7 @@ public class BlazeFireballTask implements IChestCavityTask {
             level.levelEvent(null, 1018, entity.blockPosition(), 0);
             Vec3 lookAngle = entity.getLookAngle();
             SmallFireball smallfireball = new SmallFireball(level, entity, lookAngle.normalize());
-            smallfireball.setPos(entity.getX() + lookAngle.x, entity.getEyeY() - 0.4, entity.getZ() + lookAngle.z);
+            smallfireball.setPos(entity.getX() + lookAngle.x / 2, entity.getEyeY() - 0.4, entity.getZ() + lookAngle.z / 2);
             level.addFreshEntity(smallfireball);
             count--;
             cooldown = 6;

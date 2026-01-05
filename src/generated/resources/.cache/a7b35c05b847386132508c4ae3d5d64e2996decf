@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-04T15:00:01.5788073	Item Models: chestcavitybeyond
+// 1.21.1	2026-01-05T20:16:24.2895367	Item Models: chestcavitybeyond
 24958fd31beb57a2b7817edbbadb67097c619879 assets/chestcavitybeyond/models/item/active_blaze_rod.json
 1179a0b4daef7f6507c16b9ccb1651c79aa079b4 assets/chestcavitybeyond/models/item/animal_appendix.json
 00cca18ba2522d946fc1b3aae5088e80327ed5fd assets/chestcavitybeyond/models/item/animal_heart.json
@@ -50,6 +50,8 @@ d96d490bb3f699a98692109280fd4a2cc61627c7 assets/chestcavitybeyond/models/item/fi
 9dd4a7f7441c5bff53d5b36860dedb619d08fd93 assets/chestcavitybeyond/models/item/fireproof_spleen.json
 d1489f5932a32fc68ba08649328921ac32d3894a assets/chestcavitybeyond/models/item/fireproof_stomach.json
 20a0b5e6c318e0008f85695dbb0e1fec731d6401 assets/chestcavitybeyond/models/item/fish_muscle.json
+bc03a415e9dcc5fe224d279d063d8477df76a36a assets/chestcavitybeyond/models/item/gas_sac.json
+84a7d2105f66125edd423cd6c55eeb146aab6c54 assets/chestcavitybeyond/models/item/ghast_stomach.json
 515d76559e6ef8fc4280ae2f40360e98117295a6 assets/chestcavitybeyond/models/item/gills.json
 757a875baf019c7d011a46becede382ed6c0a4b0 assets/chestcavitybeyond/models/item/golem_armor_plate.json
 14185cb5ea65f367e879ad670ae19e3664e2c629 assets/chestcavitybeyond/models/item/golem_cable.json
@@ -82,6 +84,7 @@ d799c548648041752674dcf05c5d023ac5cc0fda assets/chestcavitybeyond/models/item/ro
 d6c78b70b46c4a667e86de4b7c4a465e7d9e39c0 assets/chestcavitybeyond/models/item/saltwater_heart.json
 cff62d1bcadcc4f0691a8497736ee937c3e3a93c assets/chestcavitybeyond/models/item/saltwater_lung.json
 96b5506f24aa9451fd443341ad376058bb6de526 assets/chestcavitybeyond/models/item/saltwater_muscle.json
+0a0084bc3df254257cc3a39cd19d8c832a98cbf8 assets/chestcavitybeyond/models/item/shulker_spleen.json
 54384047b342ce9527494146641f42d9286a2710 assets/chestcavitybeyond/models/item/silk_gland.json
 c68ee5648675eac78ad46ab1eb494ac4ae7c2906 assets/chestcavitybeyond/models/item/small_animal_appendix.json
 d09e9d7f50a0bda110cd6da859ec73c2dc42bb5a assets/chestcavitybeyond/models/item/small_animal_heart.json
@@ -101,6 +104,7 @@ ae58a204b36e55549ca8d0dc19a524fffc0cb037 assets/chestcavitybeyond/models/item/sm
 eb38a7c5d74ff7373bcdae124f1b6b319737d861 assets/chestcavitybeyond/models/item/small_gills.json
 30bb034e3610aba5400ca325bfb2517404543979 assets/chestcavitybeyond/models/item/small_herbivore_intestine.json
 45dc3c848a8e9e4a43a0ec2e1cf41df70e3ce96e assets/chestcavitybeyond/models/item/small_herbivore_stomach.json
+717ee7927d2966ae60163dc51dd22b68994087e3 assets/chestcavitybeyond/models/item/snow_heart.json
 c7860ceb28528450ec48190047ee4569357a9971 assets/chestcavitybeyond/models/item/spine.json
 3fe7beb6e6bba83cac483fa8c211b02be2922c08 assets/chestcavitybeyond/models/item/spleen.json
 9b88aaafb7ddf6f80fe64802292021c5e45bb22c assets/chestcavitybeyond/models/item/stomach.json

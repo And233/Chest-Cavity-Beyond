@@ -145,15 +145,15 @@ public class ClientEventHandler {
             Options options = minecraft.options;
             Input input = event.getInput();
             // 按键检测
-            input.up = ChestCavityClientUtil.isKeyDown(options.keyUp.getKey().getValue());
-            input.down = ChestCavityClientUtil.isKeyDown(options.keyDown.getKey().getValue());
-            input.left = ChestCavityClientUtil.isKeyDown(options.keyLeft.getKey().getValue());
-            input.right = ChestCavityClientUtil.isKeyDown(options.keyRight.getKey().getValue());
+            input.up = ChestCavityClientUtil.isKeyDown(options.keyUp);
+            input.down = ChestCavityClientUtil.isKeyDown(options.keyDown);
+            input.left = ChestCavityClientUtil.isKeyDown(options.keyLeft);
+            input.right = ChestCavityClientUtil.isKeyDown(options.keyRight);
             // 移动计算
             input.forwardImpulse = input.up == input.down ? 0.0F : (input.up ? 1.0F : -1.0F);
             input.leftImpulse = input.left == input.right ? 0.0F : (input.left ? 1.0F : -1.0F);
-            input.jumping = ChestCavityClientUtil.isKeyDown(options.keyJump.getKey().getValue());
-            input.shiftKeyDown = ChestCavityClientUtil.isKeyDown(options.keyShift.getKey().getValue());
+            input.jumping = ChestCavityClientUtil.isKeyDown(options.keyJump);
+            input.shiftKeyDown = ChestCavityClientUtil.isKeyDown(options.keyShift);
             if (minecraft.player.isMovingSlowly()) {
                 input.leftImpulse *= 0.3F;
                 input.forwardImpulse *= 0.3F;

@@ -1294,6 +1294,7 @@ public class InitItem {
                     .build()
     );
 
+    // 雪之心
     public static final Supplier<Item> SNOW_HEART = ITEM.register(
             "snow_heart",
             () -> OrganBuilder.builder()
@@ -1303,6 +1304,46 @@ public class InitItem {
                     })
                     .skill(context -> {
                         OrganSkillUtil.snowball(context.entity());
+                    })
+                    .build()
+    );
+
+    // 恶魂胃
+    public static final Supplier<Item> GHAST_STOMACH = ITEM.register(
+            "ghast_stomach",
+            () -> OrganBuilder.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.DIGESTION, OrganAttributeUtil.createAddValueModifier(id, 0.5));
+                        modifiers.put(InitAttribute.FIRE_RESISTANCE, OrganAttributeUtil.createAddValueModifier(id, 1));
+                        modifiers.put(InitAttribute.GHASTLY, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
+                    .skill(context -> {
+                        OrganSkillUtil.largeFireball(context.entity(), context.data().getCurrentValue(InitAttribute.GHASTLY));
+                    })
+                    .build()
+    );
+
+    // 气囊
+    public static final Supplier<Item> GAS_SAC = ITEM.register(
+            "gas_sac",
+            () -> OrganBuilder.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.BREATH_CAPACITY, OrganAttributeUtil.createAddValueModifier(id, 1.5));
+                        modifiers.put(InitAttribute.FIRE_RESISTANCE, OrganAttributeUtil.createAddValueModifier(id, 1));
+                        modifiers.put(Attributes.GRAVITY, OrganAttributeUtil.createMultipliedBaseModifier(id, -0.25));
+                    })
+                    .build()
+    );
+
+    // 潜影贝脾脏
+    public static final Supplier<Item> SHULKER_SPLEEN = ITEM.register(
+            "shulker_spleen",
+            () -> OrganBuilder.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(InitAttribute.METABOLISM, OrganAttributeUtil.createAddValueModifier(id, 0.75));
+                    })
+                    .skill(context -> {
+                        OrganSkillUtil.shulkerBullet(context.entity());
                     })
                     .build()
     );

@@ -154,6 +154,11 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
         addItem(InitItem.SNOW_HEART, "Snow Heart");
 
+        addItem(InitItem.GHAST_STOMACH, "Ghast Stomach");
+        addItem(InitItem.GAS_SAC, "Gas Sac");
+
+        addItem(InitItem.SHULKER_SPLEEN, "Shlker Spleen");
+
         addAttribute(InitAttribute.HEALTH, "Health");
         addAttribute(InitAttribute.NERVES, "Nerves");
         addAttribute(InitAttribute.DEFENSE, "Defense");
@@ -186,6 +191,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addAttribute(InitAttribute.FURNACE_POWER, "Furnace Power");
         addAttribute(InitAttribute.WITHERED, "Withered");
         addAttribute(InitAttribute.VOMIT_FIREBALL, "Vomit Fireball");
+        addAttribute(InitAttribute.GHASTLY, "Ghastly");
 
         addEffect(InitEffect.FURNACE_POWER::value, "Furnace Powered");
 
@@ -323,7 +329,12 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addItem(InitItem.BLAZE_SHELL, "烈焰外壳");
         addItem(InitItem.ACTIVE_BLAZE_ROD, "活性烈焰棒");
 
-        addItem(InitItem.SNOW_HEART, "雪之星");
+        addItem(InitItem.SNOW_HEART, "雪之心");
+
+        addItem(InitItem.GHAST_STOMACH, "恶魂胃");
+        addItem(InitItem.GAS_SAC, "气囊");
+
+            addItem(InitItem.SHULKER_SPLEEN, "潜影贝脾脏");
 
         addAttribute(InitAttribute.HEALTH, "健康");
         addAttribute(InitAttribute.NERVES, "神经效率");
@@ -357,6 +368,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addAttribute(InitAttribute.FURNACE_POWER, "熔炉之力");
         addAttribute(InitAttribute.WITHERED, "凋零化");
         addAttribute(InitAttribute.VOMIT_FIREBALL, "呕火");
+        addAttribute(InitAttribute.GHASTLY, "可怖");
 
         addEffect(InitEffect.FURNACE_POWER::value, "熔炉之力");
 

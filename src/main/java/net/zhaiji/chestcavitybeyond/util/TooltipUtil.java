@@ -29,8 +29,8 @@ public class TooltipUtil {
         attributeModifiers.forEach((attribute, modifier) -> {
             String valueString = switch (modifier.operation()) {
                 case ADD_VALUE -> modifier.amount() + "点";
-                case ADD_MULTIPLIED_BASE -> modifier.amount() * 100 + "%倍率";
-                case ADD_MULTIPLIED_TOTAL -> modifier.amount() * 100 + "%最终倍率";
+                case ADD_MULTIPLIED_BASE -> modifier.amount() * 100 + "%";
+                case ADD_MULTIPLIED_TOTAL -> modifier.amount() * 100 + "%最终";
             };
             tooltips.add(Component.literal("提供" + valueString + Component.translatable(attribute.value().getDescriptionId()).getString()));
         });

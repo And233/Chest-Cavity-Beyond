@@ -1,18 +1,18 @@
 package net.zhaiji.chestcavitybeyond.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.LlamaSpit;
-import net.minecraft.world.entity.projectile.Snowball;
-import net.minecraft.world.entity.projectile.WitherSkull;
+import net.minecraft.world.entity.projectile.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -271,7 +272,46 @@ public class OrganSkillUtil {
                 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
         );
         Snowball snowball = new Snowball(level, entity);
+        Vec3 lookAngle = entity.getLookAngle();
+        snowball.setPos(entity.getX() + lookAngle.x / 2, entity.getEyeY() - 0.2, entity.getZ() + lookAngle.z / 2);
         snowball.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0, 1.6F, 12);
         level.addFreshEntity(snowball);
+    }
+
+    /**
+     * 发射大火球
+     */
+    public static void largeFireball(LivingEntity entity, double ghastly) {
+        Level level = entity.level();
+        level.levelEvent(null, 1016, entity.blockPosition(), 0);
+        Vec3 lookAngle = entity.getLookAngle();
+        LargeFireball largefireball = new LargeFireball(level, entity, lookAngle.normalize(), (int) ghastly);
+        largefireball.setPos(entity.getX(), entity.getEyeY() - 0.9, entity.getZ());
+        level.addFreshEntity(largefireball);
+    }
+
+    /**
+     * 发射潜影子弹
+     */
+    public static void shulkerBullet(LivingEntity entity, Entity target) {
+        Level level = entity.level();
+        level.playSound(
+                null,
+                entity.blockPosition(),
+                SoundEvents.SHULKER_SHOOT,
+                entity.getSoundSource(),
+                2.0F,
+                (level.random.nextFloat() - level.random.nextFloat()) * 0.2F + 1.0F
+        );
+        level.addFreshEntity(new ShulkerBullet(level, entity, target, Direction.UP.getAxis()));
+    }
+
+    public static void shulkerBullet(LivingEntity entity) {
+        // TODO 当前最远32，后续考虑与属性值关联或者写入配置
+        int distance = 32;
+        HitResult hitResult = ProjectileUtil.getHitResultOnViewVector(entity, checkEntity -> checkEntity != entity, distance);
+        if (hitResult instanceof EntityHitResult entityHitResult) {
+            shulkerBullet(entity, entityHitResult.getEntity());
+        }
     }
 }
