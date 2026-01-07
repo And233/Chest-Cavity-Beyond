@@ -87,15 +87,35 @@ public class ClientEventHandler {
     }
 
     /**
+     * 设置技能界面鼠标按键的功能
+     *
+     * @param event 鼠标按键输入事件
+     */
+    public static void handlerInputEvent$MouseButton$Pre(InputEvent.MouseButton.Pre event) {
+        if (event.getAction() != InputConstants.PRESS) return;
+        if (Minecraft.getInstance().screen instanceof OrganSkillScreen screen) {
+            if (event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                screen.changeSelectedSlot();
+            }
+            screen.onClose();
+            event.setCanceled(true);
+        }
+        customKeyTrigger(InputConstants.Type.MOUSE.getOrCreate(event.getButton()));
+    }
+
+    /**
      * 设置自定义按键的功能
      *
      * @param event 键盘按键输入事件
      */
     public static void handlerInputEvent$Key(InputEvent.Key event) {
         if (event.getAction() != InputConstants.PRESS) return;
-        Minecraft minecraft = Minecraft.getInstance();
-        InputConstants.Key key = InputConstants.getKey(event.getKey(), event.getScanCode());
+        customKeyTrigger(InputConstants.getKey(event.getKey(), event.getScanCode()));
+    }
+
+    public static void customKeyTrigger(InputConstants.Key key) {
         if (KeyMappings.OPEN_SKILL_GUI.isActiveAndMatches(key)) {
+            Minecraft minecraft = Minecraft.getInstance();
             if (minecraft.screen instanceof OrganSkillScreen screen) {
                 screen.onClose();
             } else if (minecraft.screen == null) {
@@ -111,21 +131,6 @@ public class ClientEventHandler {
             if (KeyMappings.USE_SKILLS_MAPPINGS.get(i).isActiveAndMatches(key)) {
                 PacketDistributor.sendToServer(new UseSkillPacket(i));
             }
-        }
-    }
-
-    /**
-     * 设置技能界面鼠标按键的功能
-     *
-     * @param event 鼠标按键输入事件
-     */
-    public static void handlerInputEvent$MouseButton$Pre(InputEvent.MouseButton.Pre event) {
-        if (Minecraft.getInstance().screen instanceof OrganSkillScreen screen && event.getAction() == InputConstants.PRESS) {
-            if (event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                screen.changeSelectedSlot();
-            }
-            screen.onClose();
-            event.setCanceled(true);
         }
     }
 

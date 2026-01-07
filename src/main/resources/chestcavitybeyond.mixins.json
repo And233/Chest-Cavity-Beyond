@@ -3,13 +3,17 @@
   "package": "net.zhaiji.chestcavitybeyond.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AreaEffectCloudMixin",
     "BlazeMixin",
     "BlazeMixin$BlazeAttackGoalMixin",
+    "BottleItemMixin",
     "BreezeShootMixin",
     "CaveSpiderMixin",
     "CommonHooksMixin",
     "CreeperMixin",
     "CreeperMixin$SwellGoalMixin",
+    "EndCrystalMixin",
+    "EnderDragonMixin",
     "EnderManMixin",
     "EnderManMixin$EndermanLookForPlayerGoalMixin",
     "FoodDataMixin",
@@ -40,5 +44,8 @@
   },
   "mixinextras": {
     "minVersion": "0.5.0"
-  }
+  },
+  "client": [
+    "EndCrystalRendererMixin"
+  ]
 }

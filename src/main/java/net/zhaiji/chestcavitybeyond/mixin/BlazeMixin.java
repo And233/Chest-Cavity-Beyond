@@ -37,6 +37,7 @@ public abstract class BlazeMixin extends Monster {
                 at = @At("MIXINEXTRAS:EXPRESSION")
         )
         public boolean chestCavityBeyond$tick(boolean original) {
+            // 根据呕火属性，更改烈焰人可以发射的火球数量
             return attackStep <= 1 + Math.ceil(ChestCavityUtil.getData(blaze).getCurrentValue(InitAttribute.VOMIT_FIREBALL));
         }
     }
