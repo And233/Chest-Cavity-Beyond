@@ -22,6 +22,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zhaiji.chestcavitybeyond.api.event.RegisterChestCavityEvent;
@@ -33,6 +34,7 @@ import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
+import net.zhaiji.chestcavitybeyond.register.InitItem;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
 import net.zhaiji.chestcavitybeyond.util.OrganSkillUtil;
@@ -94,6 +96,20 @@ public class CommonEventHandler {
      */
     public static void handlerPlayerEvent$PlayerRespawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ChestCavityUtil.getData(event.getEntity()).resetAttributeModifier();
+    }
+
+    /**
+     * 开胸器打开生物胸腔
+     *
+     * @param event 玩家交互实体事件
+     */
+    public static void handlerPlayerInteractEvent$EntityInteract(PlayerInteractEvent.EntityInteract event) {
+        ItemStack stack = event.getEntity().getItemInHand(event.getHand());
+        // 当玩家手持开胸器时，可能更希望打开胸腔
+        if (stack.is(InitItem.CHEST_OPENER.get())) {
+            // 取消实体交互，使开胸器能够正常使用
+            event.setCanceled(true);
+        }
     }
 
     /**

@@ -48,6 +48,11 @@ public class ChestCavityData extends ItemStackHandler {
 
     private boolean init = false;
 
+    /**
+     * 是否需要呼吸
+     */
+    private boolean needBreath;
+
     private ChestCavityType type;
 
     private @Nullable LivingEntity owner;
@@ -64,7 +69,7 @@ public class ChestCavityData extends ItemStackHandler {
      */
     private int filtrationTickOffset;
 
-    private List<IChestCavityTask> tasks = new ArrayList<>();
+    private final List<IChestCavityTask> tasks = new ArrayList<>();
 
     public ChestCavityData(IAttachmentHolder attachmentHolder) {
         super(27);
@@ -86,6 +91,7 @@ public class ChestCavityData extends ItemStackHandler {
         for (int i = 0; i < getSlots(); i++) {
             stacks.set(i, organs.get(i).getDefaultInstance());
         }
+        needBreath = type.getNeedBreath();
         resetAttributeModifier();
         init = true;
     }
@@ -115,6 +121,13 @@ public class ChestCavityData extends ItemStackHandler {
      */
     public NonNullList<ItemStack> getOrgans() {
         return stacks;
+    }
+
+    /**
+     * @return 是否需要呼吸
+     */
+    public boolean isNeedBreath() {
+        return needBreath;
     }
 
     /**

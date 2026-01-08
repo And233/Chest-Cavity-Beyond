@@ -28,57 +28,60 @@ public abstract class CommonHooksMixin {
     public static void onLivingBreathe(LivingEntity entity, int consumeAirAmount, int refillAirAmount) {
         boolean isAir = entity.getEyeInFluidType().isAir() || entity.level().getBlockState(BlockPos.containing(entity.getX(), entity.getEyeY(), entity.getZ())).is(Blocks.BUBBLE_COLUMN);
         ChestCavityData data = ChestCavityUtil.getData(entity);
-        double currRecovery = data.getCurrentValue(InitAttribute.BREATH_RECOVERY);
-        double currWaterBreath = data.getCurrentValue(InitAttribute.WATER_BREATH);
-        boolean isInvulnerable = entity instanceof Player player && player.getAbilities().invulnerable;
-        // 检测呼吸功能
-        boolean canBreathe =
-                isInvulnerable
-                        || (
-                        data.getCurrentValue(InitAttribute.BREATH_CAPACITY) > 0
-                                && (
-                                isAir
-                                        ? currRecovery > 0
-                                        : (currWaterBreath > 0 || (MobEffectUtil.hasWaterBreathing(entity) && data.getCurrentValue(InitAttribute.BREATH_RECOVERY) > 0))
-                        )
-                );
-        double consumer = consumeAirAmount;
-        double refill = 4;
-        if (canBreathe) {
-            double defRecovery = data.getDefaultValue(InitAttribute.BREATH_RECOVERY);
-            double defWaterBreath = data.getDefaultValue(InitAttribute.WATER_BREATH);
-            double diffWaterBreath = currWaterBreath - defWaterBreath;
-            double diffRecovery = currRecovery - defRecovery;
-            double factor;
-            if (isAir && defWaterBreath > 0) {
-                // 是水生生物且在空气中，检测默认水下呼吸和当前呼吸回复的差值
-                factor = (currRecovery - defWaterBreath);
-            } else if (!isAir && defRecovery > 0) {
-                // 是陆生生物且在水中，检测默认默认呼吸回复和当前水下呼吸的差值
-                factor = (currWaterBreath - defRecovery);
-            } else {
-                // 陆上用呼吸效率，水中用水下呼吸
-                factor = isAir ? diffRecovery : diffWaterBreath;
-            }
-            if (factor != 0) {
-                refill *= 1 + factor / 2;
-                // 如果因子为负数，则代表回复低下，在疾跑状态增加额外惩罚
-                if (!isInvulnerable && factor < 0 && entity.isSprinting()) {
-                    refill -= 4;
+        boolean canBreathe = true;
+        if (data.isNeedBreath()) {
+            double currRecovery = data.getCurrentValue(InitAttribute.BREATH_RECOVERY);
+            double currWaterBreath = data.getCurrentValue(InitAttribute.WATER_BREATH);
+            boolean isInvulnerable = entity instanceof Player player && player.getAbilities().invulnerable;
+            double consumer = consumeAirAmount;
+            double refill = 4;
+            // 检测呼吸功能
+            canBreathe =
+                    isInvulnerable
+                            || (
+                            data.getCurrentValue(InitAttribute.BREATH_CAPACITY) > 0
+                                    && (
+                                    isAir
+                                            ? currRecovery > 0
+                                            : (currWaterBreath > 0 || (MobEffectUtil.hasWaterBreathing(entity) && data.getCurrentValue(InitAttribute.BREATH_RECOVERY) > 0))
+                            )
+                    );
+            if (canBreathe) {
+                double defRecovery = data.getDefaultValue(InitAttribute.BREATH_RECOVERY);
+                double defWaterBreath = data.getDefaultValue(InitAttribute.WATER_BREATH);
+                double diffWaterBreath = currWaterBreath - defWaterBreath;
+                double diffRecovery = currRecovery - defRecovery;
+                double factor;
+                if (isAir && defWaterBreath > 0) {
+                    // 是水生生物且在空气中，检测默认水下呼吸和当前呼吸回复的差值
+                    factor = (currRecovery - defWaterBreath);
+                } else if (!isAir && defRecovery > 0) {
+                    // 是陆生生物且在水中，检测默认默认呼吸回复和当前水下呼吸的差值
+                    factor = (currWaterBreath - defRecovery);
+                } else {
+                    // 陆上用呼吸效率，水中用水下呼吸
+                    factor = isAir ? diffRecovery : diffWaterBreath;
                 }
-                // residueOxygen为小数缓存
-                refill += data.oxygenRemainder;
-                data.oxygenRemainder = refill % 1;
+                if (factor != 0) {
+                    refill *= 1 + factor / 2;
+                    // 如果因子为负数，则代表回复低下，在疾跑状态增加额外惩罚
+                    if (!isInvulnerable && factor < 0 && entity.isSprinting()) {
+                        refill -= 4;
+                    }
+                    // residueOxygen为小数缓存
+                    refill += data.oxygenRemainder;
+                    data.oxygenRemainder = refill % 1;
+                }
+            } else {
+                double capacity = data.getDifferenceValue(InitAttribute.BREATH_CAPACITY);
+                consumer *= MathUtil.getInverseScale(capacity);
+                // 此处缓存负数氧气为了和上面缓存的氧气匹配
+                consumer -= data.oxygenRemainder;
+                data.oxygenRemainder = -consumer % 1;
             }
-        } else {
-            double capacity = data.getDifferenceValue(InitAttribute.BREATH_CAPACITY);
-            consumer *= MathUtil.getInverseScale(capacity);
-            // 此处缓存负数氧气为了和上面缓存的氧气匹配
-            consumer -= data.oxygenRemainder;
-            data.oxygenRemainder = -consumer % 1;
+            refillAirAmount = (int) refill;
+            consumeAirAmount = (int) consumer;
         }
-        refillAirAmount = (int) refill;
-        consumeAirAmount = (int) consumer;
         LivingBreatheEvent breatheEvent = new LivingBreatheEvent(entity, canBreathe, consumeAirAmount, refillAirAmount);
         NeoForge.EVENT_BUS.post(breatheEvent);
         if (breatheEvent.canBreathe()) {

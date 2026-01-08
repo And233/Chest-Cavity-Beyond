@@ -30,6 +30,8 @@ public class ChestCavityType {
 
     private final Map<EntityType<?>, Map<Holder<Attribute>, AttributeModifier>> defaultModifiers = new HashMap<>();
 
+    private boolean needBreath = true;
+
     public ChestCavityType(String type) {
         this.type = type;
     }
@@ -86,6 +88,20 @@ public class ChestCavityType {
     }
 
     /**
+     * 复制目标胸腔类型
+     *
+     * @param copyTarget 要复制属性的胸腔类型
+     * @return 当前胸腔类型
+     */
+    public ChestCavityType copyWith(ChestCavityType copyTarget) {
+        for (int i = 0; i < organs.size(); i++) {
+            organs.set(i, copyTarget.organs.get(i));
+        }
+        this.needBreath = copyTarget.needBreath;
+        return this;
+    }
+
+    /**
      * 为胸腔类型设置默认器官
      *
      * @param index 小于27
@@ -128,6 +144,26 @@ public class ChestCavityType {
      */
     public ChestCavityType setThirdRow(int index, Item organ) {
         return setOrgan(index + 18, organ);
+    }
+
+    /**
+     * 获取是否需要呼吸
+     *
+     * @return 是否需要呼吸
+     */
+    public boolean getNeedBreath() {
+        return needBreath;
+    }
+
+    /**
+     * 设置是否需要呼吸
+     *
+     * @param needBreath 是否需要呼吸
+     * @return 胸腔类型
+     */
+    public ChestCavityType setNeedBreath(boolean needBreath) {
+        this.needBreath = needBreath;
+        return this;
     }
 
     /**
