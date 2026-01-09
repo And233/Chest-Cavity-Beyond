@@ -4,6 +4,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
+import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.register.InitItem;
 
 import java.util.ArrayList;
@@ -526,6 +527,7 @@ public class ChestCavityManager {
             .setThirdRow(8, InitItem.SALTWATER_MUSCLE.get());
 
     public static final ChestCavityType CREEPER = register("creeper")
+            .setNeedBreath(false)
             .setFirstRow(0, InitItem.CREEPER_LEAF.get())
             .setFirstRow(1, InitItem.ANIMAL_RIB.get())
             .setFirstRow(4, InitItem.CREEPER_APPENDIX.get())
@@ -549,6 +551,7 @@ public class ChestCavityManager {
             .setThirdRow(8, InitItem.CREEPER_LEAF.get());
 
     public static final ChestCavityType BLAZE = register("blaze")
+            .setNeedBreath(false)
             .setFirstRow(1, InitItem.ACTIVE_BLAZE_ROD.get())
             .setFirstRow(2, InitItem.BLAZE_SHELL.get())
             .setFirstRow(3, Items.MAGMA_BLOCK)
@@ -641,7 +644,7 @@ public class ChestCavityManager {
             .setThirdRow(4, Items.SNOWBALL)
             .setThirdRow(5, Items.SNOWBALL);
 
-    public static final ChestCavityType SCULK = register("sculk")
+    public static final ChestCavityType WARDEN = register("warden")
             .setNeedBreath(false)
             .setFirstRow(0, InitItem.SCULK_MUSCLE.get())
             .setFirstRow(1, InitItem.SCULK_RIB.get())

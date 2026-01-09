@@ -161,8 +161,8 @@ public class CommonEventHandler {
         ChestCavityManager.registerEntity(EntityType.SHULKER, ChestCavityManager.SHULKER);
         // 旋风人
         ChestCavityManager.registerEntity(EntityType.BREEZE, ChestCavityManager.BREEZE);
-        // 坚守者
-        ChestCavityManager.registerEntity(EntityType.WARDEN, ChestCavityManager.HUMAN);
+        // 监守者
+        ChestCavityManager.registerEntity(EntityType.WARDEN, ChestCavityManager.WARDEN);
         // 铁傀儡
         ChestCavityManager.registerEntity(EntityType.IRON_GOLEM, ChestCavityManager.IRON_GOLEM);
         // 雪傀儡

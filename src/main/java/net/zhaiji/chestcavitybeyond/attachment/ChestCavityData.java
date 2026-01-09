@@ -224,8 +224,8 @@ public class ChestCavityData extends ItemStackHandler {
      * 如果健康小于等于0，就会持续受伤
      */
     private void applyHealth() {
-        double health = getDifferenceValue(InitAttribute.HEALTH);
-        if (health < 0) {
+        double health = getCurrentValue(InitAttribute.HEALTH);
+        if (health <= 0) {
             owner.hurt(DamageSourceManager.organLoss(owner.level()), 2);
         }
     }

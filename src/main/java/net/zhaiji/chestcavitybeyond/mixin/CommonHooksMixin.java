@@ -36,15 +36,15 @@ public abstract class CommonHooksMixin {
             double currWaterBreath = data.getCurrentValue(InitAttribute.WATER_BREATH);
             boolean isInvulnerable = entity instanceof Player player && player.getAbilities().invulnerable;
             // 检测呼吸功能
-            canBreathe =isInvulnerable
-                            || (
-                            data.getCurrentValue(InitAttribute.BREATH_CAPACITY) > 0
-                                    && (
-                                    isAir
-                                            ? currRecovery > 0
-                                            : (currWaterBreath > 0 || (MobEffectUtil.hasWaterBreathing(entity) && data.getCurrentValue(InitAttribute.BREATH_RECOVERY) > 0))
-                            )
-                    );
+            canBreathe = isInvulnerable
+                    || (
+                    data.getCurrentValue(InitAttribute.BREATH_CAPACITY) > 0
+                            && (
+                            isAir
+                                    ? currRecovery > 0
+                                    : (currWaterBreath > 0 || (MobEffectUtil.hasWaterBreathing(entity) && data.getCurrentValue(InitAttribute.BREATH_RECOVERY) > 0))
+                    )
+            );
             if (canBreathe) {
                 double defRecovery = data.getDefaultValue(InitAttribute.BREATH_RECOVERY);
                 double defWaterBreath = data.getDefaultValue(InitAttribute.WATER_BREATH);
