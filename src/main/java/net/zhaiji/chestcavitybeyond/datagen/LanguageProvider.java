@@ -5,6 +5,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
 import net.zhaiji.chestcavitybeyond.register.*;
@@ -29,6 +30,10 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         for (int i = 0; i < 27; i++) {
             add(KeyMappings.USE_ORGAN_SKILLS_TRANSLATABLE + i, "Organ Skill " + (i < 9 ? "0" + (i + 1) : (i + 1)));
         }
+
+        add("organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + AttributeModifier.Operation.ADD_VALUE.ordinal(), "Provides %1$s points of %2$s");
+        add("organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + AttributeModifier.Operation.ADD_MULTIPLIED_BASE.ordinal(), "Provides %1$s%% %2$s");
+        add("organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL.ordinal(), "Provides %1$s%% final %2$s");
 
         addItem(InitItem.CHEST_OPENER, "Chest Opener");
 
@@ -233,6 +238,12 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addEffect(InitEffect.FURNACE_POWER::value, "Furnace Powered");
 
         addDamageType(InitDamageType.ORGAN_LOSS, "%1$s died from organ loss");
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s died from a medical accident");
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s died from %2$s's malpractice", 0);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s died tragically during chest surgery", 1);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s bled out during surgery", 2);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s became a medical experiment of %2$s", 3);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s perished due to %2$s's medical error", 4);
     }
 
     public void Chinese() {
@@ -244,6 +255,10 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         for (int i = 0; i < 27; i++) {
             add(KeyMappings.USE_ORGAN_SKILLS_TRANSLATABLE + i, "器官技能" + (i < 9 ? "0" + (i + 1) : (i + 1)));
         }
+
+        add("organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + AttributeModifier.Operation.ADD_VALUE.ordinal(), "提供%1$s点%2$s");
+        add("organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + AttributeModifier.Operation.ADD_MULTIPLIED_BASE.ordinal(), "提供%1$s%%%2$s");
+        add("organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL.ordinal(), "提供%1$s%%最终%2$s");
 
         addItem(InitItem.CHEST_OPENER, "开胸器");
 
@@ -447,6 +462,12 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addEffect(InitEffect.FURNACE_POWER::value, "熔炉之力");
 
         addDamageType(InitDamageType.ORGAN_LOSS, "%1$s死于器官缺失");
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s死于医疗事故");
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s死于庸医%2$s", 0);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s在胸腔手术中不幸去世",1);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s在手术中失血过多而亡",2);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s成了%2$s的医疗试验品", 3);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s因%2$s的医疗失误而丧命", 4);
     }
 
     private void addAttribute(Holder<Attribute> attribute, String value) {
@@ -455,6 +476,10 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
     private void addDamageType(ResourceKey<DamageType> damageType, String value) {
         add("death.attack." + damageType.location().getNamespace() + "." + damageType.location().getPath(), value);
+    }
+
+    private void addDamageType(ResourceKey<DamageType> damageType, String value,int index) {
+        add("death.attack." + damageType.location().getNamespace() + "." + damageType.location().getPath() + "." + index, value);
     }
 
     @Override

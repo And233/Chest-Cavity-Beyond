@@ -10,6 +10,7 @@ import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
 import net.zhaiji.chestcavitybeyond.api.capability.Organ;
 import net.zhaiji.chestcavitybeyond.api.function.AttackConsumer;
+import net.zhaiji.chestcavitybeyond.api.function.HurtConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
 import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
@@ -31,6 +32,8 @@ public class OrganBuilder {
     private static final Consumer<ChestCavitySlotContext> EMPTY_CONSUMER = context -> {
     };
     private static final AttackConsumer EMPTY_ATTACK = (context, target, source, damageContainer) -> {
+    };
+    private static final HurtConsumer EMPTY_HURT = (context, source, damageContainer) -> {
     };
 
     /**
@@ -57,6 +60,7 @@ public class OrganBuilder {
         private boolean hasSkill = false;
         private Consumer<ChestCavitySlotContext> organSkillConsumer = EMPTY_CONSUMER;
         private AttackConsumer attackConsumer = EMPTY_ATTACK;
+        private HurtConsumer hurtConsumer = EMPTY_HURT;
 
         private Builder() {
         }
@@ -123,10 +127,18 @@ public class OrganBuilder {
         }
 
         /**
-         * 设置器官拥有者攻击
+         * 设置器官拥有者攻击触发器
          */
         public Builder attack(AttackConsumer attackConsumer) {
             this.attackConsumer = attackConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官拥有者受伤触发器
+         */
+        public Builder hurt(HurtConsumer hurtConsumer) {
+            this.hurtConsumer = hurtConsumer;
             return this;
         }
 
@@ -147,7 +159,8 @@ public class OrganBuilder {
                             organRemovedConsumer,
                             hasSkill,
                             organSkillConsumer,
-                            attackConsumer
+                            attackConsumer,
+                            hurtConsumer
                     )
             );
             return item;

@@ -96,4 +96,14 @@ public interface IOrgan {
      */
     default void attack(ChestCavitySlotContext context, LivingEntity target, DamageSource source, DamageContainer damageContainer) {
     }
+
+    /**
+     * 器官拥有者受伤
+     *
+     * @param context         胸腔槽位上下文
+     * @param source          伤害源
+     * @param damageContainer 伤害容器
+     */
+    default void hurt(ChestCavitySlotContext context, DamageSource source, DamageContainer damageContainer) {
+    }
 }

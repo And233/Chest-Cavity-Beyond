@@ -1,6 +1,7 @@
 package net.zhaiji.chestcavitybeyond.event;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -8,6 +9,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -19,6 +21,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -34,6 +37,7 @@ import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
+import net.zhaiji.chestcavitybeyond.register.InitDamageType;
 import net.zhaiji.chestcavitybeyond.register.InitItem;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.MathUtil;
@@ -205,7 +209,7 @@ public class CommonEventHandler {
      * @param event 玩家重生事件
      */
     public static void handlerPlayerEvent$PlayerRespawnEvent(PlayerEvent.PlayerRespawnEvent event) {
-        ChestCavityUtil.getData(event.getEntity()).resetAttributeModifier();
+        ChestCavityUtil.getData(event.getEntity()).initAttributeModifier();
     }
 
     /**
@@ -332,6 +336,20 @@ public class CommonEventHandler {
                         event.getContainer()
                 );
             }
+        }
+    }
+
+    /**
+     * 显示因开胸而死亡的生物的死亡信息
+     *
+     * @param event 实体死亡事件
+     */
+    public static void handlerLivingDeathEvent(LivingDeathEvent event) {
+        DamageSource source = event.getSource();
+        if (!source.is(InitDamageType.OPEN_CHEST)) return;
+        LivingEntity entity = event.getEntity();
+        if (source.getDirectEntity() instanceof ServerPlayer player && !(entity instanceof TamableAnimal tamable && tamable.getOwner() != null)) {
+            player.sendSystemMessage(source.getLocalizedDeathMessage(entity));
         }
     }
 

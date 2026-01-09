@@ -34,6 +34,7 @@ public class KeyMappings {
             KEY_CATEGORY_TRANSLATABLE
     );
 
+    // 快捷技能使用
     static {
         for (int i = 0; i < 27; i++) {
             register(

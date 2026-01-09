@@ -12,8 +12,11 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 public class InitDamageType {
     public static final ResourceKey<DamageType> ORGAN_LOSS = ResourceKey.create(Registries.DAMAGE_TYPE, ChestCavityBeyond.of("organ_loss"));
 
+    public static final ResourceKey<DamageType> OPEN_CHEST = ResourceKey.create(Registries.DAMAGE_TYPE, ChestCavityBeyond.of("open_chest"));
+
     public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(ORGAN_LOSS, builder(ORGAN_LOSS).build());
+        context.register(OPEN_CHEST, builder(OPEN_CHEST).build());
     }
 
     public static DamageTypeFactory builder(ResourceKey<DamageType> damageType) {

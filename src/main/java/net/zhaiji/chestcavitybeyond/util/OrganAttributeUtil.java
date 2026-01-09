@@ -10,10 +10,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
+import net.zhaiji.chestcavitybeyond.api.AttributeBonus;
+import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 public class OrganAttributeUtil {
@@ -121,15 +124,21 @@ public class OrganAttributeUtil {
         if (oldStack.equals(newStack)) return;
         Multimap<Holder<Attribute>, AttributeModifier> removeModifiers = ChestCavityUtil.getAttributeModifiers(ChestCavityUtil.createContext(data, entity, index, oldStack));
         Multimap<Holder<Attribute>, AttributeModifier> addModifiers = ChestCavityUtil.getAttributeModifiers(ChestCavityUtil.createContext(data, entity, index, newStack));
-        if (!removeModifiers.isEmpty()) {
-            for (Holder<Attribute> attribute : removeModifiers.keySet()) {
-                removeModifier(entity, attribute, removeModifiers.get(attribute));
-            }
+        ChestCavityType type = data.getType();
+        ResourceLocation slotId = ChestCavityUtil.getSlotId(index);
+        // 移除旧器官加成
+        for (Holder<Attribute> attribute : removeModifiers.keySet()) {
+            removeModifier(entity, attribute, removeModifiers.get(attribute));
         }
-        if (!addModifiers.isEmpty()) {
-            for (Holder<Attribute> attribute : addModifiers.keySet()) {
-                addModifier(entity, attribute, addModifiers.get(attribute));
-            }
+        for (AttributeBonus bonus : type.getAttributeBonuses(oldStack.getItem())) {
+            removeModifier(entity, bonus.attribute(), Collections.singleton(bonus.create(slotId)));
+        }
+        // 添加新器官加成
+        for (Holder<Attribute> attribute : addModifiers.keySet()) {
+            addModifier(entity, attribute, addModifiers.get(attribute));
+        }
+        for (AttributeBonus bonus : type.getAttributeBonuses(newStack.getItem())) {
+            addModifier(entity, bonus.attribute(), Collections.singleton(bonus.create(slotId)));
         }
         updateHealth(data, entity);
         updateNerves(data, entity);

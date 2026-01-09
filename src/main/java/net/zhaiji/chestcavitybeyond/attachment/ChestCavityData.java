@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.zhaiji.chestcavitybeyond.api.AttributeBonus;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.api.task.IChestCavityTask;
 import net.zhaiji.chestcavitybeyond.client.screen.OrganSkillScreen;
@@ -33,6 +34,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class ChestCavityData extends ItemStackHandler {
+    private final List<IChestCavityTask> tasks = new ArrayList<>();
+
     /**
      * 选择使用技能的槽位索引
      * <p>
@@ -56,6 +59,7 @@ public class ChestCavityData extends ItemStackHandler {
     private ChestCavityType type;
 
     private @Nullable LivingEntity owner;
+
     /**
      * 血液过滤周期
      */
@@ -68,8 +72,6 @@ public class ChestCavityData extends ItemStackHandler {
      * </P>
      */
     private int filtrationTickOffset;
-
-    private final List<IChestCavityTask> tasks = new ArrayList<>();
 
     public ChestCavityData(IAttachmentHolder attachmentHolder) {
         super(27);
@@ -92,7 +94,7 @@ public class ChestCavityData extends ItemStackHandler {
             stacks.set(i, organs.get(i).getDefaultInstance());
         }
         needBreath = type.getNeedBreath();
-        resetAttributeModifier();
+        initAttributeModifier();
         init = true;
     }
 
@@ -180,11 +182,18 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
-     * 重置修饰符
+     * 初始化修饰符
      */
-    public void resetAttributeModifier() {
+    public void initAttributeModifier() {
         for (int i = 0; i < getSlots(); i++) {
-            OrganAttributeUtil.updateOrganAttributeModifier(this, owner, i, ItemStack.EMPTY, getStackInSlot(i));
+            ItemStack stack = getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+            // 器官基础属性
+            OrganAttributeUtil.updateOrganAttributeModifier(this, owner, i, ItemStack.EMPTY, stack);
+            // 器官补偿属性
+            for (AttributeBonus bonus : type.getAttributeBonuses(stack.getItem())) {
+                OrganAttributeUtil.updateAttributeModifier(owner, bonus.attribute(), bonus.create(ChestCavityUtil.getSlotId(i)));
+            }
         }
         OrganAttributeUtil.updateDefaultModifier(this, owner);
     }

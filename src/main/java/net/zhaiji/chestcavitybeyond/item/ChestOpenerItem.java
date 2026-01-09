@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.zhaiji.chestcavitybeyond.manager.DamageSourceManager;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 
 public class ChestOpenerItem extends Item {
@@ -33,8 +34,10 @@ public class ChestOpenerItem extends Item {
         );
         if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity entity) {
             ChestCavityUtil.openChestCavity(player, entity);
+            entity.hurt(DamageSourceManager.openChest(level, player), 4);
         } else {
             ChestCavityUtil.openChestCavity(player);
+            player.hurt(DamageSourceManager.openChest(level, player), 4);
         }
         return InteractionResultHolder.consume(stack);
     }

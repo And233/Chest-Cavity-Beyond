@@ -15,6 +15,11 @@ import org.jetbrains.annotations.Nullable;
  * @param index  位置索引
  * @param stack  对应物品
  */
-public record ChestCavitySlotContext(@Nullable ChestCavityData data, @Nullable LivingEntity entity, ResourceLocation id,
-                                     int index, ItemStack stack) {
+public record ChestCavitySlotContext(
+        @Nullable ChestCavityData data,
+        @Nullable LivingEntity entity,
+        ResourceLocation id,
+        int index,
+        ItemStack stack
+) {
 }

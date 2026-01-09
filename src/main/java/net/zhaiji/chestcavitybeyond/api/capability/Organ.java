@@ -16,6 +16,7 @@ import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
 import net.zhaiji.chestcavitybeyond.api.function.AttackConsumer;
+import net.zhaiji.chestcavitybeyond.api.function.HurtConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 
@@ -32,8 +33,9 @@ public class Organ implements IOrgan {
     private final boolean hasSkill;
     private final Consumer<ChestCavitySlotContext> organSkillConsumer;
     private final AttackConsumer attackConsumer;
+    private final HurtConsumer hurtConsumer;
 
-    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, OrganTooltipConsumer organTooltipConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer, boolean hasSkill, Consumer<ChestCavitySlotContext> organSkillConsumer, AttackConsumer attackConsumer) {
+    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, OrganTooltipConsumer organTooltipConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer, boolean hasSkill, Consumer<ChestCavitySlotContext> organSkillConsumer, AttackConsumer attackConsumer, HurtConsumer hurtConsumer) {
         this.organModifierConsumer = organModifierConsumer;
         this.organTooltipConsumer = organTooltipConsumer;
         this.organTickConsumer = organTickConsumer;
@@ -42,6 +44,7 @@ public class Organ implements IOrgan {
         this.hasSkill = hasSkill;
         this.organSkillConsumer = organSkillConsumer;
         this.attackConsumer = attackConsumer;
+        this.hurtConsumer = hurtConsumer;
     }
 
     @Override
@@ -84,5 +87,10 @@ public class Organ implements IOrgan {
     @Override
     public void attack(ChestCavitySlotContext context, LivingEntity target, DamageSource source, DamageContainer damageContainer) {
         attackConsumer.accept(context, target, source, damageContainer);
+    }
+
+    @Override
+    public void hurt(ChestCavitySlotContext context, DamageSource source, DamageContainer damageContainer) {
+        hurtConsumer.accept(context, source, damageContainer);
     }
 }

@@ -23,6 +23,7 @@ public class CommonEventManager {
         gameBus.addListener(CommonEventHandler::handlerMobEffectEvent$Applicable);
         gameBus.addListener(CommonEventHandler::handlerLivingIncomingDamageEvent);
         gameBus.addListener(CommonEventHandler::handlerLivingDamageEvent$Pre);
+        gameBus.addListener(CommonEventHandler::handlerLivingDeathEvent);
         gameBus.addListener(CommonEventHandler::handlerPlayerEvent$BreakSpeed);
         gameBus.addListener(CommonEventHandler::handlerEntityTickEvent$Post);
     }

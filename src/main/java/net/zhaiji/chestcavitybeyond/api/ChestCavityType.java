@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -17,9 +18,7 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ChestCavityType {
     private final String type;
@@ -29,6 +28,8 @@ public class ChestCavityType {
     private final Map<EntityType<?>, Map<Holder<Attribute>, Double>> defaultAttributes = new HashMap<>();
 
     private final Map<EntityType<?>, Map<Holder<Attribute>, AttributeModifier>> defaultModifiers = new HashMap<>();
+
+    private final Map<Item, List<AttributeBonus>> attributeBonuses = new HashMap<>();
 
     private boolean needBreath = true;
 
@@ -167,6 +168,45 @@ public class ChestCavityType {
     }
 
     /**
+     * 获取物品的属性加成列表
+     *
+     * @param item 物品
+     * @return 属性加成列表，如果没有则返回空列表
+     */
+    public List<AttributeBonus> getAttributeBonuses(Item item) {
+        return attributeBonuses.getOrDefault(item, List.of());
+    }
+
+    /**
+     * 为特定器官添加额外属性加成
+     *
+     * @param organ      提供加成的物品
+     * @param attribute  要修改的属性
+     * @param bonusValue 加成数值
+     * @param operation  应用方式
+     * @return 胸腔类型
+     */
+    public ChestCavityType addAttributeBonus(Item organ, Holder<Attribute> attribute, double bonusValue, AttributeModifier.Operation operation) {
+        attributeBonuses.computeIfAbsent(organ, item -> new ArrayList<>())
+                .add(new AttributeBonus(attribute, bonusValue, operation));
+        return this;
+    }
+
+    /**
+     * 批量添加简单加成
+     *
+     * @param item       提供加成的物品
+     * @param attributes 属性到加成数值的映射
+     * @return 胸腔类型
+     */
+    public ChestCavityType addValueBonuses(Item item, Map<Holder<Attribute>, Double> attributes) {
+        attributes.forEach((attribute, value) ->
+                addAttributeBonus(item, attribute, value, AttributeModifier.Operation.ADD_VALUE)
+        );
+        return this;
+    }
+
+    /**
      * 为每个属于这个胸腔类型的实体类型计算默认胸腔属性
      *
      * @param entityType 实体类型
@@ -176,13 +216,27 @@ public class ChestCavityType {
         Multimap<Holder<Attribute>, AttributeModifier> modifierMultimap = HashMultimap.create();
         Map<Holder<Attribute>, Double> attributeMap = new HashMap<>();
         Map<Holder<Attribute>, AttributeModifier> modifierMap = new HashMap<>();
+
+        // 收集器官的所有修饰符
         for (int i = 0; i < organs.size(); i++) {
-            ItemStack organ = organs.get(i).getDefaultInstance();
+            Item organItem = organs.get(i);
+            if (organItem == Items.AIR) continue;
+            ItemStack organ = organItem.getDefaultInstance();
+            ResourceLocation slotId = ChestCavityUtil.getSlotId(i);
+            // 器官默认属性
             modifierMultimap.putAll(
                     ChestCavityUtil.getOrganCap(organ)
-                            .getAttributeModifiers(new ChestCavitySlotContext(null, null, ChestCavityUtil.getSlotId(i), i, organ))
+                            .getAttributeModifiers(new ChestCavitySlotContext(null, null, slotId, i, organ))
             );
+            // 器官补偿属性
+            if (attributeBonuses.containsKey(organItem)) {
+                for (AttributeBonus bonus : attributeBonuses.get(organItem)) {
+                    modifierMultimap.put(bonus.attribute(), bonus.create(slotId));
+                }
+            }
         }
+
+        // 计算最终值
         for (Holder<Attribute> attribute : modifierMultimap.keySet()) {
             calculateValue(entityType, attribute, modifierMultimap.get(attribute), attributeMap, modifierMap);
         }

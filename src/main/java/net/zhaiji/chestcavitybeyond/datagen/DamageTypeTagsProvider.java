@@ -21,14 +21,14 @@ public class DamageTypeTagsProvider extends TagsProvider<DamageType> {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(DamageTypeTags.BYPASSES_ARMOR)
-                .add(InitDamageType.ORGAN_LOSS);
+                .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
         tag(DamageTypeTags.BYPASSES_SHIELD)
-                .add(InitDamageType.ORGAN_LOSS);
+                .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
         tag(DamageTypeTags.BYPASSES_WOLF_ARMOR)
-                .add(InitDamageType.ORGAN_LOSS);
+                .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
         tag(DamageTypeTags.BYPASSES_RESISTANCE)
-                .add(InitDamageType.ORGAN_LOSS);
+                .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
         tag(DamageTypeTags.NO_KNOCKBACK)
-                .add(InitDamageType.ORGAN_LOSS);
+                .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
     }
 }
