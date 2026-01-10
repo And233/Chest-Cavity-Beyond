@@ -136,6 +136,7 @@ public class OrganSkillScreen extends Screen {
             ItemStack itemStack = organs.get(i);
             if (itemStack != null) {
                 guiGraphics.renderItem(itemStack, (int) posX, (int) posY);
+                guiGraphics.renderItemDecorations(font, itemStack, (int) posX, (int) posY);
             }
         }
     }

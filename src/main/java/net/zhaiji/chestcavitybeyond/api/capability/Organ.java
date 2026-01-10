@@ -26,7 +26,9 @@ import java.util.function.Consumer;
 
 public class Organ implements IOrgan {
     private final BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer;
-    private final OrganTooltipConsumer organTooltipConsumer;
+    private final OrganTooltipConsumer descriptionTooltipConsumer;
+    private final OrganTooltipConsumer attributeTooltipConsumer;
+    private final OrganTooltipConsumer skillTooltipConsumer;
     private final Consumer<ChestCavitySlotContext> organTickConsumer;
     private final Consumer<ChestCavitySlotContext> organAddedConsumer;
     private final Consumer<ChestCavitySlotContext> organRemovedConsumer;
@@ -35,9 +37,11 @@ public class Organ implements IOrgan {
     private final AttackConsumer attackConsumer;
     private final HurtConsumer hurtConsumer;
 
-    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, OrganTooltipConsumer organTooltipConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer, boolean hasSkill, Consumer<ChestCavitySlotContext> organSkillConsumer, AttackConsumer attackConsumer, HurtConsumer hurtConsumer) {
+    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, OrganTooltipConsumer descriptionTooltipConsumer, OrganTooltipConsumer attributeTooltipConsumer, OrganTooltipConsumer skillTooltipConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer, boolean hasSkill, Consumer<ChestCavitySlotContext> organSkillConsumer, AttackConsumer attackConsumer, HurtConsumer hurtConsumer) {
         this.organModifierConsumer = organModifierConsumer;
-        this.organTooltipConsumer = organTooltipConsumer;
+        this.descriptionTooltipConsumer = descriptionTooltipConsumer;
+        this.attributeTooltipConsumer = attributeTooltipConsumer;
+        this.skillTooltipConsumer = skillTooltipConsumer;
         this.organTickConsumer = organTickConsumer;
         this.organAddedConsumer = organAddedConsumer;
         this.organRemovedConsumer = organRemovedConsumer;
@@ -55,8 +59,18 @@ public class Organ implements IOrgan {
     }
 
     @Override
-    public void organTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        organTooltipConsumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
+    public void descriptionTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        descriptionTooltipConsumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
+    }
+
+    @Override
+    public void attributeTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        attributeTooltipConsumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
+    }
+
+    @Override
+    public void skillTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        skillTooltipConsumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
     }
 
     @Override

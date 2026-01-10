@@ -16,6 +16,7 @@
     "chestcavitybeyond:breeze_core",
     "chestcavitybeyond:golem_core",
     "chestcavitybeyond:snow_core",
-    "chestcavitybeyond:sculk_core"
+    "chestcavitybeyond:sculk_core",
+    "minecraft:nether_star"
   ]
 }

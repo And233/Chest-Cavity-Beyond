@@ -7,31 +7,37 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 
 public class ItemTagManager {
     // 器官
-    public static final TagKey<Item> ORGAN = create("organ");
+    public static final TagKey<Item> ORGANS = create("organs");
     // 心脏
-    public static final TagKey<Item> HEART = create("heart");
+    public static final TagKey<Item> HEART = create("organs/heart");
     // 肺脏
-    public static final TagKey<Item> LUNG = create("lung");
+    public static final TagKey<Item> LUNG = create("organs/lung");
     // 肌肉
-    public static final TagKey<Item> MUSCLE = create("muscle");
+    public static final TagKey<Item> MUSCLE = create("organs/muscle");
     // 肋骨
-    public static final TagKey<Item> RIB = create("rib");
+    public static final TagKey<Item> RIB = create("organs/rib");
     // 阑尾
-    public static final TagKey<Item> APPENDIX = create("appendix");
+    public static final TagKey<Item> APPENDIX = create("organs/appendix");
     // 脾脏
-    public static final TagKey<Item> SPLEEN = create("spleen");
+    public static final TagKey<Item> SPLEEN = create("organs/spleen");
     // 肾脏
-    public static final TagKey<Item> KIDNEY = create("kidney");
+    public static final TagKey<Item> KIDNEY = create("organs/kidney");
     // 脊柱
-    public static final TagKey<Item> SPINE = create("spine");
+    public static final TagKey<Item> SPINE = create("organs/spine");
     // 肝脏
-    public static final TagKey<Item> LIVER = create("liver");
+    public static final TagKey<Item> LIVER = create("organs/liver");
     // 肠子
-    public static final TagKey<Item> INTESTINE = create("intestine");
+    public static final TagKey<Item> INTESTINE = create("organs/intestine");
     // 胃
-    public static final TagKey<Item> STOMACH = create("stomach");
-    // 特殊器官
-    public static final TagKey<Item> SPECIAL_ORGAN = create("special_organ");
+    public static final TagKey<Item> STOMACH = create("organs/stomach");
+    // 特殊
+    public static final TagKey<Item> SPECIAL = create("organs/special");
+    // 骨质器官
+    public static final TagKey<Item> BONE = create("organs/bone");
+    // 腐烂器官
+    public static final TagKey<Item> ROTTEN = create("organs/rotten");
+    // 铁质器官
+    public static final TagKey<Item> IRON = create("organs/iron");
 
     public static TagKey<Item> create(String name) {
         return ItemTags.create(ChestCavityBeyond.of(name));

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rotten": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#chestcavitybeyond:organs/rotten"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chestcavitybeyond:rotten"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rotten"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chestcavitybeyond:rotten"
+    ]
+  }
+}

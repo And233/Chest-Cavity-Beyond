@@ -6,9 +6,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
+import net.zhaiji.chestcavitybeyond.manager.ItemTagManager;
 import net.zhaiji.chestcavitybeyond.register.*;
+
+import java.util.function.Supplier;
 
 public class LanguageProvider extends net.neoforged.neoforge.common.data.LanguageProvider {
     public static final String EN_US = "en_us";
@@ -244,6 +248,40 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addDamageType(InitDamageType.OPEN_CHEST, "%1$s bled out during surgery", 2);
         addDamageType(InitDamageType.OPEN_CHEST, "%1$s became a medical experiment of %2$s", 3);
         addDamageType(InitDamageType.OPEN_CHEST, "%1$s perished due to %2$s's medical error", 4);
+
+        addOrganSkill(InitItem.ENDER_APPENDIX, "Teleport in viewing direction");
+        addOrganSkill(InitItem.HERBIVORE_RUMEN, "Eat grass");
+        addOrganSkill(InitItem.CREEPER_APPENDIX, "Explode");
+        addOrganSkill(InitItem.INNER_FURNACE, "Burn fuel for power");
+        addOrganSkill(InitItem.GOLEM_ARMOR_PLATE, "Repair itself using iron ingots");
+        addOrganSkill(InitItem.SILK_GLAND, "Shoot cobwebs");
+        addOrganSkill(InitItem.VENOM_GLAND, "Apply poison on hit");
+        addOrganSkill(InitItem.LLAMA_LUNG, "Spit");
+        addOrganSkill(InitItem.ACTIVE_BLAZE_ROD, "Shoot continuous fireballs");
+        addOrganSkill(InitItem.SNOW_CORE, "Throw snowballs");
+        addOrganSkill(InitItem.GHAST_STOMACH, "Shoot large fireballs");
+        addOrganSkill(InitItem.SHULKER_SPLEEN, "Shoot shulker bullets");
+        addOrganSkill(InitItem.BREEZE_CORE, "Shoot wind charges");
+        addOrganSkill(InitItem.DRAGON_LUNG, "Shoot dragon fireballs");
+        addOrganSkill(InitItem.SCULK_CORE, "Sonic boom");
+
+        add(ItemTagManager.ORGANS, "Organs");
+        add(ItemTagManager.HEART, "Hearts");
+        add(ItemTagManager.LUNG, "Lungs");
+        add(ItemTagManager.MUSCLE, "Muscles");
+        add(ItemTagManager.RIB, "Ribs");
+        add(ItemTagManager.APPENDIX, "Appendixes");
+        add(ItemTagManager.SPLEEN, "Spleens");
+        add(ItemTagManager.KIDNEY, "Kidneys");
+        add(ItemTagManager.SPINE, "Spines");
+        add(ItemTagManager.LIVER, "Livers");
+        add(ItemTagManager.INTESTINE, "Intestines");
+        add(ItemTagManager.STOMACH, "Stomachs");
+        add(ItemTagManager.SPECIAL, "Special Organs");
+        add(ItemTagManager.BONE, "Bone Organs");
+        add(ItemTagManager.ROTTEN, "Rotten Organs");
+        add(ItemTagManager.IRON, "Iron Organs");
+
     }
 
     public void Chinese() {
@@ -464,10 +502,43 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addDamageType(InitDamageType.ORGAN_LOSS, "%1$s死于器官缺失");
         addDamageType(InitDamageType.OPEN_CHEST, "%1$s死于医疗事故");
         addDamageType(InitDamageType.OPEN_CHEST, "%1$s死于庸医%2$s", 0);
-        addDamageType(InitDamageType.OPEN_CHEST, "%1$s在胸腔手术中不幸去世",1);
-        addDamageType(InitDamageType.OPEN_CHEST, "%1$s在手术中失血过多而亡",2);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s在胸腔手术中不幸去世", 1);
+        addDamageType(InitDamageType.OPEN_CHEST, "%1$s在手术中失血过多而亡", 2);
         addDamageType(InitDamageType.OPEN_CHEST, "%1$s成了%2$s的医疗试验品", 3);
         addDamageType(InitDamageType.OPEN_CHEST, "%1$s因%2$s的医疗失误而丧命", 4);
+
+        addOrganSkill(InitItem.ENDER_APPENDIX, "向视线方向传送");
+        addOrganSkill(InitItem.HERBIVORE_RUMEN, "吃草");
+        addOrganSkill(InitItem.CREEPER_APPENDIX, "自爆");
+        addOrganSkill(InitItem.INNER_FURNACE, "燃烧燃料获得动力");
+        addOrganSkill(InitItem.GOLEM_ARMOR_PLATE, "使用铁锭修补自身");
+        addOrganSkill(InitItem.SILK_GLAND, "发射蛛网");
+        addOrganSkill(InitItem.VENOM_GLAND, "攻击时施加中毒效果");
+        addOrganSkill(InitItem.LLAMA_LUNG, "吐口水");
+        addOrganSkill(InitItem.ACTIVE_BLAZE_ROD, "发射连续的火球");
+        addOrganSkill(InitItem.SNOW_CORE, "发射雪球");
+        addOrganSkill(InitItem.GHAST_STOMACH, "发射大型火球");
+        addOrganSkill(InitItem.SHULKER_SPLEEN, "发射潜影子弹");
+        addOrganSkill(InitItem.BREEZE_CORE, "发射风弹");
+        addOrganSkill(InitItem.DRAGON_LUNG, "发射龙息弹");
+        addOrganSkill(InitItem.SCULK_CORE, "发射音爆");
+
+        add(ItemTagManager.ORGANS, "器官");
+        add(ItemTagManager.HEART, "心脏");
+        add(ItemTagManager.LUNG, "肺脏");
+        add(ItemTagManager.MUSCLE, "肌肉");
+        add(ItemTagManager.RIB, "肋骨");
+        add(ItemTagManager.APPENDIX, "阑尾");
+        add(ItemTagManager.SPLEEN, "脾脏");
+        add(ItemTagManager.KIDNEY, "肾脏");
+        add(ItemTagManager.SPINE, "脊柱");
+        add(ItemTagManager.LIVER, "肝脏");
+        add(ItemTagManager.INTESTINE, "肠子");
+        add(ItemTagManager.STOMACH, "胃");
+        add(ItemTagManager.SPECIAL, "特殊器官");
+        add(ItemTagManager.BONE, "骨质器官");
+        add(ItemTagManager.ROTTEN, "腐烂器官");
+        add(ItemTagManager.IRON, "铁质器官");
     }
 
     private void addAttribute(Holder<Attribute> attribute, String value) {
@@ -478,8 +549,12 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add("death.attack." + damageType.location().getNamespace() + "." + damageType.location().getPath(), value);
     }
 
-    private void addDamageType(ResourceKey<DamageType> damageType, String value,int index) {
+    private void addDamageType(ResourceKey<DamageType> damageType, String value, int index) {
         add("death.attack." + damageType.location().getNamespace() + "." + damageType.location().getPath() + "." + index, value);
+    }
+
+    private void addOrganSkill(Supplier<Item> item, String value) {
+        add("organ." + ChestCavityBeyond.MOD_ID + "." + item.get().getDescriptionId() + ".skill", value);
     }
 
     @Override

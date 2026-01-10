@@ -28,5 +28,6 @@ public class OrganSelectedOverlay {
         int y = guiGraphics.guiHeight() - 22;
         guiGraphics.blit(ChestCavityBeyond.of("textures/gui/organ_selected.png"), x, y, 0, 0, 22, 22, 22, 22);
         guiGraphics.renderItem(organ, x + 3, y + 3);
+        guiGraphics.renderItemDecorations(minecraft.font, organ, x + 3, y + 3);
     }
 }

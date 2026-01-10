@@ -33,6 +33,19 @@ public interface IOrgan {
     }
 
     /**
+     * 器官描述提示
+     *
+     * @param data              胸腔数据
+     * @param stack             器官物品
+     * @param keyContext        工具提示按键上下文
+     * @param context           工具提示上下文
+     * @param tooltipComponents 工具提示组件列表
+     * @param tooltipFlag       工具提示标识符
+     */
+    default void descriptionTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    }
+
+    /**
      * 器官物品提示
      *
      * @param data              胸腔数据
@@ -42,7 +55,20 @@ public interface IOrgan {
      * @param tooltipComponents 工具提示组件列表
      * @param tooltipFlag       工具提示标识符
      */
-    default void organTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    default void attributeTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    }
+
+    /**
+     * 技能描述提示
+     *
+     * @param data              胸腔数据
+     * @param stack             器官物品
+     * @param keyContext        工具提示按键上下文
+     * @param context           工具提示上下文
+     * @param tooltipComponents 工具提示组件列表
+     * @param tooltipFlag       工具提示标识符
+     */
+    default void skillTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
     }
 
     /**

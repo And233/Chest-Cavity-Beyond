@@ -12,15 +12,16 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TooltipUtil {
     /**
-     * 为器官添加类似create的tooltips
+     * 为器官属性工具提示
      */
-    public static void addOrganTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public static void addOrganAttributeTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         Multimap<Holder<Attribute>, AttributeModifier> attributeModifiers = ChestCavityUtil.getAttributeModifiers(
                 new ChestCavitySlotContext(data, data.getOwner(), ChestCavityUtil.getSlotId(0), 0, stack)
         );
@@ -50,13 +51,28 @@ public class TooltipUtil {
                 );
             }
         });
-        for (int i = 0; i < tooltips.size(); i++) {
-            tooltipComponents.add(i + 1, tooltips.get(i));
-        }
-        if (keyContext.isKeyShiftDown()) {
-            // TODO
-        } else {
-            // TODO
+        simpleTooltipAdd(tooltipComponents, tooltips);
+    }
+
+    /**
+     * 添加简单技能描述工具提示
+     */
+    public static void simpleSkillTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        List<Component> skillTooltips = new ArrayList<>();
+        skillTooltips.add(Component.empty());
+        skillTooltips.add(Component.translatable("organ." + ChestCavityBeyond.MOD_ID + "." + stack.getItem().getDescriptionId() + ".skill"));
+        simpleTooltipAdd(tooltipComponents, skillTooltips);
+    }
+
+    /**
+     * 简单工具提示添加
+     *
+     * @param total 总工具提示
+     * @param add   需要添加的工具提示
+     */
+    public static void simpleTooltipAdd(List<Component> total, List<Component> add) {
+        for (int i = 0; i < add.size(); i++) {
+            total.add(i + 1, add.get(i));
         }
     }
 }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_magma_cube_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chestcavitybeyond:magma_cube_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chestcavitybeyond:magma_cream"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_magma_cube_core"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chestcavitybeyond:magma_cream"
+    ]
+  }
+}

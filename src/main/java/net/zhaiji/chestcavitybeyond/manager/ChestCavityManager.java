@@ -7,13 +7,11 @@ import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.register.InitItem;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ChestCavityManager {
-    public static final List<ChestCavityType> CHEST_CAVITY_TYPES = new ArrayList<>();
+    public static final Map<String, ChestCavityType> CHEST_CAVITY_TYPE_REGISTRY = new HashMap<>();
 
     public static final Map<EntityType<? extends LivingEntity>, ChestCavityType> ENTITY_CHEST_CAVITY_TYPE_MAP = new HashMap<>();
 
@@ -77,23 +75,26 @@ public class ChestCavityManager {
             .setThirdRow(7, InitItem.ANIMAL_MUSCLE.get())
             .setThirdRow(8, InitItem.ANIMAL_MUSCLE.get());
 
-    public static final ChestCavityType LLAMA = register("llama")
+    public static final ChestCavityType HERBIVORE1 = register("herbivore1")
             .copyWith(ANIMAL)
-            .setFirstRow(3, InitItem.LLAMA_LUNG.get())
-            .setFirstRow(5, InitItem.LLAMA_LUNG.get());
-
-    public static final ChestCavityType HERBIVORE2 = register("herbivore")
-            .copyWith(ANIMAL)
-            .setFirstRow(3, InitItem.HERBIVORE_RUMEN.get())
-            .setFirstRow(5, InitItem.HERBIVORE_RUMEN.get())
             .setThirdRow(2, InitItem.HERBIVORE_INTESTINE.get())
+            .setThirdRow(3, InitItem.HERBIVORE_INTESTINE.get())
             .setThirdRow(4, InitItem.HERBIVORE_STOMACH.get())
+            .setThirdRow(5, InitItem.HERBIVORE_INTESTINE.get())
             .setThirdRow(6, InitItem.HERBIVORE_INTESTINE.get());
 
-    public static final ChestCavityType HERBIVORE1 = register("equid")
+    public static final ChestCavityType HERBIVORE2 = register("herbivore2")
+            .copyWith(HERBIVORE1)
+            .setThirdRow(5, InitItem.HERBIVORE_RUMEN.get());
+
+    public static final ChestCavityType HERBIVORE3 = register("herbivore3")
             .copyWith(HERBIVORE2)
-            .setThirdRow(3, InitItem.HERBIVORE_INTESTINE.get())
-            .setThirdRow(5, InitItem.HERBIVORE_INTESTINE.get());
+            .setThirdRow(3, InitItem.HERBIVORE_RUMEN.get());
+
+    public static final ChestCavityType LLAMA = register("llama")
+            .copyWith(HERBIVORE1)
+            .setFirstRow(3, InitItem.LLAMA_LUNG.get())
+            .setFirstRow(5, InitItem.LLAMA_LUNG.get());
 
     public static final ChestCavityType CARNIVORE = register("carnivore")
             .copyWith(ANIMAL)
@@ -636,34 +637,35 @@ public class ChestCavityManager {
     public static final ChestCavityType IRON_GOLEM = register("iron_golem")
             .setNeedBreath(false)
 
-            .setFirstRow(0, InitItem.PISTON_MUSCLE.get())
-            .setFirstRow(1, InitItem.GOLEM_ARMOR_PLATE.get())
-            .setFirstRow(2, InitItem.GOLEM_ARMOR_PLATE.get())
+            .setFirstRow(0, InitItem.GOLEM_ARMOR_PLATE.get())
+            .setFirstRow(1, InitItem.PISTON_MUSCLE.get())
+            .setFirstRow(2, InitItem.PISTON_MUSCLE.get())
+            .setFirstRow(3, InitItem.GOLEM_ARMOR_PLATE.get())
             .setFirstRow(4, InitItem.GOLEM_CORE.get())
             .setFirstRow(5, InitItem.GOLEM_ARMOR_PLATE.get())
-            .setFirstRow(6, InitItem.GOLEM_ARMOR_PLATE.get())
-            .setFirstRow(7, InitItem.GOLEM_ARMOR_PLATE.get())
-            .setFirstRow(8, InitItem.PISTON_MUSCLE.get())
+            .setFirstRow(6, InitItem.PISTON_MUSCLE.get())
+            .setFirstRow(7, InitItem.PISTON_MUSCLE.get())
+            .setFirstRow(8, InitItem.GOLEM_ARMOR_PLATE.get())
 
-            .setSecondRow(0, InitItem.PISTON_MUSCLE.get())
-            .setSecondRow(1, InitItem.GOLEM_CABLE.get())
-            .setSecondRow(2, InitItem.GOLEM_CABLE.get())
-            .setSecondRow(3, InitItem.GOLEM_CABLE.get())
-            .setSecondRow(4, InitItem.GOLEM_CABLE.get())
-            .setSecondRow(5, InitItem.GOLEM_CABLE.get())
-            .setSecondRow(6, InitItem.GOLEM_CABLE.get())
-            .setSecondRow(7, InitItem.GOLEM_CABLE.get())
-            .setSecondRow(8, InitItem.PISTON_MUSCLE.get())
-
-            .setThirdRow(0, InitItem.PISTON_MUSCLE.get())
+            .setSecondRow(0, InitItem.GOLEM_ARMOR_PLATE.get())
             .setSecondRow(1, InitItem.PISTON_MUSCLE.get())
-            .setThirdRow(2, InitItem.GOLEM_ARMOR_PLATE.get())
-            .setThirdRow(3, InitItem.GOLEM_ARMOR_PLATE.get())
+            .setSecondRow(2, InitItem.PISTON_MUSCLE.get())
+            .setSecondRow(3, InitItem.GOLEM_ARMOR_PLATE.get())
+            .setSecondRow(4, InitItem.GOLEM_CABLE.get())
+            .setSecondRow(5, InitItem.GOLEM_ARMOR_PLATE.get())
+            .setSecondRow(6, InitItem.PISTON_MUSCLE.get())
+            .setSecondRow(7, InitItem.PISTON_MUSCLE.get())
+            .setSecondRow(8, InitItem.GOLEM_ARMOR_PLATE.get())
+
+            .setThirdRow(0, InitItem.GOLEM_ARMOR_PLATE.get())
+            .setSecondRow(1, InitItem.PISTON_MUSCLE.get())
+            .setThirdRow(2, InitItem.INNER_FURNACE.get())
+            .setThirdRow(3, InitItem.INNER_FURNACE.get())
             .setThirdRow(4, InitItem.INNER_FURNACE.get())
-            .setThirdRow(5, InitItem.GOLEM_ARMOR_PLATE.get())
-            .setThirdRow(6, InitItem.GOLEM_ARMOR_PLATE.get())
+            .setThirdRow(5, InitItem.INNER_FURNACE.get())
+            .setThirdRow(6, InitItem.INNER_FURNACE.get())
             .setThirdRow(7, InitItem.PISTON_MUSCLE.get())
-            .setThirdRow(8, InitItem.PISTON_MUSCLE.get());
+            .setThirdRow(8, InitItem.GOLEM_ARMOR_PLATE.get());
 
     public static final ChestCavityType SNOW_GOLEM = register("snow_golem")
             .setFirstRow(3, Items.SNOWBALL)
@@ -725,6 +727,17 @@ public class ChestCavityManager {
     }
 
     /**
+     * 根据注册名获取
+     *
+     * @param name 名字
+     * @return 胸腔类型
+     */
+    public static ChestCavityType getType(String name) {
+        // 找不到就返回人类器官
+        return CHEST_CAVITY_TYPE_REGISTRY.getOrDefault(name, HUMAN);
+    }
+
+    /**
      * 为实体类型注册胸腔类型
      *
      * @param entityType      实体类型
@@ -741,8 +754,8 @@ public class ChestCavityManager {
      * @return 胸腔类型
      */
     public static ChestCavityType register(String name) {
-        ChestCavityType chestCavityType = new ChestCavityType(name);
-        CHEST_CAVITY_TYPES.add(chestCavityType);
+        ChestCavityType chestCavityType = new ChestCavityType();
+        CHEST_CAVITY_TYPE_REGISTRY.put(name, chestCavityType);
         return chestCavityType;
     }
 }

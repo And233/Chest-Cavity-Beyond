@@ -2,10 +2,12 @@ package net.zhaiji.chestcavitybeyond.register;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -18,6 +20,8 @@ import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 import net.zhaiji.chestcavitybeyond.util.OrganSkillUtil;
 import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class InitItem {
@@ -772,6 +776,7 @@ public class InitItem {
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 8 * 20);
                         OrganSkillUtil.teleport(context.entity(), context.data().getCurrentValue(InitAttribute.ENDER));
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -947,6 +952,7 @@ public class InitItem {
                             OrganSkillUtil.graze(player);
                         }
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -963,6 +969,7 @@ public class InitItem {
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 20 * 20);
                         OrganSkillUtil.explosion(context.entity(), context.data().getCurrentValue(InitAttribute.EXPLOSIVE));
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1169,6 +1176,7 @@ public class InitItem {
                             OrganSkillUtil.furnacePower(player, context.data().getCurrentValue(InitAttribute.FURNACE_POWER));
                         }
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1200,6 +1208,7 @@ public class InitItem {
                             OrganSkillUtil.ironRepair(player, context.data().getCurrentValue(InitAttribute.IRON_REPAIR));
                         }
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1212,6 +1221,7 @@ public class InitItem {
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 4 * 20);
                         OrganSkillUtil.silk(context.entity());
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1231,15 +1241,18 @@ public class InitItem {
                                 public ItemStack getDefaultInstance() {
                                     return ChestCavityUtil.attachPotionContents(super.getDefaultInstance(), Potions.POISON.value().getEffects());
                                 }
+
+                                @Override
+                                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                                    PotionContents potioncontents = stack.get(DataComponents.POTION_CONTENTS);
+                                    if (potioncontents != null) {
+                                        potioncontents.addPotionTooltip(tooltipComponents::add, 1.0F, context.tickRate());
+                                    }
+                                }
                             }
                     )
-                    .tooltips((data, stack, keyContext, context, tooltipComponents, tooltipFlag) -> {
-                        TooltipUtil.addOrganTooltip(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
-                        PotionContents potioncontents = stack.get(DataComponents.POTION_CONTENTS);
-                        if (potioncontents != null) {
-                            potioncontents.addPotionTooltip(tooltipComponents::add, 1.0F, context.tickRate());
-                        }
-                    })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .attack((context, target, source, damageContainer) -> {
                         if (OrganSkillUtil.hasCooldown(context.entity(), context.stack())) return;
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 4 * 20);
@@ -1333,6 +1346,7 @@ public class InitItem {
                     .skill(context -> {
                         OrganSkillUtil.spit(context.entity());
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1379,6 +1393,7 @@ public class InitItem {
                                 context.data().getCurrentValue(InitAttribute.VOMIT_FIREBALL)
                         );
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1393,6 +1408,7 @@ public class InitItem {
                     .skill(context -> {
                         OrganSkillUtil.snowball(context.entity());
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1410,6 +1426,7 @@ public class InitItem {
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 15 * 20);
                         OrganSkillUtil.largeFireball(context.entity(), context.data().getCurrentValue(InitAttribute.GHASTLY));
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1437,6 +1454,7 @@ public class InitItem {
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 5 * 20);
                         OrganSkillUtil.shulkerBullet(context.entity());
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1454,6 +1472,7 @@ public class InitItem {
                             OrganSkillUtil.windCharge(player);
                         }
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1492,6 +1511,7 @@ public class InitItem {
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 60 * 20);
                         OrganSkillUtil.dragonFireball(context.entity());
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1681,6 +1701,7 @@ public class InitItem {
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 60 * 20);
                         // TODO
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 }

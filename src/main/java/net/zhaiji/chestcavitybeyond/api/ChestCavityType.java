@@ -21,8 +21,6 @@ import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 import java.util.*;
 
 public class ChestCavityType {
-    private final String type;
-
     private final NonNullList<Item> organs = NonNullList.withSize(27, Items.AIR);
 
     private final Map<EntityType<?>, Map<Holder<Attribute>, Double>> defaultAttributes = new HashMap<>();
@@ -32,10 +30,6 @@ public class ChestCavityType {
     private final Map<Item, List<AttributeBonus>> attributeBonuses = new HashMap<>();
 
     private boolean needBreath = true;
-
-    public ChestCavityType(String type) {
-        this.type = type;
-    }
 
     /**
      * 计算胸腔类型属性默认值
@@ -78,10 +72,6 @@ public class ChestCavityType {
         if (!attribute.getKey().location().getNamespace().equals(ChestCavityBeyond.MOD_ID)) {
             modifierMap.put(attribute, OrganAttributeUtil.createAddValueModifier("default", baseValue - value));
         }
-    }
-
-    public String getType() {
-        return type;
     }
 
     public NonNullList<Item> getOrgans() {

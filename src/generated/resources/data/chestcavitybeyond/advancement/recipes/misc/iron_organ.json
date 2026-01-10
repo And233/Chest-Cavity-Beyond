@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_iron_organ": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#chestcavitybeyond:organs/iron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chestcavitybeyond:iron_organ"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_iron_organ"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chestcavitybeyond:iron_organ"
+    ]
+  }
+}

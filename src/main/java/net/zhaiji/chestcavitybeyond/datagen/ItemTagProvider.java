@@ -5,8 +5,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.manager.ItemTagManager;
 import net.zhaiji.chestcavitybeyond.register.InitItem;
@@ -21,13 +21,6 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(ItemTagManager.ORGAN).add(
-                InitItem.ITEM.getEntries().stream()
-                        .filter(item -> item != InitItem.CHEST_OPENER)
-                        .map(DeferredHolder::get)
-                        .toArray(Item[]::new)
-        );
-
         // 心脏
         tag(ItemTagManager.HEART)
                 .add(
@@ -47,7 +40,8 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                         InitItem.BREEZE_CORE.get(),
                         InitItem.GOLEM_CORE.get(),
                         InitItem.SNOW_CORE.get(),
-                        InitItem.SCULK_CORE.get()
+                        InitItem.SCULK_CORE.get(),
+                        Items.NETHER_STAR
                 );
 
         // 肺脏
@@ -220,12 +214,85 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                 );
 
         // 特殊器官
-        tag(ItemTagManager.SPECIAL_ORGAN)
+        tag(ItemTagManager.SPECIAL)
                 .add(
                         InitItem.SILK_GLAND.get(),
                         InitItem.VENOM_GLAND.get(),
                         InitItem.ACTIVE_BLAZE_ROD.get(),
                         InitItem.ACTIVE_BREEZE_ROD.get()
                 );
+
+        // 骨头类器官
+        tag(ItemTagManager.BONE)
+                .add(
+                        InitItem.RIB.get(),
+                        InitItem.ANIMAL_RIB.get(),
+                        InitItem.SMALL_ANIMAL_RIB.get(),
+                        InitItem.FIREPROOF_RIB.get(),
+                        InitItem.ENDER_RIB.get(),
+                        InitItem.ROTTEN_RIB.get(),
+                        InitItem.WITHERED_RIB.get(),
+                        InitItem.DRAGON_RIB.get(),
+                        InitItem.SCULK_RIB.get(),
+                        InitItem.FISH_BONE.get(),
+                        InitItem.SMALL_FISH_BONE.get(),
+                        InitItem.SPINE.get(),
+                        InitItem.ANIMAL_SPINE.get(),
+                        InitItem.SMALL_ANIMAL_SPINE.get(),
+                        InitItem.FIREPROOF_SPINE.get(),
+                        InitItem.ENDER_SPINE.get(),
+                        InitItem.ROTTEN_SPINE.get(),
+                        InitItem.WITHERED_SPINE.get(),
+                        InitItem.DRAGON_SPINE.get(),
+                        InitItem.SCULK_SPINE.get(),
+                        InitItem.FISH_SPINE.get(),
+                        InitItem.SMALL_FISH_SPINE.get()
+                );
+
+        // 腐烂器官
+        tag(ItemTagManager.ROTTEN)
+                .add(
+                        InitItem.ROTTEN_HEART.get(),
+                        InitItem.ROTTEN_LUNG.get(),
+                        InitItem.ROTTEN_STOMACH.get(),
+                        InitItem.ROTTEN_INTESTINE.get(),
+                        InitItem.ROTTEN_KIDNEY.get(),
+                        InitItem.ROTTEN_SPLEEN.get(),
+                        InitItem.ROTTEN_LIVER.get(),
+                        InitItem.ROTTEN_APPENDIX.get(),
+                        InitItem.ROTTEN_MUSCLE.get(),
+                        InitItem.ROTTEN_RIB.get(),
+                        InitItem.ROTTEN_SPINE.get()
+                );
+
+        // 铁质器官
+        tag(ItemTagManager.IRON)
+                .add(
+                        InitItem.GOLEM_CORE.get(),
+                        InitItem.GOLEM_CABLE.get(),
+                        InitItem.GOLEM_ARMOR_PLATE.get(),
+                        InitItem.PISTON_MUSCLE.get()
+                );
+
+        // 器官
+        tag(ItemTagManager.ORGANS)
+                .addTags(
+                        ItemTagManager.HEART,
+                        ItemTagManager.LUNG,
+                        ItemTagManager.MUSCLE,
+                        ItemTagManager.RIB,
+                        ItemTagManager.APPENDIX,
+                        ItemTagManager.SPLEEN,
+                        ItemTagManager.KIDNEY,
+                        ItemTagManager.SPINE,
+                        ItemTagManager.LIVER,
+                        ItemTagManager.INTESTINE,
+                        ItemTagManager.STOMACH,
+                        ItemTagManager.SPECIAL,
+                        ItemTagManager.IRON,
+                        ItemTagManager.BONE,
+                        ItemTagManager.ROTTEN
+                )
+                .add(Items.NETHER_STAR);
     }
 }

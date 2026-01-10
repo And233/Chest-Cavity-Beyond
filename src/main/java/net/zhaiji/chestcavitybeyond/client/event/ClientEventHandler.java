@@ -76,7 +76,24 @@ public class ClientEventHandler {
             player = minecraft.player;
             keyContext = new TooltipsKeyContext(true, true);
         }
-        organ.organTooltip(
+        // 由于需要更改添加顺序的缘故，此处按倒序执行
+        organ.skillTooltip(
+                ChestCavityUtil.getData(player),
+                event.getItemStack(),
+                keyContext,
+                event.getContext(),
+                event.getToolTip(),
+                event.getFlags()
+        );
+        organ.attributeTooltip(
+                ChestCavityUtil.getData(player),
+                event.getItemStack(),
+                keyContext,
+                event.getContext(),
+                event.getToolTip(),
+                event.getFlags()
+        );
+        organ.descriptionTooltip(
                 ChestCavityUtil.getData(player),
                 event.getItemStack(),
                 keyContext,

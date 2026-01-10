@@ -29,6 +29,8 @@ public class OrganBuilder {
     };
     private static final BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> EMPTY_MODIFIER = (id, modifiers) -> {
     };
+    private static final OrganTooltipConsumer EMPTY_TOOLTIP = (data, stack, keyContext, context, tooltipComponents, tooltipFlag) -> {
+    };
     private static final Consumer<ChestCavitySlotContext> EMPTY_CONSUMER = context -> {
     };
     private static final AttackConsumer EMPTY_ATTACK = (context, target, source, damageContainer) -> {
@@ -53,7 +55,9 @@ public class OrganBuilder {
         private final Item.Properties properties = new Item.Properties().stacksTo(1);
         private Item item;
         private BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer = EMPTY_MODIFIER;
-        private OrganTooltipConsumer organTooltipConsumer = TooltipUtil::addOrganTooltip;
+        private OrganTooltipConsumer descriptionTooltipConsumer = EMPTY_TOOLTIP;
+        private OrganTooltipConsumer attributeTooltipConsumer = TooltipUtil::addOrganAttributeTooltip;
+        private OrganTooltipConsumer skillTooltipConsumer = EMPTY_TOOLTIP;
         private Consumer<ChestCavitySlotContext> organTickConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organAddedConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organRemovedConsumer = EMPTY_CONSUMER;
@@ -78,10 +82,26 @@ public class OrganBuilder {
         }
 
         /**
+         * 设置器官描述工具提示
+         */
+        public Builder descriptionTooltip(OrganTooltipConsumer descriptionTooltipConsumer) {
+            this.descriptionTooltipConsumer = descriptionTooltipConsumer;
+            return this;
+        }
+
+        /**
          * 设置器官工具提示
          */
-        public Builder tooltips(OrganTooltipConsumer organTooltipConsumer) {
-            this.organTooltipConsumer = organTooltipConsumer;
+        public Builder attributeTooltip(OrganTooltipConsumer attributeTooltipConsumer) {
+            this.attributeTooltipConsumer = attributeTooltipConsumer;
+            return this;
+        }
+
+        /**
+         * 设置技能描述工具提示
+         */
+        public Builder skillTooltip(OrganTooltipConsumer skillTooltipConsumer) {
+            this.skillTooltipConsumer = skillTooltipConsumer;
             return this;
         }
 
@@ -153,7 +173,9 @@ public class OrganBuilder {
                     item,
                     new Organ(
                             organModifierConsumer,
-                            organTooltipConsumer,
+                            descriptionTooltipConsumer,
+                            attributeTooltipConsumer,
+                            skillTooltipConsumer,
                             organTickConsumer,
                             organAddedConsumer,
                             organRemovedConsumer,

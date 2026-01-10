@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "chestcavitybeyond:organs/rib"
+        },
+        {
+          "tag": "chestcavitybeyond:organs/bone"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "minecraft:bone_meal"
+  }
+}

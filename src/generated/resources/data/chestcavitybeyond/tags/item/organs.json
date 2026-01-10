@@ -1,0 +1,20 @@
+{
+  "values": [
+    "#chestcavitybeyond:organs/heart",
+    "#chestcavitybeyond:organs/lung",
+    "#chestcavitybeyond:organs/muscle",
+    "#chestcavitybeyond:organs/rib",
+    "#chestcavitybeyond:organs/appendix",
+    "#chestcavitybeyond:organs/spleen",
+    "#chestcavitybeyond:organs/kidney",
+    "#chestcavitybeyond:organs/spine",
+    "#chestcavitybeyond:organs/liver",
+    "#chestcavitybeyond:organs/intestine",
+    "#chestcavitybeyond:organs/stomach",
+    "#chestcavitybeyond:organs/special",
+    "#chestcavitybeyond:organs/iron",
+    "#chestcavitybeyond:organs/bone",
+    "#chestcavitybeyond:organs/rotten",
+    "minecraft:nether_star"
+  ]
+}

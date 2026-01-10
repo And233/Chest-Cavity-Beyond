@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chestcavitybeyond:magma_cube_core"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "minecraft:magma_cream"
+  }
+}

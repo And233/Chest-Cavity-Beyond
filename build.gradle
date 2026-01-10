@@ -22,6 +22,19 @@ repositories {
     maven {
         url "https://maven.ryanliptak.com/"
     }
+    maven {
+        // location of the maven that hosts JEI files since January 2023
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 base {
@@ -120,7 +133,7 @@ dependencies {
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
     // compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
@@ -138,7 +151,11 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     // 苹果皮
-    runtimeOnly "squeek.appleskin:appleskin-neoforge:mc1.21-3.0.7"
+    localRuntime "squeek.appleskin:appleskin-neoforge:mc1.21-3.0.7"
+    // JEI
+    localRuntime "mezz.jei:jei-1.21.1-neoforge:19.27.0.340"
+    // Jade
+    localRuntime "maven.modrinth:jade:15.10.4+neoforge"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
