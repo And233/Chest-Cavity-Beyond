@@ -810,6 +810,22 @@ public class ChestCavityTypeManager {
             .setFirstRow(2, InitItem.ELDER_HEART.get())
             .setFirstRow(4, InitItem.ELDER_GUARDIAN_EYE.get());
 
+    public static final ChestCavityType ARMOR_STAND = register("armor_stand")
+            .setFirstRow(3, Items.STICK)
+            .setFirstRow(4, Items.STICK)
+            .setFirstRow(5, Items.STICK)
+
+            .setSecondRow(4, Items.STICK)
+
+            .setThirdRow(4, Items.STICK)
+
+            .addValueBonuses(InitItem.SCULK_CORE.get(), Map.of(
+                    InitAttribute.HEALTH, 1.0,
+                    InitAttribute.BREATH_CAPACITY, 1.0,
+                    InitAttribute.BREATH_RECOVERY, 1.0,
+                    InitAttribute.WATER_BREATH, 1.0
+            ));
+
     /**
      * 获取实体的胸腔类型
      *

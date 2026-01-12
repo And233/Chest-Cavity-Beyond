@@ -183,6 +183,8 @@ public class CommonEventHandler {
         ChestCavityTypeManager.registerEntity(EntityType.IRON_GOLEM, ChestCavityTypeManager.IRON_GOLEM);
         // 雪傀儡
         ChestCavityTypeManager.registerEntity(EntityType.SNOW_GOLEM, ChestCavityTypeManager.SNOW_GOLEM);
+        // 盔甲架
+        ChestCavityTypeManager.registerEntity(EntityType.ARMOR_STAND, ChestCavityTypeManager.ARMOR_STAND);
 
         NeoForge.EVENT_BUS.post(new RegisterChestCavityEvent());
     }

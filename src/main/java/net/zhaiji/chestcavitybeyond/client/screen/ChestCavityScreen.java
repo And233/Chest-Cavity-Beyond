@@ -9,7 +9,7 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.menu.ChestCavityMenu;
 
 public class ChestCavityScreen extends AbstractContainerScreen<ChestCavityMenu> {
-    private static final ResourceLocation CONTAINER_BACKGROUND = ResourceLocation.fromNamespaceAndPath(ChestCavityBeyond.MOD_ID,"textures/gui/chest_cavity.png");
+    private static final ResourceLocation CONTAINER_BACKGROUND = ResourceLocation.fromNamespaceAndPath(ChestCavityBeyond.MOD_ID, "textures/gui/chest_cavity.png");
 
     public ChestCavityScreen(ChestCavityMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

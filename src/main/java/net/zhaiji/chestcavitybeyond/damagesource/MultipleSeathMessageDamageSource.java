@@ -24,7 +24,7 @@ public class MultipleSeathMessageDamageSource extends DamageSource {
         } else {
             int i = livingEntity.getRandom().nextInt(5);
             Component component = getEntity() == null ? getDirectEntity().getDisplayName() : getEntity().getDisplayName();
-            return Component.translatable(translatableString  + "."+ i, livingEntity.getDisplayName(), component);
+            return Component.translatable(translatableString + "." + i, livingEntity.getDisplayName(), component);
         }
     }
 }

@@ -418,7 +418,7 @@ public class OrganSkillUtil {
     /**
      * 守卫者激光
      */
-    public static void guardianLaser(LivingEntity entity,boolean elder) {
+    public static void guardianLaser(LivingEntity entity, boolean elder) {
         int distance = ChestCavityBeyondConfig.guardianLaserDistance;
         HitResult hitResult = ProjectileUtil.getHitResultOnViewVector(entity, checkEntity -> checkEntity != entity, distance);
         if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target) {

@@ -37,12 +37,12 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.BLAZE_ROD)
                 .requires(InitItem.ACTIVE_BLAZE_ROD.get())
                 .unlockedBy(getHasName(InitItem.ACTIVE_BLAZE_ROD.get()), has(InitItem.ACTIVE_BLAZE_ROD.get()))
-                .save(recipeOutput,ChestCavityBeyond.of(getItemName(Items.BLAZE_ROD)));
+                .save(recipeOutput, ChestCavityBeyond.of(getItemName(Items.BLAZE_ROD)));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.BREEZE_ROD)
                 .requires(InitItem.ACTIVE_BREEZE_ROD.get())
                 .unlockedBy(getHasName(InitItem.ACTIVE_BREEZE_ROD.get()), has(InitItem.ACTIVE_BREEZE_ROD.get()))
-                .save(recipeOutput,ChestCavityBeyond.of(getItemName(Items.BREEZE_ROD)));
+                .save(recipeOutput, ChestCavityBeyond.of(getItemName(Items.BREEZE_ROD)));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, InitItem.SLIME_STOMACH.get())
                 .pattern(" A ")
@@ -67,12 +67,12 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.SLIME_BALL, 2)
                 .requires(InitItem.SLIME_CORE.get())
                 .unlockedBy(getHasName(InitItem.SLIME_CORE.get()), has(InitItem.SLIME_CORE.get()))
-                .save(recipeOutput,ChestCavityBeyond.of(getItemName(Items.SLIME_BALL)));
+                .save(recipeOutput, ChestCavityBeyond.of(getItemName(Items.SLIME_BALL)));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.MAGMA_CREAM, 2)
                 .requires(InitItem.MAGMA_CUBE_CORE.get())
                 .unlockedBy(getHasName(InitItem.MAGMA_CUBE_CORE.get()), has(InitItem.MAGMA_CUBE_CORE.get()))
-                .save(recipeOutput,ChestCavityBeyond.of(getItemName(Items.MAGMA_CREAM)));
+                .save(recipeOutput, ChestCavityBeyond.of(getItemName(Items.MAGMA_CREAM)));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.BONE_MEAL, 8)
                 .requires(
