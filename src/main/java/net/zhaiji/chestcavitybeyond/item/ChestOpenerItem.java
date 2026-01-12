@@ -9,6 +9,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
@@ -52,10 +53,8 @@ public class ChestOpenerItem extends Item {
         DamageSource source = DamageSourceManager.openChest(level, player);
         float damage = EnchantmentUtil.calculateOpenDamage(level, stack, 4);
         boolean hasDoor = false;
-        if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target) {
-            boolean canOpenCavity = EnchantmentUtil.canOpenChestCavity(
-                    level, stack, target.getMaxHealth(), target.getHealth()
-            );
+        if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target && !(target instanceof ArmorStand)) {
+            boolean canOpenCavity = player.isCreative() || EnchantmentUtil.canOpenChestCavity(level, stack, target.getMaxHealth(), target.getHealth());
             hasDoor = ChestCavityUtil.getData(target).hasOrgan(ItemTags.DOORS);
             boolean hasChestPlate = !target.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
             if (!canOpenCavity && !hasDoor || hasChestPlate) {
@@ -74,7 +73,7 @@ public class ChestOpenerItem extends Item {
             }
         } else {
             int enchantmentLevel = EnchantmentUtil.getEnchantmentLevel(level, stack, InitEnchantment.SAFE_SURGERY);
-            if (enchantmentLevel == 1 && player.isShiftKeyDown() || enchantmentLevel == 0) {
+            if (enchantmentLevel == 0 || enchantmentLevel == 1 && player.isShiftKeyDown()) {
                 ChestCavityUtil.openChestCavity(player);
                 player.hurt(source, damage);
             }

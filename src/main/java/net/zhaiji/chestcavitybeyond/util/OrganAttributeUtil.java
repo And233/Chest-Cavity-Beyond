@@ -226,8 +226,8 @@ public class OrganAttributeUtil {
         // 本来应该都不许的，但想了一下还是算了
         double moveValue = data.getCurrentValue(InitAttribute.NERVES) <= 0 ? -1 : nerves / 10;
         // 使用最终乘算
-        updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier("nerves_move", moveValue));
         updateAttributeModifier(entity, Attributes.ATTACK_SPEED, createMultipliedBaseModifier("attack_speed", value));
+        updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedTotalModifier("nerves_move", moveValue));
     }
 
     /**
@@ -240,7 +240,7 @@ public class OrganAttributeUtil {
                 entity,
                 Attributes.ATTACK_DAMAGE,
                 strength >= 0
-                        ? createAddValueModifier("strength", factor)
+                        ? createAddValueModifier("strength", factor - 1)
                         : createMultipliedBaseModifier("strength", -factor)
         );
     }
@@ -251,6 +251,9 @@ public class OrganAttributeUtil {
     public static void updateSpeed(ChestCavityData data, LivingEntity entity) {
         double speed = data.getDifferenceValue(InitAttribute.SPEED);
         double factor = MathUtil.getLog10Scale(speed) / 2;
+        if (speed == 0) {
+            factor = 0;
+        }
         updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedBaseModifier("speed", speed >= 0 ? factor : -factor));
     }
 
@@ -268,6 +271,9 @@ public class OrganAttributeUtil {
                         ? createAddValueModifier("leaping", jumpStrengthFactor)
                         : createMultipliedBaseModifier("leaping", -jumpStrengthFactor)
         );
+        if (leaping == 0) {
+            safeFallDistanceFactor = 0;
+        }
         updateAttributeModifier(
                 entity,
                 Attributes.SAFE_FALL_DISTANCE,

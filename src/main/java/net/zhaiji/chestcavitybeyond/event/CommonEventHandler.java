@@ -1,7 +1,6 @@
 package net.zhaiji.chestcavitybeyond.event;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -10,6 +9,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -32,7 +32,7 @@ import net.zhaiji.chestcavitybeyond.api.event.RegisterChestCavityEvent;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.builder.OrganBuilder;
 import net.zhaiji.chestcavitybeyond.manager.CapabilityManager;
-import net.zhaiji.chestcavitybeyond.manager.ChestCavityManager;
+import net.zhaiji.chestcavitybeyond.manager.ChestCavityTypeManager;
 import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
@@ -62,124 +62,127 @@ public class CommonEventHandler {
      */
     public static void handlerFMLLoadCompleteEvent(FMLLoadCompleteEvent event) {
         // 人类
-        ChestCavityManager.registerEntity(EntityType.PLAYER, ChestCavityManager.HUMAN);
-        ChestCavityManager.registerEntity(EntityType.VILLAGER, ChestCavityManager.HUMAN);
-        ChestCavityManager.registerEntity(EntityType.WANDERING_TRADER, ChestCavityManager.HUMAN);
-        ChestCavityManager.registerEntity(EntityType.ILLUSIONER, ChestCavityManager.HUMAN);
-        ChestCavityManager.registerEntity(EntityType.EVOKER, ChestCavityManager.HUMAN);
-        ChestCavityManager.registerEntity(EntityType.VINDICATOR, ChestCavityManager.HUMAN);
-        ChestCavityManager.registerEntity(EntityType.PILLAGER, ChestCavityManager.HUMAN);
-        ChestCavityManager.registerEntity(EntityType.WITCH, ChestCavityManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.PLAYER, ChestCavityTypeManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.VILLAGER, ChestCavityTypeManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.WANDERING_TRADER, ChestCavityTypeManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.ILLUSIONER, ChestCavityTypeManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.EVOKER, ChestCavityTypeManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.VINDICATOR, ChestCavityTypeManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.PILLAGER, ChestCavityTypeManager.HUMAN);
+        ChestCavityTypeManager.registerEntity(EntityType.WITCH, ChestCavityTypeManager.HUMAN);
         // 动物
-        ChestCavityManager.registerEntity(EntityType.PIG, ChestCavityManager.ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.PIG, ChestCavityTypeManager.ANIMAL);
         // 食草生物1型
-        ChestCavityManager.registerEntity(EntityType.HORSE, ChestCavityManager.HERBIVORE1);
-        ChestCavityManager.registerEntity(EntityType.DONKEY, ChestCavityManager.HERBIVORE1);
-        ChestCavityManager.registerEntity(EntityType.MULE, ChestCavityManager.HERBIVORE1);
-        ChestCavityManager.registerEntity(EntityType.GOAT, ChestCavityManager.HERBIVORE1);
+        ChestCavityTypeManager.registerEntity(EntityType.HORSE, ChestCavityTypeManager.HERBIVORE1);
+        ChestCavityTypeManager.registerEntity(EntityType.DONKEY, ChestCavityTypeManager.HERBIVORE1);
+        ChestCavityTypeManager.registerEntity(EntityType.MULE, ChestCavityTypeManager.HERBIVORE1);
+        ChestCavityTypeManager.registerEntity(EntityType.GOAT, ChestCavityTypeManager.HERBIVORE1);
         // 食草生物2型
-        ChestCavityManager.registerEntity(EntityType.SNIFFER, ChestCavityManager.HERBIVORE2);
+        ChestCavityTypeManager.registerEntity(EntityType.SNIFFER, ChestCavityTypeManager.HERBIVORE2);
         // 食草生物3型
-        ChestCavityManager.registerEntity(EntityType.COW, ChestCavityManager.HERBIVORE3);
-        ChestCavityManager.registerEntity(EntityType.MOOSHROOM, ChestCavityManager.HERBIVORE3);
-        ChestCavityManager.registerEntity(EntityType.SHEEP, ChestCavityManager.HERBIVORE3);
+        ChestCavityTypeManager.registerEntity(EntityType.COW, ChestCavityTypeManager.HERBIVORE3);
+        ChestCavityTypeManager.registerEntity(EntityType.MOOSHROOM, ChestCavityTypeManager.HERBIVORE3);
+        ChestCavityTypeManager.registerEntity(EntityType.SHEEP, ChestCavityTypeManager.HERBIVORE3);
         // 食肉动物
-        ChestCavityManager.registerEntity(EntityType.WOLF, ChestCavityManager.CARNIVORE);
-        ChestCavityManager.registerEntity(EntityType.RAVAGER, ChestCavityManager.CARNIVORE);
+        ChestCavityTypeManager.registerEntity(EntityType.WOLF, ChestCavityTypeManager.CARNIVORE);
+        ChestCavityTypeManager.registerEntity(EntityType.RAVAGER, ChestCavityTypeManager.CARNIVORE);
         // 动物
-        ChestCavityManager.registerEntity(EntityType.CAMEL, ChestCavityManager.ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.PANDA, ChestCavityManager.ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.POLAR_BEAR, ChestCavityManager.ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.TURTLE, ChestCavityManager.ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.AXOLOTL, ChestCavityManager.ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.FROG, ChestCavityManager.ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.HOGLIN, ChestCavityManager.ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.CAMEL, ChestCavityTypeManager.ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.PANDA, ChestCavityTypeManager.ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.POLAR_BEAR, ChestCavityTypeManager.ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.HOGLIN, ChestCavityTypeManager.ANIMAL);
+        // 海龟
+        ChestCavityTypeManager.registerEntity(EntityType.TURTLE, ChestCavityTypeManager.TURTLE);
         // 兔子
-        ChestCavityManager.registerEntity(EntityType.RABBIT, ChestCavityManager.RABBIT);
+        ChestCavityTypeManager.registerEntity(EntityType.RABBIT, ChestCavityTypeManager.RABBIT);
         // 小型食肉动物
-        ChestCavityManager.registerEntity(EntityType.CAT, ChestCavityManager.SMALL_CARNIVORE);
-        ChestCavityManager.registerEntity(EntityType.OCELOT, ChestCavityManager.SMALL_CARNIVORE);
-        ChestCavityManager.registerEntity(EntityType.FOX, ChestCavityManager.SMALL_CARNIVORE);
+        ChestCavityTypeManager.registerEntity(EntityType.CAT, ChestCavityTypeManager.SMALL_CARNIVORE);
+        ChestCavityTypeManager.registerEntity(EntityType.OCELOT, ChestCavityTypeManager.SMALL_CARNIVORE);
+        ChestCavityTypeManager.registerEntity(EntityType.FOX, ChestCavityTypeManager.SMALL_CARNIVORE);
         // 羊驼
-        ChestCavityManager.registerEntity(EntityType.LLAMA, ChestCavityManager.LLAMA);
-        ChestCavityManager.registerEntity(EntityType.TRADER_LLAMA, ChestCavityManager.LLAMA);
+        ChestCavityTypeManager.registerEntity(EntityType.LLAMA, ChestCavityTypeManager.LLAMA);
+        ChestCavityTypeManager.registerEntity(EntityType.TRADER_LLAMA, ChestCavityTypeManager.LLAMA);
         // 小型动物
-        ChestCavityManager.registerEntity(EntityType.CHICKEN, ChestCavityManager.SMALL_ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.PARROT, ChestCavityManager.SMALL_ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.BAT, ChestCavityManager.SMALL_ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.ALLAY, ChestCavityManager.SMALL_ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.VEX, ChestCavityManager.SMALL_ANIMAL);
-        ChestCavityManager.registerEntity(EntityType.ARMADILLO, ChestCavityManager.SMALL_ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.CHICKEN, ChestCavityTypeManager.SMALL_ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.PARROT, ChestCavityTypeManager.SMALL_ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.BAT, ChestCavityTypeManager.SMALL_ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.ALLAY, ChestCavityTypeManager.SMALL_ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.VEX, ChestCavityTypeManager.SMALL_ANIMAL);
+        ChestCavityTypeManager.registerEntity(EntityType.ARMADILLO, ChestCavityTypeManager.SMALL_ANIMAL);
+        // 美西螈
+        ChestCavityTypeManager.registerEntity(EntityType.AXOLOTL, ChestCavityTypeManager.AXOLOTL);
         // 抗火生物
-        ChestCavityManager.registerEntity(EntityType.PIGLIN, ChestCavityManager.FIREPROOF);
-        ChestCavityManager.registerEntity(EntityType.PIGLIN_BRUTE, ChestCavityManager.FIREPROOF);
-        ChestCavityManager.registerEntity(EntityType.STRIDER, ChestCavityManager.FIREPROOF);
+        ChestCavityTypeManager.registerEntity(EntityType.PIGLIN, ChestCavityTypeManager.FIREPROOF);
+        ChestCavityTypeManager.registerEntity(EntityType.PIGLIN_BRUTE, ChestCavityTypeManager.FIREPROOF);
+        ChestCavityTypeManager.registerEntity(EntityType.STRIDER, ChestCavityTypeManager.FIREPROOF);
         // 水生生物
-        ChestCavityManager.registerEntity(EntityType.SQUID, ChestCavityManager.AQUATIC);
-        ChestCavityManager.registerEntity(EntityType.GLOW_SQUID, ChestCavityManager.AQUATIC);
+        ChestCavityTypeManager.registerEntity(EntityType.SQUID, ChestCavityTypeManager.AQUATIC);
+        ChestCavityTypeManager.registerEntity(EntityType.GLOW_SQUID, ChestCavityTypeManager.AQUATIC);
         // 守卫者
-        ChestCavityManager.registerEntity(EntityType.GUARDIAN, ChestCavityManager.GUARDIAN);
+        ChestCavityTypeManager.registerEntity(EntityType.GUARDIAN, ChestCavityTypeManager.GUARDIAN);
         // 远古守卫者
-        ChestCavityManager.registerEntity(EntityType.ELDER_GUARDIAN, ChestCavityManager.ELDER_GUARDIAN);
+        ChestCavityTypeManager.registerEntity(EntityType.ELDER_GUARDIAN, ChestCavityTypeManager.ELDER_GUARDIAN);
         // 海豚
-        ChestCavityManager.registerEntity(EntityType.DOLPHIN, ChestCavityManager.DOLPHIN);
+        ChestCavityTypeManager.registerEntity(EntityType.DOLPHIN, ChestCavityTypeManager.DOLPHIN);
         // 鱼类
-        ChestCavityManager.registerEntity(EntityType.COD, ChestCavityManager.SMALL_FISH);
-        ChestCavityManager.registerEntity(EntityType.SALMON, ChestCavityManager.SMALL_FISH);
-        ChestCavityManager.registerEntity(EntityType.PUFFERFISH, ChestCavityManager.SMALL_FISH);
-        ChestCavityManager.registerEntity(EntityType.TROPICAL_FISH, ChestCavityManager.SMALL_FISH);
+        ChestCavityTypeManager.registerEntity(EntityType.COD, ChestCavityTypeManager.SMALL_FISH);
+        ChestCavityTypeManager.registerEntity(EntityType.SALMON, ChestCavityTypeManager.SMALL_FISH);
+        ChestCavityTypeManager.registerEntity(EntityType.PUFFERFISH, ChestCavityTypeManager.SMALL_FISH);
+        ChestCavityTypeManager.registerEntity(EntityType.TROPICAL_FISH, ChestCavityTypeManager.SMALL_FISH);
+        // 青蛙
+        ChestCavityTypeManager.registerEntity(EntityType.FROG, ChestCavityTypeManager.FROG);
         // 蝌蚪
-        ChestCavityManager.registerEntity(EntityType.TADPOLE, ChestCavityManager.SMALL_AQUATIC);
+        ChestCavityTypeManager.registerEntity(EntityType.TADPOLE, ChestCavityTypeManager.SMALL_AQUATIC);
         // 亡灵
-        ChestCavityManager.registerEntity(EntityType.ZOMBIE, ChestCavityManager.UNDEAD);
-        ChestCavityManager.registerEntity(EntityType.HUSK, ChestCavityManager.UNDEAD);
-        ChestCavityManager.registerEntity(EntityType.DROWNED, ChestCavityManager.UNDEAD);
-        ChestCavityManager.registerEntity(EntityType.ZOMBIE_HORSE, ChestCavityManager.UNDEAD);
-        ChestCavityManager.registerEntity(EntityType.PHANTOM, ChestCavityManager.UNDEAD);
-        ChestCavityManager.registerEntity(EntityType.ZOMBIE_VILLAGER, ChestCavityManager.UNDEAD);
-        ChestCavityManager.registerEntity(EntityType.ZOMBIFIED_PIGLIN, ChestCavityManager.UNDEAD);
-        ChestCavityManager.registerEntity(EntityType.ZOGLIN, ChestCavityManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.ZOMBIE, ChestCavityTypeManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.HUSK, ChestCavityTypeManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.DROWNED, ChestCavityTypeManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.ZOMBIE_HORSE, ChestCavityTypeManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.PHANTOM, ChestCavityTypeManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.ZOMBIE_VILLAGER, ChestCavityTypeManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.ZOMBIFIED_PIGLIN, ChestCavityTypeManager.UNDEAD);
+        ChestCavityTypeManager.registerEntity(EntityType.ZOGLIN, ChestCavityTypeManager.UNDEAD);
         // 骷髅
-        ChestCavityManager.registerEntity(EntityType.SKELETON, ChestCavityManager.SKELETON);
-        ChestCavityManager.registerEntity(EntityType.SKELETON_HORSE, ChestCavityManager.SKELETON);
-        ChestCavityManager.registerEntity(EntityType.STRAY, ChestCavityManager.SKELETON);
-        ChestCavityManager.registerEntity(EntityType.BOGGED, ChestCavityManager.SKELETON);
+        ChestCavityTypeManager.registerEntity(EntityType.SKELETON, ChestCavityTypeManager.SKELETON);
+        ChestCavityTypeManager.registerEntity(EntityType.SKELETON_HORSE, ChestCavityTypeManager.SKELETON);
+        ChestCavityTypeManager.registerEntity(EntityType.STRAY, ChestCavityTypeManager.SKELETON);
+        ChestCavityTypeManager.registerEntity(EntityType.BOGGED, ChestCavityTypeManager.SKELETON);
         // 史莱姆
-        ChestCavityManager.registerEntity(EntityType.SLIME, ChestCavityManager.SLIME);
+        ChestCavityTypeManager.registerEntity(EntityType.SLIME, ChestCavityTypeManager.SLIME);
         // 岩浆怪
-        ChestCavityManager.registerEntity(EntityType.MAGMA_CUBE, ChestCavityManager.MAGMA_CUBE);
+        ChestCavityTypeManager.registerEntity(EntityType.MAGMA_CUBE, ChestCavityTypeManager.MAGMA_CUBE);
         // 节肢生物
-        ChestCavityManager.registerEntity(EntityType.SILVERFISH, ChestCavityManager.ARTHROPOD);
-        ChestCavityManager.registerEntity(EntityType.ENDERMITE, ChestCavityManager.ARTHROPOD);
-        ChestCavityManager.registerEntity(EntityType.BEE, ChestCavityManager.ARTHROPOD);
+        ChestCavityTypeManager.registerEntity(EntityType.SILVERFISH, ChestCavityTypeManager.ARTHROPOD);
+        ChestCavityTypeManager.registerEntity(EntityType.ENDERMITE, ChestCavityTypeManager.ARTHROPOD);
+        ChestCavityTypeManager.registerEntity(EntityType.BEE, ChestCavityTypeManager.ARTHROPOD);
         // 蜘蛛
-        ChestCavityManager.registerEntity(EntityType.SPIDER, ChestCavityManager.SPIDER);
+        ChestCavityTypeManager.registerEntity(EntityType.SPIDER, ChestCavityTypeManager.SPIDER);
         // 洞穴蜘蛛
-        ChestCavityManager.registerEntity(EntityType.CAVE_SPIDER, ChestCavityManager.CAVE_SPIDER);
+        ChestCavityTypeManager.registerEntity(EntityType.CAVE_SPIDER, ChestCavityTypeManager.CAVE_SPIDER);
         // 末影生物
-        ChestCavityManager.registerEntity(EntityType.ENDERMAN, ChestCavityManager.ENDER);
+        ChestCavityTypeManager.registerEntity(EntityType.ENDERMAN, ChestCavityTypeManager.ENDER);
         // 末影龙
-        ChestCavityManager.registerEntity(EntityType.ENDER_DRAGON, ChestCavityManager.ENDER_DRAGON);
+        ChestCavityTypeManager.registerEntity(EntityType.ENDER_DRAGON, ChestCavityTypeManager.ENDER_DRAGON);
         // 烈焰人
-        ChestCavityManager.registerEntity(EntityType.BLAZE, ChestCavityManager.BLAZE);
+        ChestCavityTypeManager.registerEntity(EntityType.BLAZE, ChestCavityTypeManager.BLAZE);
         // 恶魂
-        ChestCavityManager.registerEntity(EntityType.GHAST, ChestCavityManager.GHAST);
+        ChestCavityTypeManager.registerEntity(EntityType.GHAST, ChestCavityTypeManager.GHAST);
         // 凋零骷髅
-        ChestCavityManager.registerEntity(EntityType.WITHER_SKELETON, ChestCavityManager.WITHER_SKELETON);
+        ChestCavityTypeManager.registerEntity(EntityType.WITHER_SKELETON, ChestCavityTypeManager.WITHER_SKELETON);
         // 凋灵
-        ChestCavityManager.registerEntity(EntityType.WITHER, ChestCavityManager.WITHER);
+        ChestCavityTypeManager.registerEntity(EntityType.WITHER, ChestCavityTypeManager.WITHER);
         // 苦力怕
-        ChestCavityManager.registerEntity(EntityType.CREEPER, ChestCavityManager.CREEPER);
+        ChestCavityTypeManager.registerEntity(EntityType.CREEPER, ChestCavityTypeManager.CREEPER);
         // 潜影贝
-        ChestCavityManager.registerEntity(EntityType.SHULKER, ChestCavityManager.SHULKER);
+        ChestCavityTypeManager.registerEntity(EntityType.SHULKER, ChestCavityTypeManager.SHULKER);
         // 旋风人
-        ChestCavityManager.registerEntity(EntityType.BREEZE, ChestCavityManager.BREEZE);
+        ChestCavityTypeManager.registerEntity(EntityType.BREEZE, ChestCavityTypeManager.BREEZE);
         // 监守者
-        ChestCavityManager.registerEntity(EntityType.WARDEN, ChestCavityManager.WARDEN);
+        ChestCavityTypeManager.registerEntity(EntityType.WARDEN, ChestCavityTypeManager.WARDEN);
         // 铁傀儡
-        ChestCavityManager.registerEntity(EntityType.IRON_GOLEM, ChestCavityManager.IRON_GOLEM);
+        ChestCavityTypeManager.registerEntity(EntityType.IRON_GOLEM, ChestCavityTypeManager.IRON_GOLEM);
         // 雪傀儡
-        ChestCavityManager.registerEntity(EntityType.SNOW_GOLEM, ChestCavityManager.SNOW_GOLEM);
+        ChestCavityTypeManager.registerEntity(EntityType.SNOW_GOLEM, ChestCavityTypeManager.SNOW_GOLEM);
 
         NeoForge.EVENT_BUS.post(new RegisterChestCavityEvent());
     }
@@ -229,7 +232,7 @@ public class CommonEventHandler {
     public static void handlerPlayerInteractEvent$EntityInteract(PlayerInteractEvent.EntityInteract event) {
         ItemStack stack = event.getEntity().getItemInHand(event.getHand());
         // 当玩家手持开胸器时，可能更希望打开胸腔
-        if (stack.is(InitItem.CHEST_OPENER.get())) {
+        if (stack.is(InitItem.CHEST_OPENER.get()) && event.getTarget() instanceof LivingEntity) {
             // 取消实体交互，使开胸器能够正常使用
             event.setCanceled(true);
         }
@@ -260,7 +263,7 @@ public class CommonEventHandler {
     }
 
     /**
-     * 应用弹射物闪避效果
+     * 应用弹射物闪避效果、无重力取消伤害
      *
      * @param event 实体即将受伤事件
      */
@@ -268,14 +271,17 @@ public class CommonEventHandler {
         DamageSource source = event.getSource();
         boolean isProjectile = source.is(DamageTypeTags.IS_PROJECTILE);
         boolean isWaterPotion = source.getDirectEntity() instanceof ThrownPotion potion && potion.getItem().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).is(Potions.WATER);
+        LivingEntity entity = event.getEntity();
         if (isProjectile || isWaterPotion) {
-            LivingEntity entity = event.getEntity();
             ChestCavityData data = ChestCavityUtil.getData(entity);
             double ender = data.getCurrentValue(InitAttribute.ENDER);
             if (data.getCurrentValue(InitAttribute.PROJECTILE_DODGE) > 0 && ender > 0) {
                 OrganSkillUtil.randomTeleport(entity, ender);
                 event.setCanceled(true);
             }
+        }
+        if (source.is(DamageTypeTags.IS_FALL) && entity.getAttribute(Attributes.GRAVITY).getValue() <= 0) {
+            event.setCanceled(true);
         }
     }
 
@@ -320,12 +326,12 @@ public class CommonEventHandler {
         }
 
         // 当以上伤害类型都未检测通过时，应用防御减伤
-        // TODO 这样对吗？应该不太对，之后在重新理清楚逻辑
-        if (!flag) {
+        // 这样对吗？应该对的，出问题再改
+        if (!flag && !source.is(DamageTypeTags.BYPASSES_ARMOR)) {
             double defense = data.getDifferenceValue(InitAttribute.DEFENSE);
             damage *= MathUtil.getAttenuationScale(damage, defense);
         }
-        // TODO 未检测伤害类型
+
         event.setNewDamage((float) damage);
 
         // 触发所有器官的attack效果
@@ -345,6 +351,19 @@ public class CommonEventHandler {
                         event.getContainer()
                 );
             }
+        }
+        for (int i = 0; i < 27; i++) {
+            ItemStack organ = data.getStackInSlot(i);
+            ChestCavityUtil.getOrganCap(organ).hurt(
+                    ChestCavityUtil.createContext(
+                            data,
+                            entity,
+                            i,
+                            organ
+                    ),
+                    source,
+                    event.getContainer()
+            );
         }
     }
 

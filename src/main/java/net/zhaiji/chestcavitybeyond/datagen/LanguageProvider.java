@@ -32,6 +32,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(KeyMappings.KEY_CATEGORY_TRANSLATABLE, "Chest Cavity");
         add(KeyMappings.OPEN_SKILL_GUI_TRANSLATABLE, "Open Skill Gui");
         add(KeyMappings.USE_ORGAN_SKILL_TRANSLATABLE, "Use Organ Skill");
+        add(KeyMappings.DESCEND_VEHICLE_TRANSLATABLE, "Descend Vehicle");
         for (int i = 0; i < 27; i++) {
             add(KeyMappings.USE_ORGAN_SKILLS_TRANSLATABLE + i, "Organ Skill " + (i < 9 ? "0" + (i + 1) : (i + 1)));
         }
@@ -287,6 +288,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addOrganSkill(InitItem.BREEZE_CORE, "Shoot wind charges");
         addOrganSkill(InitItem.DRAGON_LUNG, "Shoot dragon fireballs");
         addOrganSkill(InitItem.SCULK_CORE, "Sonic boom");
+        addOrganSkill(InitItem.GUARDIAN_EYE, "Shoot charged laser");
+        addOrganSkill(InitItem.ELDER_GUARDIAN_EYE, "Shoot charged laser");
 
         addEnchantment(
                 InitEnchantment.TELEOPERATION,
@@ -337,6 +340,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(KeyMappings.KEY_CATEGORY_TRANSLATABLE, "胸腔");
         add(KeyMappings.OPEN_SKILL_GUI_TRANSLATABLE, "打开技能界面");
         add(KeyMappings.USE_ORGAN_SKILL_TRANSLATABLE, "使用器官技能");
+        add(KeyMappings.DESCEND_VEHICLE_TRANSLATABLE, "乘坐实体下降");
         for (int i = 0; i < 27; i++) {
             add(KeyMappings.USE_ORGAN_SKILLS_TRANSLATABLE + i, "器官技能" + (i < 9 ? "0" + (i + 1) : (i + 1)));
         }
@@ -591,6 +595,8 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         addOrganSkill(InitItem.BREEZE_CORE, "发射风弹");
         addOrganSkill(InitItem.DRAGON_LUNG, "发射龙息弹");
         addOrganSkill(InitItem.SCULK_CORE, "发射音爆");
+        addOrganSkill(InitItem.GUARDIAN_EYE, "发射充能光线");
+        addOrganSkill(InitItem.ELDER_GUARDIAN_EYE, "发射充能光线");
 
         add(ItemTagManager.ORGANS, "器官");
         add(ItemTagManager.HEART, "心脏");

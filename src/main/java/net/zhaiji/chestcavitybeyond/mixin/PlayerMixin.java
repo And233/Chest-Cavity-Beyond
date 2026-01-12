@@ -1,9 +1,11 @@
 package net.zhaiji.chestcavitybeyond.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
@@ -41,5 +43,18 @@ public abstract class PlayerMixin extends LivingEntity {
     )
     public void chestCavityBeyond$eat(Level level, ItemStack food, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> cir) {
         ((IFoodData) foodData).setFood(food);
+    }
+
+    @ModifyExpressionValue(
+            method = "updatePlayerPose",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/player/Player;isShiftKeyDown()Z"
+            )
+    )
+    public boolean chestCavityBeyond$updatePlayerPose(boolean original) {
+        // 如果重力小于等于0，且不在地面，不会蹲下
+        // TODO 第三人称还是会触发下蹲，找不到原因，但不影响视野
+        return original && !(getBlockStateOn().isAir() && getAttribute(Attributes.GRAVITY).getValue() <= 0);
     }
 }

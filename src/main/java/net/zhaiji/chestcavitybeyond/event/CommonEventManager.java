@@ -1,6 +1,7 @@
 package net.zhaiji.chestcavitybeyond.event;
 
 import net.neoforged.bus.api.IEventBus;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.network.PacketManager;
 
 public class CommonEventManager {
@@ -10,6 +11,7 @@ public class CommonEventManager {
     }
 
     public static void modBusListener(IEventBus modEventBus) {
+        modEventBus.addListener(ChestCavityBeyondConfig::handlerModConfigEvent);
         modEventBus.addListener(CommonEventHandler::handlerRegisterCapabilitiesEvent);
         modEventBus.addListener(CommonEventHandler::handlerFMLLoadCompleteEvent);
         modEventBus.addListener(CommonEventHandler::handlerEntityAttributeModificationEvent);

@@ -10,7 +10,7 @@ import net.zhaiji.chestcavitybeyond.register.InitItem;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChestCavityManager {
+public class ChestCavityTypeManager {
     public static final Map<String, ChestCavityType> CHEST_CAVITY_TYPE_REGISTRY = new HashMap<>();
 
     public static final Map<EntityType<? extends LivingEntity>, ChestCavityType> ENTITY_CHEST_CAVITY_TYPE_MAP = new HashMap<>();
@@ -155,6 +155,26 @@ public class ChestCavityManager {
             .setThirdRow(4, InitItem.SMALL_CARNIVORE_STOMACH.get())
             .setThirdRow(5, InitItem.SMALL_CARNIVORE_INTESTINE.get())
             .setThirdRow(6, InitItem.SMALL_CARNIVORE_INTESTINE.get());
+
+    public static final ChestCavityType AXOLOTL = register("axolotl")
+            .copyWith(SMALL_ANIMAL)
+
+            .addValueBonuses(InitItem.SMALL_ANIMAL_LUNG.get(), Map.of(
+                    InitAttribute.WATER_BREATH, 0.5
+            ));
+
+    public static final ChestCavityType TURTLE = register("turtle")
+            .copyWith(ANIMAL)
+
+            .addValueBonuses(InitItem.ANIMAL_LUNG.get(), Map.of(
+                    InitAttribute.WATER_BREATH, 0.5
+            ));
+
+    public static final ChestCavityType FROG = register("frog")
+            .copyWith(ANIMAL)
+            .addValueBonuses(InitItem.ANIMAL_LUNG.get(), Map.of(
+                    InitAttribute.WATER_BREATH, 0.5
+            ));
 
     public static final ChestCavityType RABBIT = register("rabbit")
             .setFirstRow(0, InitItem.SMALL_LEAPING_MUSCLE.get())
@@ -333,7 +353,11 @@ public class ChestCavityManager {
             .setThirdRow(2, InitItem.ROTTEN_INTESTINE.get())
             .setThirdRow(4, InitItem.ROTTEN_STOMACH.get())
             .setThirdRow(6, InitItem.ROTTEN_INTESTINE.get())
-            .setThirdRow(8, InitItem.ROTTEN_MUSCLE.get());
+            .setThirdRow(8, InitItem.ROTTEN_MUSCLE.get())
+
+            .addValueBonuses(InitItem.ROTTEN_LUNG.get(), Map.of(
+                    InitAttribute.WATER_BREATH, 0.5
+            ));
 
     public static final ChestCavityType SKELETON = register("skeleton")
             .setFirstRow(1, InitItem.ROTTEN_RIB.get())
@@ -345,12 +369,14 @@ public class ChestCavityManager {
             .addValueBonuses(InitItem.ROTTEN_SPINE.get(), Map.of(
                     InitAttribute.HEALTH, 0.5,
                     InitAttribute.BREATH_CAPACITY, 0.5,
-                    InitAttribute.BREATH_RECOVERY, 0.5
+                    InitAttribute.BREATH_RECOVERY, 0.5,
+                    InitAttribute.WATER_BREATH, 0.5
             ));
 
     public static final ChestCavityType WITHER_SKELETON = register("wither_skeleton")
             .setFirstRow(1, InitItem.WITHERED_RIB.get())
             .setFirstRow(7, InitItem.WITHERED_RIB.get())
+
             .setSecondRow(1, InitItem.WITHERED_RIB.get())
             .setSecondRow(4, InitItem.WITHERED_SPINE.get())
             .setSecondRow(7, InitItem.WITHERED_RIB.get())
@@ -358,7 +384,8 @@ public class ChestCavityManager {
             .addValueBonuses(InitItem.WITHERED_SPINE.get(), Map.of(
                     InitAttribute.HEALTH, 0.5,
                     InitAttribute.BREATH_CAPACITY, 0.5,
-                    InitAttribute.BREATH_RECOVERY, 0.5
+                    InitAttribute.BREATH_RECOVERY, 0.5,
+                    InitAttribute.WATER_BREATH, 0.5
             ));
 
     public static final ChestCavityType WITHER = register("wither")
@@ -394,7 +421,8 @@ public class ChestCavityManager {
 
             .addValueBonuses(Items.NETHER_STAR, Map.of(
                     InitAttribute.BREATH_CAPACITY, 1.0,
-                    InitAttribute.BREATH_RECOVERY, 1.0
+                    InitAttribute.BREATH_RECOVERY, 1.0,
+                    InitAttribute.WATER_BREATH, 1.0
             ));
 
     public static final ChestCavityType ARTHROPOD = register("arthropod")

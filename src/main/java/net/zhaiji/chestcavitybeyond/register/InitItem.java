@@ -167,7 +167,7 @@ public class InitItem {
                     .build()
     );
 
-    // 动物脊柱 - 防御特殊处理为0.375
+    // 动物脊柱
     public static final Supplier<Item> ANIMAL_SPINE = ITEM.register(
             "animal_spine",
             () -> OrganBuilder.builder()
@@ -281,7 +281,7 @@ public class InitItem {
                     .build()
     );
 
-    // 小型动物脊柱 - 防御特殊处理为0.375，其他属性0.5
+    // 小型动物脊柱
     public static final Supplier<Item> SMALL_ANIMAL_SPINE = ITEM.register(
             "small_animal_spine",
             () -> OrganBuilder.builder()
@@ -1480,7 +1480,7 @@ public class InitItem {
             "active_breeze_rod",
             () -> OrganBuilder.builder()
                     .modifier((id, modifiers) -> {
-                        modifiers.put(InitAttribute.SPEED, OrganAttributeUtil.createAddValueModifier(id, 0.5));
+                        modifiers.put(InitAttribute.SPEED, OrganAttributeUtil.createAddValueModifier(id, 1));
                         modifiers.put(InitAttribute.LEAPING, OrganAttributeUtil.createAddValueModifier(id, 1));
                     })
                     .build()
@@ -1890,11 +1890,17 @@ public class InitItem {
     public static final Supplier<Item> GUARDIAN_EYE = ITEM.register(
             "guardian_eye",
             () -> OrganBuilder.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(Attributes.ENTITY_INTERACTION_RANGE, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
                     .skill(context -> {
-                        if (OrganSkillUtil.hasCooldown(context.entity(), context.stack())) return;
+                        if (OrganSkillUtil.hasCooldown(context.entity(), context.stack())) {
+                            return;
+                        }
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 5 * 20);
                         OrganSkillUtil.guardianLaser(context.entity(), false);
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 
@@ -1902,11 +1908,15 @@ public class InitItem {
     public static final Supplier<Item> ELDER_GUARDIAN_EYE = ITEM.register(
             "elder_guardian_eye",
             () -> OrganBuilder.builder()
+                    .modifier((id, modifiers) -> {
+                        modifiers.put(Attributes.ENTITY_INTERACTION_RANGE, OrganAttributeUtil.createAddValueModifier(id, 1));
+                    })
                     .skill(context -> {
                         if (OrganSkillUtil.hasCooldown(context.entity(), context.stack())) return;
                         OrganSkillUtil.addCooldown(context.entity(), context.stack(), 8 * 20);
                         OrganSkillUtil.guardianLaser(context.entity(), true);
                     })
+                    .skillTooltip(TooltipUtil::simpleSkillTooltip)
                     .build()
     );
 }

@@ -7,6 +7,7 @@ import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
@@ -36,7 +37,7 @@ public abstract class EndCrystalMixin extends Entity {
     public void chestCavityBeyond$tick(CallbackInfo ci) {
         List<LivingEntity> list = level().getEntitiesOfClass(
                 LivingEntity.class,
-                getBoundingBox().inflate(16),
+                getBoundingBox().inflate(ChestCavityBeyondConfig.crystalEffectSearchRange),
                 entity -> !(entity instanceof EnderDragon)
                         && entity.getAttribute(InitAttribute.CRYSTALLIZATION).getValue() > 0
         );

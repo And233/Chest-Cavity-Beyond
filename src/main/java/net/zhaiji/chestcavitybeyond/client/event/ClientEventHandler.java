@@ -6,6 +6,8 @@ import net.minecraft.client.Options;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -41,6 +43,7 @@ public class ClientEventHandler {
     public static void handlerRegisterKeyMappingsEvent(RegisterKeyMappingsEvent event) {
         event.register(KeyMappings.OPEN_SKILL_GUI);
         event.register(KeyMappings.USE_ORGAN_SKILL);
+        event.register(KeyMappings.DESCEND_VEHICLE);
         KeyMappings.USE_SKILLS_MAPPINGS.forEach(event::register);
     }
 
@@ -194,9 +197,9 @@ public class ClientEventHandler {
      */
     public static void handlerMovementInputUpdateEvent(MovementInputUpdateEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
+        Input input = event.getInput();
         if (minecraft.screen instanceof OrganSkillScreen) {
             Options options = minecraft.options;
-            Input input = event.getInput();
             // 按键检测
             input.up = ChestCavityClientUtil.isKeyDown(options.keyUp);
             input.down = ChestCavityClientUtil.isKeyDown(options.keyDown);
@@ -212,5 +215,25 @@ public class ClientEventHandler {
                 input.forwardImpulse *= 0.3F;
             }
         }
+        // 无重力时，启用额外移动操控
+        Player player = event.getEntity();
+        LivingEntity entity = null;
+        boolean isPlayer = false;
+        // 检测需要操控的实体
+        if (player.isPassenger() && player.getVehicle() instanceof LivingEntity vehicle) {
+            entity = vehicle;
+        } else if (!player.isPassenger()) {
+            entity = player;
+            isPlayer = true;
+        }
+        if (entity == null || entity.getAttribute(Attributes.GRAVITY).getValue() > 0) return;
+        double speed = 0.05;
+        if (input.jumping) {
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0, speed, 0));
+        }
+        if (isPlayer ? input.shiftKeyDown : ChestCavityClientUtil.isKeyDown(KeyMappings.DESCEND_VEHICLE)) {
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0, -speed, 0));
+        }
+        entity.setDeltaMovement(entity.getDeltaMovement().multiply(1, 0.8, 1));
     }
 }

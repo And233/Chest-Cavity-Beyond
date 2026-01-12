@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WitherBoss.class)
 public abstract class WitherBossMixin extends Monster {
-    protected WitherBossMixin(EntityType<? extends Monster> entityType, Level level) {
+    public WitherBossMixin(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
     }
 

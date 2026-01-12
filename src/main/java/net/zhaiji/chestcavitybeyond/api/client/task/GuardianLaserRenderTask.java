@@ -7,11 +7,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 
 public class GuardianLaserRenderTask implements IRenderTask {
     private static final ResourceLocation GUARDIAN_BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/guardian_beam.png");
@@ -57,7 +59,37 @@ public class GuardianLaserRenderTask implements IRenderTask {
 
     @Override
     public void tick(LivingEntity entity) {
-        // TODO 泡泡粒子
+        // 计算射线方向向量（使用attacker的原始眼睛位置，与render的vec32计算一致）
+        double attackerEyeHeight = attacker.getEyeHeight();
+        double attackerOriginalEyeY = attacker.getY() + attackerEyeHeight; // 原始眼睛位置
+        double targetY = target.getY() + target.getBbHeight(); // 与render的getPosition(target, target.getBbHeight(), ...)一致
+
+        // 计算方向向量（从原始眼睛位置到target头顶）
+        double d0 = target.getX() - attacker.getX();
+        double d1 = targetY - attackerOriginalEyeY;
+        double d2 = target.getZ() - attacker.getZ();
+        double d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+        d0 /= d3;
+        d1 /= d3;
+        d2 /= d3;
+
+        // 粒子生成起点（向下偏移后的位置，与render的translate(0, -f3/3, 0)一致）
+        double particleStartY = attacker.getY() + attackerEyeHeight - attackerEyeHeight / 3;
+
+        double d4 = entity.getRandom().nextDouble();
+        while (d4 < d3) {
+            d4 += entity.getRandom().nextDouble();
+            entity.level()
+                    .addParticle(
+                            ParticleTypes.BUBBLE,
+                            attacker.getX() + d0 * d4,
+                            particleStartY + d1 * d4,
+                            attacker.getZ() + d2 * d4,
+                            0.0,
+                            0.0,
+                            0.0
+                    );
+        }
         timer++;
     }
 
@@ -67,11 +99,23 @@ public class GuardianLaserRenderTask implements IRenderTask {
         float f1 = timer + partialTick;
         float f2 = f1 * 0.5F % 1.0F;
         float f3 = attacker.getEyeHeight();
+
+        // 获取attacker和target的世界坐标（插值）
+        Vec3 attackerPos = getPosition(attacker, f3, partialTick);
+        Vec3 targetPos = getPosition(target, target.getBbHeight(), partialTick);
+
         poseStack.pushPose();
+
+        // 平移到attacker的世界位置（相对于相机的位置）
+        Vec3 camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        poseStack.translate(
+                attackerPos.x - camPos.x,
+                attackerPos.y - camPos.y,
+                attackerPos.z - camPos.z
+        );
+
         poseStack.translate(0, -f3 / 3, 0);
-        Vec3 vec3 = getPosition(target, target.getBbHeight(), partialTick);
-        Vec3 vec31 = getPosition(attacker, f3, partialTick);
-        Vec3 vec32 = vec3.subtract(vec31);
+        Vec3 vec32 = targetPos.subtract(attackerPos);
         float f4 = (float) (vec32.length() + 1.0);
         vec32 = vec32.normalize();
         float f5 = (float) Math.acos(vec32.y);
@@ -128,7 +172,6 @@ public class GuardianLaserRenderTask implements IRenderTask {
 
     @Override
     public boolean canRemove(LivingEntity entity) {
-        // TODO 距离写入配置
-        return timer > maxTime || entity.isRemoved() || target.isRemoved() || entity.distanceTo(target) > 16;
+        return timer > maxTime || entity.isRemoved() || target.isRemoved() || entity.distanceTo(target) > ChestCavityBeyondConfig.guardianLaserDistance;
     }
 }

@@ -12,6 +12,7 @@ public class KeyMappings {
     public static final String KEY_CATEGORY_TRANSLATABLE = "key.chestcavitybeyond.categories";
     public static final String OPEN_SKILL_GUI_TRANSLATABLE = "key.chestcavitybeyond.open_skill_gui";
     public static final String USE_ORGAN_SKILL_TRANSLATABLE = "key.chestcavitybeyond.use_organ_skill";
+    public static final String DESCEND_VEHICLE_TRANSLATABLE = "key.chestcavitybeyond.vehicle_down";
     public static final String USE_ORGAN_SKILLS_TRANSLATABLE = "key.chestcavitybeyond.use_organ_skill_";
 
     public static final List<KeyMapping> USE_SKILLS_MAPPINGS = new ArrayList<>();
@@ -31,6 +32,15 @@ public class KeyMappings {
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             InputConstants.KEY_C,
+            KEY_CATEGORY_TRANSLATABLE
+    );
+
+    // 乘坐实体下降
+    public static final KeyMapping DESCEND_VEHICLE = new KeyMapping(
+            DESCEND_VEHICLE_TRANSLATABLE,
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            InputConstants.KEY_LCONTROL,
             KEY_CATEGORY_TRANSLATABLE
     );
 

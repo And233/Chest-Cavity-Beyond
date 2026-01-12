@@ -27,7 +27,7 @@ public class DamageTypeTagsProvider extends TagsProvider<DamageType> {
         tag(DamageTypeTags.BYPASSES_WOLF_ARMOR)
                 .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
         tag(DamageTypeTags.BYPASSES_RESISTANCE)
-                .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
+                .add(InitDamageType.ORGAN_LOSS);
         tag(DamageTypeTags.NO_KNOCKBACK)
                 .add(InitDamageType.ORGAN_LOSS, InitDamageType.OPEN_CHEST);
     }

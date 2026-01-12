@@ -15,11 +15,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.api.AttributeBonus;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.api.task.IChestCavityTask;
 import net.zhaiji.chestcavitybeyond.client.screen.OrganSkillScreen;
-import net.zhaiji.chestcavitybeyond.manager.ChestCavityManager;
+import net.zhaiji.chestcavitybeyond.manager.ChestCavityTypeManager;
 import net.zhaiji.chestcavitybeyond.manager.DamageSourceManager;
 import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
@@ -77,9 +78,8 @@ public class ChestCavityData extends ItemStackHandler {
         super(27);
         if (attachmentHolder instanceof LivingEntity entity) {
             this.owner = entity;
-            type = ChestCavityManager.getType(entity);
-            // TODO 将周期写入配置
-            filtrationPeriod = 60;
+            type = ChestCavityTypeManager.getType(entity);
+            filtrationPeriod = ChestCavityBeyondConfig.filtrationPeriod;
             filtrationTickOffset = entity.level().getRandom().nextInt(filtrationPeriod);
         }
     }

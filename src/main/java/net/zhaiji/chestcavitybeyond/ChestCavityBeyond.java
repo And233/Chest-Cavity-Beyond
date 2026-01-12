@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.zhaiji.chestcavitybeyond.event.CommonEventManager;
 import net.zhaiji.chestcavitybeyond.manager.OrganManager;
@@ -14,6 +15,9 @@ public class ChestCavityBeyond {
     public static final String MOD_ID = "chestcavitybeyond";
 
     public ChestCavityBeyond(IEventBus modEventBus, ModContainer modContainer) {
+        // 配置文件
+        modContainer.registerConfig(ModConfig.Type.COMMON, ChestCavityBeyondConfig.SPEC);
+
         // 注册
         InitItem.ITEM.register(modEventBus);
         InitEntityType.ENTITY_TYPE.register(modEventBus);

@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.register.InitEnchantment;
 
 /**
@@ -27,8 +28,7 @@ public class EnchantmentUtil {
      */
     public static boolean canOpenChestCavity(Level level, ItemStack stack, float maxHealth, float health) {
         int enchantmentLevel = getEnchantmentLevel(level, stack, InitEnchantment.ADVANCED_SURGERY);
-        // TODO 最小可开胸的最大生命值应该加入配置
-        return maxHealth <= 15 || maxHealth * (0.2 + enchantmentLevel * 0.1) >= health;
+        return maxHealth <= ChestCavityBeyondConfig.minChestOpenMaxHealth || maxHealth * (0.2 + enchantmentLevel * 0.1) >= health;
     }
 
     /**

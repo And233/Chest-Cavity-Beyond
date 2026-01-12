@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Blaze.class)
 public abstract class BlazeMixin extends Monster {
-    protected BlazeMixin(EntityType<? extends Monster> entityType, Level level) {
+    public BlazeMixin(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
     }
 

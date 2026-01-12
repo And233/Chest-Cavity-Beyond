@@ -2,6 +2,7 @@ package net.zhaiji.chestcavitybeyond.api.task;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.network.client.packet.AddGuardianLaserRenderTaskPacket;
 
 public class GuardianLaserTask implements IChestCavityTask {
@@ -32,7 +33,6 @@ public class GuardianLaserTask implements IChestCavityTask {
 
     @Override
     public boolean canRemove(LivingEntity entity) {
-        // TODO 距离写入配置
-        return timer > maxTime || entity.isRemoved() || target.isRemoved() || entity.distanceTo(target) > 16;
+        return timer > maxTime || entity.isRemoved() || target.isRemoved() || entity.distanceTo(target) > ChestCavityBeyondConfig.guardianLaserDistance;
     }
 }

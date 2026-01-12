@@ -88,6 +88,7 @@ public class ChestCavityType {
         for (int i = 0; i < organs.size(); i++) {
             organs.set(i, copyTarget.organs.get(i));
         }
+        attributeBonuses.putAll(copyTarget.attributeBonuses);
         this.needBreath = copyTarget.needBreath;
         return this;
     }

@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.api.task.BlazeFireballTask;
 import net.zhaiji.chestcavitybeyond.api.task.GuardianLaserTask;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
@@ -82,8 +83,7 @@ public class OrganSkillUtil {
      * @return 传送是否成功
      */
     public static boolean randomTeleport(LivingEntity entity, double ender) {
-        // TODO 尝试循环次数写入配置
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < ChestCavityBeyondConfig.randomTeleportAttempts; i++) {
             if (TeleportUtil.randomTeleport(entity, ender)) {
                 return true;
             }
@@ -185,8 +185,7 @@ public class OrganSkillUtil {
         boolean isCrouching = player.isCrouching();
         int totalDuration = 0;
         int amplifier = Math.max(0, (int) (furnacePower - 1));
-        // TODO 将最大上限时间写入配置
-        int maxDuration = 24000;
+        int maxDuration = ChestCavityBeyondConfig.furnacePowerMaxDuration;
         boolean isConsume = false;
         MobEffectInstance effect = player.getEffect(InitEffect.FURNACE_POWER);
         if (effect != null) {
@@ -337,8 +336,7 @@ public class OrganSkillUtil {
     }
 
     public static void shulkerBullet(LivingEntity entity) {
-        // TODO 当前最远32，后续考虑与属性值关联或者写入配置
-        int distance = 32;
+        int distance = ChestCavityBeyondConfig.shulkerBulletDistance;
         HitResult hitResult = ProjectileUtil.getHitResultOnViewVector(entity, checkEntity -> checkEntity != entity, distance);
         if (hitResult instanceof EntityHitResult entityHitResult) {
             shulkerBullet(entity, entityHitResult.getEntity());
@@ -382,8 +380,8 @@ public class OrganSkillUtil {
         Level level = entity.level();
         Vec3 from = entity.getEyePosition();
         Vec3 lookAngle = entity.getLookAngle().normalize();
-        // TODO 距离应该写入配置
-        Vec3 to = from.add(lookAngle.scale(7));
+        int sonicBoomDist = ChestCavityBeyondConfig.sonicBoomDistance;
+        Vec3 to = from.add(lookAngle.scale(sonicBoomDist));
         level.playSound(
                 null,
                 entity.blockPosition(),
@@ -393,7 +391,7 @@ public class OrganSkillUtil {
                 1.0F
         );
         if (level instanceof ServerLevel serverLevel) {
-            for (int i = 1; i < 7; i++) {
+            for (int i = 1; i < sonicBoomDist; i++) {
                 Vec3 pos = from.add(lookAngle.scale(i));
                 serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, pos.x(), pos.y(), pos.z(), 1, 0.0, 0.0, 0.0, 0.0);
             }
@@ -407,7 +405,7 @@ public class OrganSkillUtil {
                     Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
                     Vec3 direction = targetPos.subtract(from);
                     double distance = direction.length();
-                    if (distance > 7) return false;
+                    if (distance > sonicBoomDist) return false;
                     Vec3 projected = from.add(lookAngle.scale(distance));
                     return projected.distanceTo(targetPos) < 1.5;
                 }
@@ -421,8 +419,7 @@ public class OrganSkillUtil {
      * 守卫者激光
      */
     public static void guardianLaser(LivingEntity entity,boolean elder) {
-        // TODO 距离写入配置
-        int distance = 16;
+        int distance = ChestCavityBeyondConfig.guardianLaserDistance;
         HitResult hitResult = ProjectileUtil.getHitResultOnViewVector(entity, checkEntity -> checkEntity != entity, distance);
         if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target) {
             ChestCavityUtil.getData(entity).addTask(new GuardianLaserTask(target, elder));

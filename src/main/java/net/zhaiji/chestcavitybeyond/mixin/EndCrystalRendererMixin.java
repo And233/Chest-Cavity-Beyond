@@ -10,6 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,8 +35,7 @@ public abstract class EndCrystalRendererMixin extends EntityRenderer<EndCrystal>
     public void chestCavityBeyond$render(EndCrystal crystal, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         List<LivingEntity> list = crystal.level().getEntitiesOfClass(
                 LivingEntity.class,
-                // TODO 找寻范围应该写入配置
-                crystal.getBoundingBox().inflate(16),
+                crystal.getBoundingBox().inflate(ChestCavityBeyondConfig.crystalEffectSearchRange),
                 entity -> !(entity instanceof EnderDragon)
                         && entity.getAttribute(InitAttribute.CRYSTALLIZATION).getValue() > 0
         );
