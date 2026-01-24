@@ -3,7 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "chestcavitybeyond:organs/rotten"
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "chestcavitybeyond:organs/rotten"
+      },
+      "subtracted": {
+        "tag": "chestcavitybeyond:organs/bone"
+      }
     }
   ],
   "result": {

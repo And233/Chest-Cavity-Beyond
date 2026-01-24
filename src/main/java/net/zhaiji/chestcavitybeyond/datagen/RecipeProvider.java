@@ -6,6 +6,7 @@ import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.manager.ItemTagManager;
@@ -103,7 +104,14 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                 .save(recipeOutput, ChestCavityBeyond.of("bone_meal_rib"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.ROTTEN_FLESH)
-                .requires(ItemTagManager.ROTTEN)
+                .requires(
+                        new Ingredient(
+                                new DifferenceIngredient(
+                                        Ingredient.of(ItemTagManager.ROTTEN),
+                                        Ingredient.of(ItemTagManager.BONE)
+                                )
+                        )
+                )
                 .unlockedBy("has_rotten", has(ItemTagManager.ROTTEN))
                 .save(recipeOutput, ChestCavityBeyond.of("rotten"));
 

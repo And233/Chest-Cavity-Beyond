@@ -68,17 +68,22 @@ public class ChestOpenerItem extends Item {
                 }
             } else {
                 ChestCavityUtil.openChestCavity(player, target);
-                target.hurt(source, damage);
+                if (!hasDoor) {
+                    target.hurt(source, damage);
+                }
             }
         } else {
             int enchantmentLevel = EnchantmentUtil.getEnchantmentLevel(level, stack, InitEnchantment.SAFE_SURGERY);
             if (enchantmentLevel == 0 || enchantmentLevel == 1 && player.isShiftKeyDown()) {
                 ChestCavityUtil.openChestCavity(player);
-                player.hurt(source, damage);
+                hasDoor = ChestCavityUtil.getData(player).hasOrgan(ItemTags.DOORS);
+                if (!hasDoor) {
+                    player.hurt(source, damage);
+                }
             }
         }
-        if (hasDoor) {
-            player.playNotifySound(SoundEvents.CHEST_OPEN, player.getSoundSource(), 0.75F, 1);
+        if (level.isClientSide() && hasDoor) {
+            player.playNotifySound(SoundEvents.CHEST_OPEN, player.getSoundSource(), 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }

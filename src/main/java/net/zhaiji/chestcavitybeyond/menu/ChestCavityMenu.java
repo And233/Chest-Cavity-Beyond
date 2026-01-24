@@ -1,6 +1,8 @@
 package net.zhaiji.chestcavitybeyond.menu;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
@@ -8,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.register.InitMenuType;
@@ -36,6 +39,17 @@ public class ChestCavityMenu extends AbstractContainerMenu {
         }
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        }
+    }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        Level level = player.level();
+        if (level.isClientSide()) {
+            if (ChestCavityUtil.getData(data.getOwner()).hasOrgan(ItemTags.DOORS)) {
+                player.playNotifySound(SoundEvents.CHEST_CLOSE, player.getSoundSource(), 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+            }
         }
     }
 
