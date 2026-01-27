@@ -630,6 +630,9 @@ public class ChestCavityTypeManager {
 
             .addValueBonuses(Items.OAK_LOG, Map.of(
                     InitAttribute.HEALTH, 1.0,
+                    InitAttribute.NERVES, 1.0
+            ))
+            .addValueBonuses(InitItem.CREEPER_LEAF.get(), Map.of(
                     InitAttribute.BREATH_CAPACITY, 1.0,
                     InitAttribute.BREATH_RECOVERY, 1.0
             ));
