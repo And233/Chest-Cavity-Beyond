@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity {
+
     @Shadow
     protected FoodData foodData;
 
@@ -54,7 +55,6 @@ public abstract class PlayerMixin extends LivingEntity {
     )
     public boolean chestCavityBeyond$updatePlayerPose(boolean original) {
         // 如果重力小于等于0，且不在地面，不会蹲下
-        // TODO 第三人称还是会触发下蹲，找不到原因，但不影响视野
         return original && !(getBlockStateOn().isAir() && getAttribute(Attributes.GRAVITY).getValue() <= 0);
     }
 }
