@@ -6,6 +6,7 @@ import net.zhaiji.chestcavitybeyond.network.client.ClientPacketHandler;
 import net.zhaiji.chestcavitybeyond.network.client.packet.AddGuardianLaserRenderTaskPacket;
 import net.zhaiji.chestcavitybeyond.network.client.packet.ChestOpenerMessagePacket;
 import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
+import net.zhaiji.chestcavitybeyond.network.client.packet.UnopenableChestCavityMessagePacket;
 import net.zhaiji.chestcavitybeyond.network.server.ServerPacketHandler;
 import net.zhaiji.chestcavitybeyond.network.server.packet.SyncSelectedSlotPacket;
 import net.zhaiji.chestcavitybeyond.network.server.packet.UseSkillPacket;
@@ -46,6 +47,12 @@ public class PacketManager {
                 ChestOpenerMessagePacket.TYPE,
                 ChestOpenerMessagePacket.STREAM_CODEC,
                 ClientPacketHandler::handlerChestOpenerMessagePacket
+        );
+
+        registrar.playToClient(
+                UnopenableChestCavityMessagePacket.TYPE,
+                UnopenableChestCavityMessagePacket.STREAM_CODEC,
+                ClientPacketHandler::handlerUnopenableCavityMessagePacket
         );
     }
 }

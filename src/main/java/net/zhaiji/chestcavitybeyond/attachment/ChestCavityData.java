@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.api.AttributeBonus;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
@@ -185,6 +186,11 @@ public class ChestCavityData extends ItemStackHandler {
      * 初始化修饰符
      */
     public void initAttributeModifier() {
+        // 应用胸腔类型的默认属性加成
+        for (AttributeBonus bonus : type.getTypeDefaultBonuses()) {
+            OrganAttributeUtil.updateAttributeModifier(owner, bonus.attribute(), bonus.create(ChestCavityBeyond.of("type_default")));
+        }
+
         for (int i = 0; i < getSlots(); i++) {
             ItemStack stack = getStackInSlot(i);
             if (stack.isEmpty()) continue;

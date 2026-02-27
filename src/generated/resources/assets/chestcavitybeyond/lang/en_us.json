@@ -244,6 +244,7 @@
   "key.chestcavitybeyond.vehicle_down": "Descend Vehicle",
   "message.chestcavitybeyond.healthy": "Target is too healthy",
   "message.chestcavitybeyond.obstructed": "Target's chest is obstructed by equipment",
+  "message.chestcavitybeyond.unopenable": "This entity cannot be opened",
   "organ.chestcavitybeyond.attribute.tooltips_0": "%1$s %2$s",
   "organ.chestcavitybeyond.attribute.tooltips_1": "%1$s%% %2$s",
   "organ.chestcavitybeyond.attribute.tooltips_2": "%1$s%% Final %2$s",

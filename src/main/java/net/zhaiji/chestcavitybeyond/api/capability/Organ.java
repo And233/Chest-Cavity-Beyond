@@ -19,6 +19,7 @@ import net.zhaiji.chestcavitybeyond.api.function.AttackConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.HurtConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
+import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -65,7 +66,11 @@ public class Organ implements IOrgan {
 
     @Override
     public void attributeTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        attributeTooltipConsumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
+        OrganTooltipConsumer consumer = attributeTooltipConsumer;
+        if (consumer == null) {
+            consumer = TooltipUtil.DEFAULT_ATTRIBUTE_TOOLTIP;
+        }
+        consumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
     }
 
     @Override

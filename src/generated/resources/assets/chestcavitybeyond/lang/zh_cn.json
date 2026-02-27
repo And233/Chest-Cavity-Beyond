@@ -244,6 +244,7 @@
   "key.chestcavitybeyond.vehicle_down": "乘坐实体下降",
   "message.chestcavitybeyond.healthy": "目标太过健康",
   "message.chestcavitybeyond.obstructed": "目标的胸腔被装备阻挡",
+  "message.chestcavitybeyond.unopenable": "此生物无法被开胸",
   "organ.chestcavitybeyond.attribute.tooltips_0": "%1$s %2$s",
   "organ.chestcavitybeyond.attribute.tooltips_1": "%1$s%% %2$s",
   "organ.chestcavitybeyond.attribute.tooltips_2": "%1$s%% 最终%2$s",

@@ -56,7 +56,7 @@ public class OrganBuilder {
         private Item item;
         private BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer = EMPTY_MODIFIER;
         private OrganTooltipConsumer descriptionTooltipConsumer = EMPTY_TOOLTIP;
-        private OrganTooltipConsumer attributeTooltipConsumer = TooltipUtil::addOrganAttributeTooltip;
+        private OrganTooltipConsumer attributeTooltipConsumer = null;
         private OrganTooltipConsumer skillTooltipConsumer = EMPTY_TOOLTIP;
         private Consumer<ChestCavitySlotContext> organTickConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organAddedConsumer = EMPTY_CONSUMER;

@@ -11,12 +11,19 @@ import net.minecraft.world.item.TooltipFlag;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
+import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TooltipUtil {
+    /**
+     * 默认的器官属性工具提示回调
+     * 可以被替换以全局改变所有器官的属性 tooltip 显示方式
+     */
+    public static OrganTooltipConsumer DEFAULT_ATTRIBUTE_TOOLTIP = TooltipUtil::addOrganAttributeTooltip;
+
     /**
      * 为器官属性工具提示
      */

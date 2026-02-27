@@ -17,8 +17,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
+import net.zhaiji.chestcavitybeyond.manager.ChestCavityTypeManager;
 import net.zhaiji.chestcavitybeyond.manager.DamageSourceManager;
 import net.zhaiji.chestcavitybeyond.network.client.packet.ChestOpenerMessagePacket;
+import net.zhaiji.chestcavitybeyond.network.client.packet.UnopenableChestCavityMessagePacket;
 import net.zhaiji.chestcavitybeyond.register.InitEnchantment;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 import net.zhaiji.chestcavitybeyond.util.EnchantmentUtil;
@@ -53,6 +56,15 @@ public class ChestOpenerItem extends Item {
         float damage = EnchantmentUtil.calculateOpenDamage(level, stack, 4);
         boolean hasDoor = false;
         if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target) {
+            // 检查胸腔类型是否可开胸
+            ChestCavityType cavityType = ChestCavityTypeManager.getType(target);
+            if (cavityType.isUnopenable()) {
+                if (player instanceof ServerPlayer serverPlayer) {
+                    PacketDistributor.sendToPlayer(serverPlayer,
+                        new UnopenableChestCavityMessagePacket(target.getId()));
+                }
+                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+            }
             boolean canOpenCavity = player.isCreative() || EnchantmentUtil.canOpenChestCavity(level, stack, target.getMaxHealth(), target.getHealth());
             hasDoor = ChestCavityUtil.getData(target).hasOrgan(ItemTags.DOORS);
             boolean hasChestPlate = !target.getItemBySlot(EquipmentSlot.CHEST).isEmpty();

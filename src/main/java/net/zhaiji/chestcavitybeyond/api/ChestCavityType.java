@@ -29,7 +29,13 @@ public class ChestCavityType {
 
     private final Map<Item, List<AttributeBonus>> attributeBonuses = new HashMap<>();
 
+    private final List<AttributeBonus> typeDefaultBonuses = new ArrayList<>();
+
     private boolean needBreath = true;
+
+    private boolean unopenable = false;
+
+    private String unopenableMessage;
 
     /**
      * 计算胸腔类型属性默认值
@@ -89,7 +95,10 @@ public class ChestCavityType {
             organs.set(i, copyTarget.organs.get(i));
         }
         attributeBonuses.putAll(copyTarget.attributeBonuses);
+        typeDefaultBonuses.addAll(copyTarget.typeDefaultBonuses);
         this.needBreath = copyTarget.needBreath;
+        this.unopenable = copyTarget.unopenable;
+        this.unopenableMessage = copyTarget.unopenableMessage;
         return this;
     }
 
@@ -198,6 +207,42 @@ public class ChestCavityType {
     }
 
     /**
+     * 为胸腔类型添加默认属性加成
+     * 这些加成将应用于所有拥有此胸腔类型的实体，独立于器官系统
+     *
+     * @param attribute  要修改的属性
+     * @param bonusValue 加成数值
+     * @param operation  应用方式
+     * @return 胸腔类型
+     */
+    public ChestCavityType addTypeDefaultBonus(Holder<Attribute> attribute, double bonusValue, AttributeModifier.Operation operation) {
+        typeDefaultBonuses.add(new AttributeBonus(attribute, bonusValue, operation));
+        return this;
+    }
+
+    /**
+     * 批量添加简单的加值加成
+     *
+     * @param attributes 属性到加成数值的映射
+     * @return 胸腔类型
+     */
+    public ChestCavityType addTypeValueBonuses(Map<Holder<Attribute>, Double> attributes) {
+        attributes.forEach((attribute, value) ->
+                addTypeDefaultBonus(attribute, value, AttributeModifier.Operation.ADD_VALUE)
+        );
+        return this;
+    }
+
+    /**
+     * 获取胸腔类型的默认属性加成
+     *
+     * @return 默认属性加成列表
+     */
+    public List<AttributeBonus> getTypeDefaultBonuses() {
+        return Collections.unmodifiableList(typeDefaultBonuses);
+    }
+
+    /**
      * 为每个属于这个胸腔类型的实体类型计算默认胸腔属性
      *
      * @param entityType 实体类型
@@ -227,6 +272,11 @@ public class ChestCavityType {
             }
         }
 
+        // 添加胸腔类型默认加成
+        for (AttributeBonus bonus : typeDefaultBonuses) {
+            modifierMultimap.put(bonus.attribute(), bonus.create(ChestCavityBeyond.of("type_default")));
+        }
+
         // 计算最终值
         for (Holder<Attribute> attribute : modifierMultimap.keySet()) {
             calculateValue(entityType, attribute, modifierMultimap.get(attribute), attributeMap, modifierMap);
@@ -254,5 +304,36 @@ public class ChestCavityType {
      */
     public Map<Holder<Attribute>, AttributeModifier> getDefaultModifier(EntityType<?> entityType) {
         return defaultModifiers.get(entityType);
+    }
+
+    /**
+     * 获取是否不可开胸
+     */
+    public boolean isUnopenable() {
+        return unopenable;
+    }
+
+    /**
+     * 设置是否不可开胸
+     */
+    public ChestCavityType setUnopenable(boolean unopenable) {
+        this.unopenable = unopenable;
+        return this;
+    }
+
+    /**
+     * 设置不可开胸时的消息提示（语言键）
+     * @param messageKey 翻译键，如 "message.chestcavitybeyond.boss_undying"
+     */
+    public ChestCavityType setUnopenableMessage(String messageKey) {
+        this.unopenableMessage = messageKey;
+        return this;
+    }
+
+    /**
+     * 获取不可开胸消息键
+     */
+    public String getUnopenableMessage() {
+        return unopenableMessage;
     }
 }

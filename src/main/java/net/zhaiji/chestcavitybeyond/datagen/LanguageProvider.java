@@ -314,6 +314,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
         add("message." + ChestCavityBeyond.MOD_ID + ".obstructed", "Target's chest is obstructed by equipment");
         add("message." + ChestCavityBeyond.MOD_ID + ".healthy", "Target is too healthy");
+        add("message." + ChestCavityBeyond.MOD_ID + ".unopenable", "This entity cannot be opened");
 
         add(ItemTagManager.ORGANS, "Organs");
         add(ItemTagManager.HEART, "Hearts");
@@ -638,6 +639,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
 
         add("message." + ChestCavityBeyond.MOD_ID + ".obstructed", "目标的胸腔被装备阻挡");
         add("message." + ChestCavityBeyond.MOD_ID + ".healthy", "目标太过健康");
+        add("message." + ChestCavityBeyond.MOD_ID + ".unopenable", "此生物无法被开胸");
     }
 
     private void addAttribute(Holder<Attribute> attribute, String value) {

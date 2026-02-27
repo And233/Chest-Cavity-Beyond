@@ -5,17 +5,17 @@ import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.network.PacketManager;
 
 public class CommonEventManager {
-    public static void init(IEventBus modEventBus, IEventBus gameBus) {
-        CommonEventManager.modBusListener(modEventBus);
+    public static void init(IEventBus modBus, IEventBus gameBus) {
+        CommonEventManager.modBusListener(modBus);
         CommonEventManager.gameBusListener(gameBus);
     }
 
-    public static void modBusListener(IEventBus modEventBus) {
-        modEventBus.addListener(ChestCavityBeyondConfig::handlerModConfigEvent);
-        modEventBus.addListener(CommonEventHandler::handlerRegisterCapabilitiesEvent);
-        modEventBus.addListener(CommonEventHandler::handlerFMLLoadCompleteEvent);
-        modEventBus.addListener(CommonEventHandler::handlerEntityAttributeModificationEvent);
-        modEventBus.addListener(PacketManager::handlerRegisterPayloadHandlersEvent);
+    public static void modBusListener(IEventBus modBus) {
+        modBus.addListener(ChestCavityBeyondConfig::handlerModConfigEvent);
+        modBus.addListener(CommonEventHandler::handlerRegisterCapabilitiesEvent);
+        modBus.addListener(CommonEventHandler::handlerFMLLoadCompleteEvent);
+        modBus.addListener(CommonEventHandler::handlerEntityAttributeModificationEvent);
+        modBus.addListener(PacketManager::handlerRegisterPayloadHandlersEvent);
     }
 
     public static void gameBusListener(IEventBus gameBus) {
