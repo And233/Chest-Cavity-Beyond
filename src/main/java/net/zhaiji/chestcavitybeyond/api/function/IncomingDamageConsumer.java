@@ -1,7 +1,6 @@
 package net.zhaiji.chestcavitybeyond.api.function;
 
-import net.minecraft.world.damagesource.DamageSource;
-import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 
 /**
@@ -10,9 +9,8 @@ import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 @FunctionalInterface
 public interface IncomingDamageConsumer {
     /**
-     * @param context         胸腔槽位上下文
-     * @param source          伤害源
-     * @param damageContainer 伤害容器
+     * @param context 胸腔槽位上下文
+     * @param event   伤害事件
      */
-    void accept(ChestCavitySlotContext context, DamageSource source, DamageContainer damageContainer);
+    void accept(ChestCavitySlotContext context, LivingIncomingDamageEvent event);
 }

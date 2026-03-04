@@ -38,9 +38,12 @@ public class OrganBuilder {
     };
     private static final HurtConsumer EMPTY_HURT = (context, source, damageContainer) -> {
     };
-    private static final IncomingDamageConsumer EMPTY_INCOMING_DAMAGE = (context, source, damageContainer) -> {
+    private static final IncomingDamageConsumer EMPTY_INCOMING_DAMAGE = (context, event) -> {
     };
-
+    private static final Consumer<ChestCavitySlotContext> EMPTY_CHEST_CAVITY_OPEN = context -> {
+    };
+    private static final Consumer<ChestCavitySlotContext> EMPTY_CHEST_CAVITY_CLOSE = context -> {
+    };
     /**
      * 新建构建器
      *
@@ -70,6 +73,8 @@ public class OrganBuilder {
         private AttackConsumer attackConsumer = EMPTY_ATTACK;
         private HurtConsumer hurtConsumer = EMPTY_HURT;
         private IncomingDamageConsumer incomingDamageConsumer = EMPTY_INCOMING_DAMAGE;
+        private Consumer<ChestCavitySlotContext> chestCavityOpenConsumer = EMPTY_CHEST_CAVITY_OPEN;
+        private Consumer<ChestCavitySlotContext> chestCavityCloseConsumer = EMPTY_CHEST_CAVITY_CLOSE;
 
         private Builder() {
         }
@@ -184,6 +189,22 @@ public class OrganBuilder {
         }
 
         /**
+         * 设置胸腔打开触发器
+         */
+        public Builder chestCavityOpen(Consumer<ChestCavitySlotContext> chestCavityOpenConsumer) {
+            this.chestCavityOpenConsumer = chestCavityOpenConsumer;
+            return this;
+        }
+
+        /**
+         * 设置胸腔关闭触发器
+         */
+        public Builder chestCavityClose(Consumer<ChestCavitySlotContext> chestCavityCloseConsumer) {
+            this.chestCavityCloseConsumer = chestCavityCloseConsumer;
+            return this;
+        }
+
+        /**
          * 构建
          */
         public Item build() {
@@ -205,7 +226,9 @@ public class OrganBuilder {
                             cooldownTicks,
                             attackConsumer,
                             hurtConsumer,
-                            incomingDamageConsumer
+                            incomingDamageConsumer,
+                            chestCavityOpenConsumer,
+                            chestCavityCloseConsumer
                     )
             );
             return item;

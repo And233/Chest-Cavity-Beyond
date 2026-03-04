@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
 import net.zhaiji.chestcavitybeyond.api.function.AttackConsumer;
@@ -41,8 +42,10 @@ public class Organ implements IOrgan {
     private final AttackConsumer attackConsumer;
     private final HurtConsumer hurtConsumer;
     private final IncomingDamageConsumer incomingDamageConsumer;
+    private final Consumer<ChestCavitySlotContext> chestCavityOpenConsumer;
+    private final Consumer<ChestCavitySlotContext> chestCavityCloseConsumer;
 
-    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, OrganTooltipConsumer descriptionTooltipConsumer, OrganTooltipConsumer attributeTooltipConsumer, OrganTooltipConsumer skillTooltipConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer, boolean hasSkill, Consumer<ChestCavitySlotContext> organSkillConsumer, int cooldownTicks, AttackConsumer attackConsumer, HurtConsumer hurtConsumer, IncomingDamageConsumer incomingDamageConsumer) {
+    public Organ(BiConsumer<ResourceLocation, Multimap<Holder<Attribute>, AttributeModifier>> organModifierConsumer, OrganTooltipConsumer descriptionTooltipConsumer, OrganTooltipConsumer attributeTooltipConsumer, OrganTooltipConsumer skillTooltipConsumer, Consumer<ChestCavitySlotContext> organTickConsumer, Consumer<ChestCavitySlotContext> organAddedConsumer, Consumer<ChestCavitySlotContext> organRemovedConsumer, boolean hasSkill, Consumer<ChestCavitySlotContext> organSkillConsumer, int cooldownTicks, AttackConsumer attackConsumer, HurtConsumer hurtConsumer, IncomingDamageConsumer incomingDamageConsumer, Consumer<ChestCavitySlotContext> chestCavityOpenConsumer, Consumer<ChestCavitySlotContext> chestCavityCloseConsumer) {
         this.organModifierConsumer = organModifierConsumer;
         this.descriptionTooltipConsumer = descriptionTooltipConsumer;
         this.attributeTooltipConsumer = attributeTooltipConsumer;
@@ -56,6 +59,8 @@ public class Organ implements IOrgan {
         this.attackConsumer = attackConsumer;
         this.hurtConsumer = hurtConsumer;
         this.incomingDamageConsumer = incomingDamageConsumer;
+        this.chestCavityOpenConsumer = chestCavityOpenConsumer;
+        this.chestCavityCloseConsumer = chestCavityCloseConsumer;
     }
 
     @Override
@@ -116,8 +121,8 @@ public class Organ implements IOrgan {
     }
 
     @Override
-    public void incomingDamage(ChestCavitySlotContext context, DamageSource source, DamageContainer damageContainer) {
-        incomingDamageConsumer.accept(context, source, damageContainer);
+    public void incomingDamage(ChestCavitySlotContext context, LivingIncomingDamageEvent event) {
+        incomingDamageConsumer.accept(context, event);
     }
 
     @Override
@@ -133,5 +138,15 @@ public class Organ implements IOrgan {
     @Override
     public int getCooldownTicks() {
         return cooldownTicks;
+    }
+
+    @Override
+    public void chestCavityOpen(ChestCavitySlotContext context) {
+        chestCavityOpenConsumer.accept(context);
+    }
+
+    @Override
+    public void chestCavityClose(ChestCavitySlotContext context) {
+        chestCavityCloseConsumer.accept(context);
     }
 }
