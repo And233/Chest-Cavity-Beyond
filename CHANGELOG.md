@@ -2,6 +2,11 @@
 
 本文档记录了 Chest Cavity Beyond 所有版本的更改。
 
+## 1.0.9
+
+- 创造模式标签页新增附魔书
+- 新增可序列化任务系统（`ISerializableTask`、`TaskManager`）
+
 ## 1.0.8
 
 - 新增了 `OrganChangeEvent` 事件，当胸腔中的器官被添加、移除或替换时触发

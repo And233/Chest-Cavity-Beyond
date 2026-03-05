@@ -13,7 +13,6 @@ import net.zhaiji.chestcavitybeyond.api.function.AttackConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.HurtConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.IncomingDamageConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
-import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
 import java.util.HashMap;
 import java.util.Map;
