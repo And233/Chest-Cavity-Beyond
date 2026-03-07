@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
+import net.neoforged.fml.event.IModBusEvent;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.api.function.TaskDeserializer;
 import net.zhaiji.chestcavitybeyond.manager.ChestCavityTypeManager;
@@ -12,7 +13,7 @@ import net.zhaiji.chestcavitybeyond.manager.TaskManager;
 /**
  * 注册胸腔事件
  */
-public class RegisterChestCavityEvent extends Event {
+public class RegisterChestCavityEvent extends Event implements IModBusEvent {
     /**
      * 注册胸腔类型
      */
