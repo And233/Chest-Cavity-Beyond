@@ -22,10 +22,12 @@ import net.zhaiji.chestcavitybeyond.api.function.IncomingDamageConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganModifierConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
+import net.zhaiji.chestcavitybeyond.manager.OrganManager;
 import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 import net.zhaiji.chestcavitybeyond.util.OrganSkillUtil;
 import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -47,40 +49,36 @@ public class Organ implements IOrgan {
     private final Consumer<ChestCavitySlotContext> chestCavityOpenConsumer;
     private final Consumer<ChestCavitySlotContext> chestCavityCloseConsumer;
 
-    public Organ(
-        List<AttributeEntry> attributeEntries,
-        OrganModifierConsumer organModifierConsumer,
-        OrganTooltipConsumer descriptionTooltipConsumer,
-        OrganTooltipConsumer attributeTooltipConsumer,
-        OrganTooltipConsumer skillTooltipConsumer,
-        Consumer<ChestCavitySlotContext> organTickConsumer,
-        Consumer<ChestCavitySlotContext> organAddedConsumer,
-        Consumer<ChestCavitySlotContext> organRemovedConsumer,
-        boolean hasSkill,
-        Consumer<ChestCavitySlotContext> organSkillConsumer,
-        int cooldownTicks,
-        AttackConsumer attackConsumer,
-        HurtConsumer hurtConsumer,
-        IncomingDamageConsumer incomingDamageConsumer,
-        Consumer<ChestCavitySlotContext> chestCavityOpenConsumer,
-        Consumer<ChestCavitySlotContext> chestCavityCloseConsumer
-    ) {
-        this.attributeEntries = attributeEntries;
-        this.organModifierConsumer = organModifierConsumer;
-        this.descriptionTooltipConsumer = descriptionTooltipConsumer;
-        this.attributeTooltipConsumer = attributeTooltipConsumer;
-        this.skillTooltipConsumer = skillTooltipConsumer;
-        this.organTickConsumer = organTickConsumer;
-        this.organAddedConsumer = organAddedConsumer;
-        this.organRemovedConsumer = organRemovedConsumer;
-        this.hasSkill = hasSkill;
-        this.organSkillConsumer = organSkillConsumer;
-        this.cooldownTicks = cooldownTicks;
-        this.attackConsumer = attackConsumer;
-        this.hurtConsumer = hurtConsumer;
-        this.incomingDamageConsumer = incomingDamageConsumer;
-        this.chestCavityOpenConsumer = chestCavityOpenConsumer;
-        this.chestCavityCloseConsumer = chestCavityCloseConsumer;
+    private Organ(Builder builder) {
+        this.attributeEntries = builder.attributeEntries;
+        this.organModifierConsumer = builder.organModifierConsumer;
+        this.descriptionTooltipConsumer = builder.descriptionTooltipConsumer;
+        this.attributeTooltipConsumer = builder.attributeTooltipConsumer;
+        this.skillTooltipConsumer = builder.skillTooltipConsumer;
+        this.organTickConsumer = builder.organTickConsumer;
+        this.organAddedConsumer = builder.organAddedConsumer;
+        this.organRemovedConsumer = builder.organRemovedConsumer;
+        this.hasSkill = builder.hasSkill;
+        this.organSkillConsumer = builder.organSkillConsumer;
+        this.cooldownTicks = builder.cooldownTicks;
+        this.attackConsumer = builder.attackConsumer;
+        this.hurtConsumer = builder.hurtConsumer;
+        this.incomingDamageConsumer = builder.incomingDamageConsumer;
+        this.chestCavityOpenConsumer = builder.chestCavityOpenConsumer;
+        this.chestCavityCloseConsumer = builder.chestCavityCloseConsumer;
+    }
+
+    /**
+     * 新建构建器
+     *
+     * @return 构建器
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(Item item) {
+        return new Builder(item);
     }
 
     @Override
@@ -201,5 +199,227 @@ public class Organ implements IOrgan {
     @Override
     public void chestCavityClose(ChestCavitySlotContext context) {
         chestCavityCloseConsumer.accept(context);
+    }
+
+    public static class Builder {
+        private static final OrganModifierConsumer EMPTY_MODIFIER = (context, modifiers) -> {
+        };
+        private static final OrganTooltipConsumer EMPTY_TOOLTIP = (data, stack, keyContext, context, tooltipComponents, tooltipFlag) -> {
+        };
+        private static final Consumer<ChestCavitySlotContext> EMPTY_CONSUMER = context -> {
+        };
+        private static final AttackConsumer EMPTY_ATTACK = (context, target, source, damageContainer) -> {
+        };
+        private static final HurtConsumer EMPTY_HURT = (context, source, damageContainer) -> {
+        };
+        private static final IncomingDamageConsumer EMPTY_INCOMING_DAMAGE = (context, event) -> {
+        };
+        private static final Consumer<ChestCavitySlotContext> EMPTY_CHEST_CAVITY_OPEN = context -> {
+        };
+        private static final Consumer<ChestCavitySlotContext> EMPTY_CHEST_CAVITY_CLOSE = context -> {
+        };
+        private final Item.Properties properties = new Item.Properties().stacksTo(1);
+        private final List<AttributeEntry> attributeEntries = new ArrayList<>();
+        private Item item;
+        private OrganModifierConsumer organModifierConsumer = EMPTY_MODIFIER;
+        private OrganTooltipConsumer descriptionTooltipConsumer = EMPTY_TOOLTIP;
+        private OrganTooltipConsumer attributeTooltipConsumer = null;
+        private OrganTooltipConsumer skillTooltipConsumer = EMPTY_TOOLTIP;
+        private Consumer<ChestCavitySlotContext> organTickConsumer = EMPTY_CONSUMER;
+        private Consumer<ChestCavitySlotContext> organAddedConsumer = EMPTY_CONSUMER;
+        private Consumer<ChestCavitySlotContext> organRemovedConsumer = EMPTY_CONSUMER;
+        private boolean hasSkill = false;
+        private Consumer<ChestCavitySlotContext> organSkillConsumer = EMPTY_CONSUMER;
+        private int cooldownTicks = 0;
+        private AttackConsumer attackConsumer = EMPTY_ATTACK;
+        private HurtConsumer hurtConsumer = EMPTY_HURT;
+        private IncomingDamageConsumer incomingDamageConsumer = EMPTY_INCOMING_DAMAGE;
+        private Consumer<ChestCavitySlotContext> chestCavityOpenConsumer = EMPTY_CHEST_CAVITY_OPEN;
+        private Consumer<ChestCavitySlotContext> chestCavityCloseConsumer = EMPTY_CHEST_CAVITY_CLOSE;
+
+        public Builder() {
+        }
+
+        public Builder(Item item) {
+            this.item = item;
+        }
+
+        /**
+         * 设置器官物品属性
+         */
+        public Builder properties(Consumer<Item.Properties> itemPropertiesConsumer) {
+            itemPropertiesConsumer.accept(properties);
+            return this;
+        }
+
+        /**
+         * 设置器官描述工具提示
+         */
+        public Builder descriptionTooltip(OrganTooltipConsumer descriptionTooltipConsumer) {
+            this.descriptionTooltipConsumer = descriptionTooltipConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官工具提示
+         */
+        public Builder attributeTooltip(OrganTooltipConsumer attributeTooltipConsumer) {
+            this.attributeTooltipConsumer = attributeTooltipConsumer;
+            return this;
+        }
+
+        /**
+         * 设置技能描述工具提示
+         */
+        public Builder skillTooltip(OrganTooltipConsumer skillTooltipConsumer) {
+            this.skillTooltipConsumer = skillTooltipConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官提供的属性修饰符
+         */
+        public Builder modifier(OrganModifierConsumer organModifierConsumer) {
+            this.organModifierConsumer = organModifierConsumer;
+            return this;
+        }
+
+        /**
+         * 添加属性修饰符
+         *
+         * @param attribute 属性
+         * @param value     值
+         * @param operation 操作类型
+         * @return 构建器
+         */
+        public Builder addAttribute(Holder<Attribute> attribute, double value, AttributeModifier.Operation operation) {
+            attributeEntries.add(new AttributeEntry(attribute, value, operation));
+            return this;
+        }
+
+        /**
+         * 添加基础值加算属性修饰符
+         *
+         * @param attribute 属性
+         * @param value     值
+         * @return 构建器
+         */
+        public Builder addValueAttribute(Holder<Attribute> attribute, double value) {
+            return addAttribute(attribute, value, AttributeModifier.Operation.ADD_VALUE);
+        }
+
+        /**
+         * 添加基础值乘算属性修饰符
+         *
+         * @param attribute 属性
+         * @param value     值
+         * @return 构建器
+         */
+        public Builder baseMultipliedAttribute(Holder<Attribute> attribute, double value) {
+            return addAttribute(attribute, value, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        }
+
+        /**
+         * 添加最终乘算属性修饰符
+         *
+         * @param attribute 属性
+         * @param value     值
+         * @return 构建器
+         */
+        public Builder totalMultipliedAttribute(Holder<Attribute> attribute, double value) {
+            return addAttribute(attribute, value, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        }
+
+        /**
+         * 设置器官tick触发器
+         */
+        public Builder tick(Consumer<ChestCavitySlotContext> organTickConsumer) {
+            this.organTickConsumer = organTickConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官移植触发器
+         */
+        public Builder added(Consumer<ChestCavitySlotContext> organAddedConsumer) {
+            this.organAddedConsumer = organAddedConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官摘除触发器
+         */
+        public Builder removed(Consumer<ChestCavitySlotContext> organRemovedConsumer) {
+            this.organRemovedConsumer = organRemovedConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官技能
+         */
+        public Builder skill(Consumer<ChestCavitySlotContext> organSkillConsumer) {
+            hasSkill = true;
+            this.organSkillConsumer = organSkillConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官技能冷却时间（tick）
+         */
+        public Builder cooldown(int cooldownTicks) {
+            this.cooldownTicks = cooldownTicks;
+            return this;
+        }
+
+        /**
+         * 设置器官拥有者攻击触发器
+         */
+        public Builder attack(AttackConsumer attackConsumer) {
+            this.attackConsumer = attackConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官拥有者受伤触发器
+         */
+        public Builder hurt(HurtConsumer hurtConsumer) {
+            this.hurtConsumer = hurtConsumer;
+            return this;
+        }
+
+        /**
+         * 设置器官拥有者受到伤害前触发器
+         */
+        public Builder incomingDamage(IncomingDamageConsumer incomingDamageConsumer) {
+            this.incomingDamageConsumer = incomingDamageConsumer;
+            return this;
+        }
+
+        /**
+         * 设置胸腔打开触发器
+         */
+        public Builder chestCavityOpen(Consumer<ChestCavitySlotContext> chestCavityOpenConsumer) {
+            this.chestCavityOpenConsumer = chestCavityOpenConsumer;
+            return this;
+        }
+
+        /**
+         * 设置胸腔关闭触发器
+         */
+        public Builder chestCavityClose(Consumer<ChestCavitySlotContext> chestCavityCloseConsumer) {
+            this.chestCavityCloseConsumer = chestCavityCloseConsumer;
+            return this;
+        }
+
+        /**
+         * 构建
+         */
+        public Item build() {
+            if (item == null) {
+                item = new Item(properties);
+            }
+            OrganManager.ORGAN_REGISTRY.put(item, new Organ(this));
+            return item;
+        }
     }
 }

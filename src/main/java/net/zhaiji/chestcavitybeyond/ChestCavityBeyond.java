@@ -28,9 +28,6 @@ public class ChestCavityBeyond {
         InitEffect.EFFECT.register(modEventBus);
         InitRecipe.RECIPE_SERIALIZERS.register(modEventBus);
 
-        // 自定注册
-        OrganManager.register();
-
         // 事件注册管理
         CommonEventManager.init(modEventBus, NeoForge.EVENT_BUS);
     }

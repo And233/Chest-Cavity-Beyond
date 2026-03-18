@@ -219,6 +219,7 @@ public class OrganSkillUtil {
         } while (isCrouching && stack.getBurnTime(null) > 0);
         if (isConsume) {
             player.level().playSound(null, player.blockPosition(), SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS);
+            player.removeEffect(InitEffect.FURNACE_POWER);
             player.addEffect(new MobEffectInstance(InitEffect.FURNACE_POWER, totalDuration, amplifier));
         }
     }

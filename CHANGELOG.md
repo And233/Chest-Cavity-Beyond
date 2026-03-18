@@ -2,6 +2,12 @@
 
 本文档记录了 Chest Cavity Beyond 所有版本的更改。
 
+## 1.1.2
+
+- 重构器官构建系统：`OrganBuilder` 合并为 `Organ.Builder`
+- 修复腐食消化和熔炉力量效果机制
+- 优化攻击事件处理逻辑
+
 ## 1.1.1_fix
 
 - 修复了默认不可开胸的bug（原 `unopenable` 默认返回 `true` 导致所有实体默认不可开胸）

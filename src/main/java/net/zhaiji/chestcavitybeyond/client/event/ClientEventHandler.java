@@ -17,12 +17,12 @@ import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
 import net.zhaiji.chestcavitybeyond.api.client.task.IRenderTask;
 import net.zhaiji.chestcavitybeyond.api.task.IChestCavityTask;
-import net.zhaiji.chestcavitybeyond.builder.OrganBuilder;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
 import net.zhaiji.chestcavitybeyond.client.overlay.OrganSelectedOverlay;
 import net.zhaiji.chestcavitybeyond.client.screen.ChestCavityScreen;
 import net.zhaiji.chestcavitybeyond.client.screen.OrganSkillScreen;
 import net.zhaiji.chestcavitybeyond.client.util.ChestCavityClientUtil;
+import net.zhaiji.chestcavitybeyond.manager.OrganManager;
 import net.zhaiji.chestcavitybeyond.network.server.packet.UseSkillPacket;
 import net.zhaiji.chestcavitybeyond.register.InitEntityType;
 import net.zhaiji.chestcavitybeyond.register.InitMenuType;
@@ -89,7 +89,7 @@ public class ClientEventHandler {
      */
     public static void handlerItemTooltipEvent(ItemTooltipEvent event) {
         IOrgan organ = ChestCavityUtil.getOrganCap(event.getItemStack());
-        if (organ == OrganBuilder.EMPTY_ORGAN) return;
+        if (organ == OrganManager.EMPTY_ORGAN) return;
         Minecraft minecraft = Minecraft.getInstance();
         Options options = minecraft.options;
         Player player = event.getEntity();

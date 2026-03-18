@@ -1,21 +1,23 @@
 package net.zhaiji.chestcavitybeyond.manager;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
-import net.zhaiji.chestcavitybeyond.builder.OrganBuilder;
-import net.zhaiji.chestcavitybeyond.register.InitAttribute;
-import net.zhaiji.chestcavitybeyond.util.OrganSkillUtil;
+import net.minecraft.world.item.Item;
+import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
+import net.zhaiji.chestcavitybeyond.api.capability.Organ;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrganManager {
-    public static void register() {
-        // 下界之星
-        OrganBuilder.builder(Items.NETHER_STAR)
-                .addValueAttribute(InitAttribute.HEALTH, 2.5)
-                .skill(context -> {
-                    if (context.entity() instanceof Player player) {
-                        OrganSkillUtil.witherSkull(player);
-                    }
-                })
-                .build();
+    public static final IOrgan EMPTY_ORGAN = new IOrgan() {
+    };
+    public static final Map<Item, Organ> ORGAN_REGISTRY = new HashMap<>();
+
+    /**
+     * 获取器官注册表
+     *
+     * @return 器官注册表
+     */
+    public static Map<Item, Organ> getRegistry() {
+        return ORGAN_REGISTRY;
     }
 }

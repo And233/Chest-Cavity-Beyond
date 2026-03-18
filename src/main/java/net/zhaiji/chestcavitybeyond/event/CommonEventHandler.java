@@ -10,6 +10,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,11 +29,12 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.zhaiji.chestcavitybeyond.api.capability.Organ;
 import net.zhaiji.chestcavitybeyond.api.event.RegisterChestCavityEvent;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
-import net.zhaiji.chestcavitybeyond.builder.OrganBuilder;
 import net.zhaiji.chestcavitybeyond.manager.CapabilityManager;
 import net.zhaiji.chestcavitybeyond.manager.ChestCavityTypeManager;
+import net.zhaiji.chestcavitybeyond.manager.OrganManager;
 import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
@@ -50,7 +52,7 @@ public class CommonEventHandler {
      * @param event 注册capability事件
      */
     public static void handlerRegisterCapabilitiesEvent(RegisterCapabilitiesEvent event) {
-        OrganBuilder.getRegistry().forEach((item, organ) -> {
+        OrganManager.getRegistry().forEach((item, organ) -> {
             event.registerItem(CapabilityManager.ORGAN, (itemStack, context) -> organ, item);
         });
     }
@@ -185,6 +187,16 @@ public class CommonEventHandler {
         // 盔甲架
         ChestCavityTypeManager.registerEntity(EntityType.ARMOR_STAND, ChestCavityTypeManager.ARMOR_STAND);
 
+        // 下界之星器官注册
+        Organ.builder(Items.NETHER_STAR)
+            .addValueAttribute(InitAttribute.HEALTH, 2.5)
+            .skill(context -> {
+                if (context.entity() instanceof Player player) {
+                    OrganSkillUtil.witherSkull(player);
+                }
+            })
+            .build();
+
         ModLoader.postEvent(new RegisterChestCavityEvent());
     }
 
@@ -277,7 +289,8 @@ public class CommonEventHandler {
         if (event.isCanceled()) return;
         DamageSource source = event.getSource();
         boolean isProjectile = source.is(DamageTypeTags.IS_PROJECTILE);
-        boolean isWaterPotion = source.getDirectEntity() instanceof ThrownPotion potion && potion.getItem().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).is(Potions.WATER);
+        boolean isWaterPotion = source.getDirectEntity() instanceof ThrownPotion potion
+                                && potion.getItem().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).is(Potions.WATER);
         if (isProjectile || isWaterPotion) {
             double ender = data.getCurrentValue(InitAttribute.ENDER);
             if (data.getCurrentValue(InitAttribute.PROJECTILE_DODGE) > 0 && ender > 0) {
@@ -315,18 +328,24 @@ public class CommonEventHandler {
             flag = true;
         }
 
+        LivingEntity attacker = source.getEntity() instanceof LivingEntity attackerEntity
+                                ? attackerEntity
+                                : source.getDirectEntity() instanceof LivingEntity directEntity
+                                  ? directEntity
+                                  : null;
+
         // 应用凋零化效果
-        if (source.getDirectEntity() instanceof LivingEntity sourceEntity && source.getEntity() == sourceEntity) {
-            ChestCavityData sourceData = ChestCavityUtil.getData(sourceEntity);
-            double withered = sourceData.getCurrentValue(InitAttribute.WITHERED);
+        if (attacker != null) {
+            ChestCavityData attackerData = ChestCavityUtil.getData(attacker);
+            double withered = attackerData.getCurrentValue(InitAttribute.WITHERED);
             if (withered > 0) {
                 int duration = (int) (40 * withered);
                 int amplifier = 0;
-                if (sourceData.hasOrgan(Items.NETHER_STAR)) {
+                if (attackerData.hasOrgan(Items.NETHER_STAR)) {
                     duration += 200;
                     amplifier++;
                 }
-                entity.addEffect(new MobEffectInstance(MobEffects.WITHER, duration, amplifier), sourceEntity);
+                entity.addEffect(new MobEffectInstance(MobEffects.WITHER, duration, amplifier), attacker);
             }
         }
 
@@ -340,9 +359,9 @@ public class CommonEventHandler {
         event.setNewDamage((float) damage);
 
         // 触发所有器官的attack效果
-        if (source.getDirectEntity() instanceof LivingEntity sourceEntity) {
-            ChestCavityData sourceData = ChestCavityUtil.getData(sourceEntity);
-            ChestCavityUtil.attack(sourceData, sourceEntity, entity, source, event.getContainer());
+        if (attacker != null) {
+            ChestCavityData attackerData = ChestCavityUtil.getData(attacker);
+            ChestCavityUtil.attack(attackerData, attacker, entity, source, event.getContainer());
         }
         // 触发所有器官的hurt效果
         ChestCavityUtil.hurt(data, entity, source, event.getContainer());

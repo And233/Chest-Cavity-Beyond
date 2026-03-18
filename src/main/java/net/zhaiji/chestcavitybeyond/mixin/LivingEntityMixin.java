@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -62,7 +63,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 
     /**
-     * 如果有腐食消化，则不会附加食物的负面效果
+     * 如果有腐食消化，则不会附加食物的中毒和饥饿
      */
     @WrapWithCondition(
             method = "addEatEffect",
@@ -73,7 +74,7 @@ public abstract class LivingEntityMixin extends Entity {
     )
     public boolean chestCavityBeyond$addEatEffect(LivingEntity instance, MobEffectInstance effectInstance) {
         if (ChestCavityUtil.getData(instance).getCurrentValue(InitAttribute.SCAVENGER_DIGESTION) > 0) {
-            return !((IMobEffectInstance) effectInstance).isHarmful();
+            return effectInstance.getEffect() != MobEffects.POISON && effectInstance.getEffect() != MobEffects.HUNGER;
         }
         return true;
     }

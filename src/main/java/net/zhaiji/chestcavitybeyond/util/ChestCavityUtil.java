@@ -21,9 +21,9 @@ import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
 import net.zhaiji.chestcavitybeyond.api.event.OrganChangeEvent;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
-import net.zhaiji.chestcavitybeyond.builder.OrganBuilder;
 import net.zhaiji.chestcavitybeyond.manager.CapabilityManager;
 import net.zhaiji.chestcavitybeyond.manager.ItemTagManager;
+import net.zhaiji.chestcavitybeyond.manager.OrganManager;
 import net.zhaiji.chestcavitybeyond.menu.ChestCavityMenu;
 import net.zhaiji.chestcavitybeyond.mixinapi.IMobEffectInstance;
 import net.zhaiji.chestcavitybeyond.register.InitAttachmentType;
@@ -62,7 +62,7 @@ public class ChestCavityUtil {
      * @return 器官capability
      */
     public static IOrgan getOrganCap(ItemStack stack) {
-        return Objects.requireNonNullElse(stack.getCapability(CapabilityManager.ORGAN), OrganBuilder.EMPTY_ORGAN);
+        return Objects.requireNonNullElse(stack.getCapability(CapabilityManager.ORGAN), net.zhaiji.chestcavitybeyond.manager.OrganManager.EMPTY_ORGAN);
     }
 
     /**
@@ -73,7 +73,7 @@ public class ChestCavityUtil {
      */
     public static boolean isOrgan(ItemStack stack) {
         IOrgan organCap = getOrganCap(stack);
-        return stack.is(ItemTagManager.ORGANS) || organCap != OrganBuilder.EMPTY_ORGAN;
+        return stack.is(ItemTagManager.ORGANS) || organCap != OrganManager.EMPTY_ORGAN;
     }
 
     /**
