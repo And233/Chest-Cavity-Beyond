@@ -418,7 +418,7 @@ public class Organ implements IOrgan {
             if (item == null) {
                 item = new Item(properties);
             }
-            OrganManager.ORGAN_REGISTRY.put(item, new Organ(this));
+            OrganManager.getRegistry().put(item, new Organ(this));
             return item;
         }
     }

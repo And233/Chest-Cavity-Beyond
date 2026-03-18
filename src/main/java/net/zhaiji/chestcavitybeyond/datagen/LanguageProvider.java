@@ -12,7 +12,12 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
 import net.zhaiji.chestcavitybeyond.manager.ItemTagManager;
-import net.zhaiji.chestcavitybeyond.register.*;
+import net.zhaiji.chestcavitybeyond.register.InitAttribute;
+import net.zhaiji.chestcavitybeyond.register.InitCreativeModeTab;
+import net.zhaiji.chestcavitybeyond.register.InitDamageType;
+import net.zhaiji.chestcavitybeyond.register.InitEffect;
+import net.zhaiji.chestcavitybeyond.register.InitEnchantment;
+import net.zhaiji.chestcavitybeyond.register.InitItem;
 
 import java.util.function.Supplier;
 
