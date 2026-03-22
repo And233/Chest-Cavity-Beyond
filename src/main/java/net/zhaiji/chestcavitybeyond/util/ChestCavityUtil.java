@@ -130,7 +130,10 @@ public class ChestCavityUtil {
      */
     public static void organAdded(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
         if (stack.isEmpty()) return;
-        getOrganCap(stack).organAdded(createContext(data, entity, index, stack));
+        ChestCavitySlotContext changedContext = createContext(data, entity, index, stack);
+        getOrganCap(stack).organAdded(changedContext);
+        // 触发所有其他器官的回调
+        triggerOtherOrganChange(data, entity, index, changedContext, true);
     }
 
     /**
@@ -138,7 +141,36 @@ public class ChestCavityUtil {
      */
     public static void organRemoved(ChestCavityData data, LivingEntity entity, int index, ItemStack stack) {
         if (stack.isEmpty()) return;
-        getOrganCap(stack).organRemoved(createContext(data, entity, index, stack));
+        ChestCavitySlotContext changedContext = createContext(data, entity, index, stack);
+        getOrganCap(stack).organRemoved(changedContext);
+        // 触发所有其他器官的回调
+        triggerOtherOrganChange(data, entity, index, changedContext, false);
+    }
+
+    /**
+     * 触发所有其他器官的变化回调
+     *
+     * @param data          胸腔数据
+     * @param entity        实体
+     * @param changedIndex  变化的器官索引
+     * @param changedContext 变化的器官上下文
+     * @param isAdded       true=添加，false=移除
+     */
+    private static void triggerOtherOrganChange(
+        ChestCavityData data,
+        LivingEntity entity,
+        int changedIndex,
+        ChestCavitySlotContext changedContext,
+        boolean isAdded
+    ) {
+        for (int i = 0; i < data.getSlots(); i++) {
+            // 跳过变化的器官本身
+            if (i == changedIndex) continue;
+            ItemStack otherStack = data.getStackInSlot(i);
+            if (otherStack.isEmpty()) continue;
+            ChestCavitySlotContext otherContext = createContext(data, entity, i, otherStack);
+            getOrganCap(otherStack).otherOrganChange(changedContext, isAdded);
+        }
     }
 
     /**

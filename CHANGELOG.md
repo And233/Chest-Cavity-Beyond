@@ -2,6 +2,14 @@
 
 本文档记录了 Chest Cavity Beyond 所有版本的更改。
 
+## 1.1.3
+
+- 新增 `otherOrganChange` 器官回调：当胸腔内其他器官被添加或移除时触发
+- 新增 `organSkillOnCooldown` 器官回调：当器官技能处于冷却状态时触发
+- Builder 新增 `otherChange()` 和 `skillOnCooldown()` 构建方法
+- `IOrgan` 接口新增 `otherOrganChange(ChestCavitySlotContext, boolean)` 方法
+- `IOrgan` 接口新增 `organSkillOnCooldown(ChestCavitySlotContext)` 方法
+
 ## 1.1.2
 
 - 重构器官构建系统：`OrganBuilder` 合并为 `Organ.Builder`

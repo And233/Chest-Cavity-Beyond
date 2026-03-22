@@ -29,6 +29,7 @@ import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Organ implements IOrgan {
@@ -40,9 +41,11 @@ public class Organ implements IOrgan {
     private final Consumer<ChestCavitySlotContext> organTickConsumer;
     private final Consumer<ChestCavitySlotContext> organAddedConsumer;
     private final Consumer<ChestCavitySlotContext> organRemovedConsumer;
+    private final BiConsumer<ChestCavitySlotContext, Boolean> otherOrganChangeConsumer;
     private final boolean hasSkill;
     private final Consumer<ChestCavitySlotContext> organSkillConsumer;
     private final int cooldownTicks;
+    private final Consumer<ChestCavitySlotContext> organSkillOnCooldownConsumer;
     private final AttackConsumer attackConsumer;
     private final HurtConsumer hurtConsumer;
     private final IncomingDamageConsumer incomingDamageConsumer;
@@ -58,9 +61,11 @@ public class Organ implements IOrgan {
         this.organTickConsumer = builder.organTickConsumer;
         this.organAddedConsumer = builder.organAddedConsumer;
         this.organRemovedConsumer = builder.organRemovedConsumer;
+        this.otherOrganChangeConsumer = builder.otherOrganChangeConsumer;
         this.hasSkill = builder.hasSkill;
         this.organSkillConsumer = builder.organSkillConsumer;
         this.cooldownTicks = builder.cooldownTicks;
+        this.organSkillOnCooldownConsumer = builder.organSkillOnCooldownConsumer;
         this.attackConsumer = builder.attackConsumer;
         this.hurtConsumer = builder.hurtConsumer;
         this.incomingDamageConsumer = builder.incomingDamageConsumer;
@@ -156,6 +161,11 @@ public class Organ implements IOrgan {
     }
 
     @Override
+    public void otherOrganChange(ChestCavitySlotContext changedContext, boolean isAdded) {
+        otherOrganChangeConsumer.accept(changedContext, isAdded);
+    }
+
+    @Override
     public boolean hasSkill() {
         return hasSkill;
     }
@@ -163,12 +173,18 @@ public class Organ implements IOrgan {
     @Override
     public void organSkill(ChestCavitySlotContext context) {
         if (cooldownTicks > 0 && OrganSkillUtil.hasCooldown(context.entity(), context.stack())) {
+            organSkillOnCooldownConsumer.accept(context);
             return;
         }
         organSkillConsumer.accept(context);
         if (cooldownTicks > 0) {
             OrganSkillUtil.addCooldown(context.entity(), context.stack(), cooldownTicks);
         }
+    }
+
+    @Override
+    public void organSkillOnCooldown(ChestCavitySlotContext context) {
+        organSkillOnCooldownConsumer.accept(context);
     }
 
     @Override
@@ -218,6 +234,8 @@ public class Organ implements IOrgan {
         };
         private static final Consumer<ChestCavitySlotContext> EMPTY_CHEST_CAVITY_CLOSE = context -> {
         };
+        private static final BiConsumer<ChestCavitySlotContext, Boolean> EMPTY_OTHER_ORGAN_CHANGE = (context, isAdded) -> {
+        };
         private final Item.Properties properties = new Item.Properties().stacksTo(1);
         private final List<AttributeEntry> attributeEntries = new ArrayList<>();
         private Item item;
@@ -228,9 +246,11 @@ public class Organ implements IOrgan {
         private Consumer<ChestCavitySlotContext> organTickConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organAddedConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organRemovedConsumer = EMPTY_CONSUMER;
+        private BiConsumer<ChestCavitySlotContext, Boolean> otherOrganChangeConsumer = EMPTY_OTHER_ORGAN_CHANGE;
         private boolean hasSkill = false;
         private Consumer<ChestCavitySlotContext> organSkillConsumer = EMPTY_CONSUMER;
         private int cooldownTicks = 0;
+        private Consumer<ChestCavitySlotContext> organSkillOnCooldownConsumer = EMPTY_CONSUMER;
         private AttackConsumer attackConsumer = EMPTY_ATTACK;
         private HurtConsumer hurtConsumer = EMPTY_HURT;
         private IncomingDamageConsumer incomingDamageConsumer = EMPTY_INCOMING_DAMAGE;
@@ -355,6 +375,17 @@ public class Organ implements IOrgan {
         }
 
         /**
+         * 设置其他器官变化时的回调
+         * <p>
+         * 第二个布尔是isAdded true=其他器官添加，false=其他器官移除
+         * </p>
+         */
+        public Builder otherChange(BiConsumer<ChestCavitySlotContext, Boolean> otherOrganChangeConsumer) {
+            this.otherOrganChangeConsumer = otherOrganChangeConsumer;
+            return this;
+        }
+
+        /**
          * 设置器官技能
          */
         public Builder skill(Consumer<ChestCavitySlotContext> organSkillConsumer) {
@@ -368,6 +399,14 @@ public class Organ implements IOrgan {
          */
         public Builder cooldown(int cooldownTicks) {
             this.cooldownTicks = cooldownTicks;
+            return this;
+        }
+
+        /**
+         * 设置器官技能冷却时的回调
+         */
+        public Builder skillOnCooldown(Consumer<ChestCavitySlotContext> organSkillOnCooldownConsumer) {
+            this.organSkillOnCooldownConsumer = organSkillOnCooldownConsumer;
             return this;
         }
 

@@ -97,6 +97,15 @@ public interface IOrgan {
     }
 
     /**
+     * 当其他器官被添加或移除时调用
+     *
+     * @param changedContext 变化的器官的上下文
+     * @param isAdded        true=添加，false=移除
+     */
+    default void otherOrganChange(ChestCavitySlotContext changedContext, boolean isAdded) {
+    }
+
+    /**
      * 器官是否有技能
      *
      * @return 是否有技能
@@ -111,6 +120,14 @@ public interface IOrgan {
      * @param context 胸腔槽位上下文
      */
     default void organSkill(ChestCavitySlotContext context) {
+    }
+
+    /**
+     * 器官技能冷却中时调用
+     *
+     * @param context 胸腔槽位上下文
+     */
+    default void organSkillOnCooldown(ChestCavitySlotContext context) {
     }
 
     /**

@@ -120,10 +120,30 @@ public class OrganAttributeUtil {
      * @param oldStack 旧器官
      * @param newStack 新器官
      */
-    public static void updateOrganAttributeModifier(ChestCavityData data, LivingEntity entity, int index, ItemStack oldStack, ItemStack newStack) {
+    public static void updateOrganAttributeModifier(
+        ChestCavityData data,
+        LivingEntity entity,
+        int index,
+        ItemStack oldStack,
+        ItemStack newStack
+    ) {
         if (oldStack.equals(newStack)) return;
-        Multimap<Holder<Attribute>, AttributeModifier> removeModifiers = ChestCavityUtil.getAttributeModifiers(ChestCavityUtil.createContext(data, entity, index, oldStack));
-        Multimap<Holder<Attribute>, AttributeModifier> addModifiers = ChestCavityUtil.getAttributeModifiers(ChestCavityUtil.createContext(data, entity, index, newStack));
+        Multimap<Holder<Attribute>, AttributeModifier> removeModifiers = ChestCavityUtil.getAttributeModifiers(
+            ChestCavityUtil.createContext(
+                data,
+                entity,
+                index,
+                oldStack
+            )
+        );
+        Multimap<Holder<Attribute>, AttributeModifier> addModifiers = ChestCavityUtil.getAttributeModifiers(
+            ChestCavityUtil.createContext(
+                data,
+                entity,
+                index,
+                newStack
+            )
+        );
         ChestCavityType type = data.getType();
         ResourceLocation slotId = ChestCavityUtil.getSlotId(index);
         // 移除旧器官加成
@@ -176,7 +196,12 @@ public class OrganAttributeUtil {
      * @param attribute 修饰符
      * @param modifiers 需要添加的修饰符
      */
-    public static void modifyModifier(LivingEntity entity, Holder<Attribute> attribute, Collection<AttributeModifier> modifiers, boolean isAdd) {
+    public static void modifyModifier(
+        LivingEntity entity,
+        Holder<Attribute> attribute,
+        Collection<AttributeModifier> modifiers,
+        boolean isAdd
+    ) {
         AttributeInstance instance = entity.getAttribute(attribute);
         if (instance != null) {
             if (isAdd) {
@@ -235,13 +260,11 @@ public class OrganAttributeUtil {
      */
     public static void updateStrength(ChestCavityData data, LivingEntity entity) {
         double strength = data.getDifferenceValue(InitAttribute.STRENGTH);
-        double factor = strength >= 0 ? MathUtil.getDirectScale(strength) : MathUtil.getLog10Scale(strength);
+        double factor = MathUtil.getLog10Scale(strength);
         updateAttributeModifier(
-                entity,
-                Attributes.ATTACK_DAMAGE,
-                strength >= 0
-                        ? createAddValueModifier("strength", factor - 1)
-                        : createMultipliedBaseModifier("strength", -factor)
+            entity,
+            Attributes.ATTACK_DAMAGE,
+            createMultipliedBaseModifier("strength", strength >= 0 ? factor : -factor)
         );
     }
 
@@ -254,7 +277,11 @@ public class OrganAttributeUtil {
         if (speed == 0) {
             factor = 0;
         }
-        updateAttributeModifier(entity, Attributes.MOVEMENT_SPEED, createMultipliedBaseModifier("speed", speed >= 0 ? factor : -factor));
+        updateAttributeModifier(
+            entity,
+            Attributes.MOVEMENT_SPEED,
+            createMultipliedBaseModifier("speed", speed >= 0 ? factor : -factor)
+        );
     }
 
     /**
@@ -265,21 +292,21 @@ public class OrganAttributeUtil {
         double jumpStrengthFactor = MathUtil.getLog10Scale(leaping);
         double safeFallDistanceFactor = MathUtil.getDirectScale(leaping);
         updateAttributeModifier(
-                entity,
-                Attributes.JUMP_STRENGTH,
-                leaping >= 0
-                        ? createAddValueModifier("leaping", jumpStrengthFactor)
-                        : createMultipliedBaseModifier("leaping", -jumpStrengthFactor)
+            entity,
+            Attributes.JUMP_STRENGTH,
+            leaping >= 0
+            ? createAddValueModifier("leaping", jumpStrengthFactor)
+            : createMultipliedBaseModifier("leaping", -jumpStrengthFactor)
         );
         if (leaping == 0) {
             safeFallDistanceFactor = 0;
         }
         updateAttributeModifier(
-                entity,
-                Attributes.SAFE_FALL_DISTANCE,
-                leaping >= 0
-                        ? createMultipliedBaseModifier("leaping", safeFallDistanceFactor / 4)
-                        : createMultipliedBaseModifier("leaping", safeFallDistanceFactor - 1)
+            entity,
+            Attributes.SAFE_FALL_DISTANCE,
+            leaping >= 0
+            ? createMultipliedBaseModifier("leaping", safeFallDistanceFactor / 4)
+            : createMultipliedBaseModifier("leaping", safeFallDistanceFactor - 1)
         );
     }
 }
