@@ -6,8 +6,9 @@
 
 - 新增 `otherOrganChange` 器官回调：当胸腔内其他器官被添加或移除时触发
 - 新增 `organSkillOnCooldown` 器官回调：当器官技能处于冷却状态时触发
-- Builder 新增 `otherChange()` 和 `skillOnCooldown()` 构建方法
-- `IOrgan` 接口新增 `otherOrganChange(ChestCavitySlotContext, boolean)` 方法
+- 新增 `OtherOrganChangeConsumer` 函数式接口到 `api.function` 包
+- Builder 新增 `otherChange(OtherOrganChangeConsumer)` 和 `skillOnCooldown()` 构建方法
+- `IOrgan` 接口新增 `otherOrganChange(ChestCavitySlotContext, ItemStack, int, boolean)` 方法
 - `IOrgan` 接口新增 `organSkillOnCooldown(ChestCavitySlotContext)` 方法
 
 ## 1.1.2

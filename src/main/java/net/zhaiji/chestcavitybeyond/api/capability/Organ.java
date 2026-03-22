@@ -21,6 +21,7 @@ import net.zhaiji.chestcavitybeyond.api.function.HurtConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.IncomingDamageConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganModifierConsumer;
 import net.zhaiji.chestcavitybeyond.api.function.OrganTooltipConsumer;
+import net.zhaiji.chestcavitybeyond.api.function.OtherOrganChangeConsumer;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.manager.OrganManager;
 import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
@@ -29,7 +30,6 @@ import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Organ implements IOrgan {
@@ -41,7 +41,7 @@ public class Organ implements IOrgan {
     private final Consumer<ChestCavitySlotContext> organTickConsumer;
     private final Consumer<ChestCavitySlotContext> organAddedConsumer;
     private final Consumer<ChestCavitySlotContext> organRemovedConsumer;
-    private final BiConsumer<ChestCavitySlotContext, Boolean> otherOrganChangeConsumer;
+    private final OtherOrganChangeConsumer otherOrganChangeConsumer;
     private final boolean hasSkill;
     private final Consumer<ChestCavitySlotContext> organSkillConsumer;
     private final int cooldownTicks;
@@ -161,8 +161,8 @@ public class Organ implements IOrgan {
     }
 
     @Override
-    public void otherOrganChange(ChestCavitySlotContext changedContext, boolean isAdded) {
-        otherOrganChangeConsumer.accept(changedContext, isAdded);
+    public void otherOrganChange(ChestCavitySlotContext context, int changedIndex, ItemStack changedStack, boolean isAdded) {
+        otherOrganChangeConsumer.accept(context, changedIndex, changedStack, isAdded);
     }
 
     @Override
@@ -234,7 +234,7 @@ public class Organ implements IOrgan {
         };
         private static final Consumer<ChestCavitySlotContext> EMPTY_CHEST_CAVITY_CLOSE = context -> {
         };
-        private static final BiConsumer<ChestCavitySlotContext, Boolean> EMPTY_OTHER_ORGAN_CHANGE = (context, isAdded) -> {
+        private static final OtherOrganChangeConsumer EMPTY_OTHER_ORGAN_CHANGE = (context, changedIndex, changedStack, isAdded) -> {
         };
         private final Item.Properties properties = new Item.Properties().stacksTo(1);
         private final List<AttributeEntry> attributeEntries = new ArrayList<>();
@@ -246,7 +246,7 @@ public class Organ implements IOrgan {
         private Consumer<ChestCavitySlotContext> organTickConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organAddedConsumer = EMPTY_CONSUMER;
         private Consumer<ChestCavitySlotContext> organRemovedConsumer = EMPTY_CONSUMER;
-        private BiConsumer<ChestCavitySlotContext, Boolean> otherOrganChangeConsumer = EMPTY_OTHER_ORGAN_CHANGE;
+        private OtherOrganChangeConsumer otherOrganChangeConsumer = EMPTY_OTHER_ORGAN_CHANGE;
         private boolean hasSkill = false;
         private Consumer<ChestCavitySlotContext> organSkillConsumer = EMPTY_CONSUMER;
         private int cooldownTicks = 0;
@@ -376,11 +376,8 @@ public class Organ implements IOrgan {
 
         /**
          * 设置其他器官变化时的回调
-         * <p>
-         * 第二个布尔是isAdded true=其他器官添加，false=其他器官移除
-         * </p>
          */
-        public Builder otherChange(BiConsumer<ChestCavitySlotContext, Boolean> otherOrganChangeConsumer) {
+        public Builder otherChange(OtherOrganChangeConsumer otherOrganChangeConsumer) {
             this.otherOrganChangeConsumer = otherOrganChangeConsumer;
             return this;
         }

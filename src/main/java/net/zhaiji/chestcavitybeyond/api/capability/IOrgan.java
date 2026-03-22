@@ -43,7 +43,14 @@ public interface IOrgan {
      * @param tooltipComponents 工具提示组件列表
      * @param tooltipFlag       工具提示标识符
      */
-    default void descriptionTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    default void descriptionTooltip(
+        ChestCavityData data,
+        ItemStack stack,
+        TooltipsKeyContext keyContext,
+        Item.TooltipContext context,
+        List<Component> tooltipComponents,
+        TooltipFlag tooltipFlag
+    ) {
     }
 
     /**
@@ -56,7 +63,14 @@ public interface IOrgan {
      * @param tooltipComponents 工具提示组件列表
      * @param tooltipFlag       工具提示标识符
      */
-    default void attributeTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    default void attributeTooltip(
+        ChestCavityData data,
+        ItemStack stack,
+        TooltipsKeyContext keyContext,
+        Item.TooltipContext context,
+        List<Component> tooltipComponents,
+        TooltipFlag tooltipFlag
+    ) {
     }
 
     /**
@@ -69,7 +83,14 @@ public interface IOrgan {
      * @param tooltipComponents 工具提示组件列表
      * @param tooltipFlag       工具提示标识符
      */
-    default void skillTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    default void skillTooltip(
+        ChestCavityData data,
+        ItemStack stack,
+        TooltipsKeyContext keyContext,
+        Item.TooltipContext context,
+        List<Component> tooltipComponents,
+        TooltipFlag tooltipFlag
+    ) {
     }
 
     /**
@@ -99,10 +120,12 @@ public interface IOrgan {
     /**
      * 当其他器官被添加或移除时调用
      *
-     * @param changedContext 变化的器官的上下文
-     * @param isAdded        true=添加，false=移除
+     * @param context      当前器官（接收回调的器官）的上下文
+     * @param changedIndex 变化的器官槽位索引
+     * @param changedStack 变化的器官物品栈
+     * @param isAdded      true=添加，false=移除
      */
-    default void otherOrganChange(ChestCavitySlotContext changedContext, boolean isAdded) {
+    default void otherOrganChange(ChestCavitySlotContext context, int changedIndex, ItemStack changedStack, boolean isAdded) {
     }
 
     /**
