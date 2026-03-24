@@ -118,14 +118,14 @@ public interface IOrgan {
     }
 
     /**
-     * 当其他器官被添加或移除时调用
+     * 当其他器官变化时调用
      *
      * @param context      当前器官（接收回调的器官）的上下文
      * @param changedIndex 变化的器官槽位索引
-     * @param changedStack 变化的器官物品栈
-     * @param isAdded      true=添加，false=移除
+     * @param oldStack     旧器官物品栈（可能为空）
+     * @param newStack     新器官物品栈（可能为空）
      */
-    default void otherOrganChange(ChestCavitySlotContext context, int changedIndex, ItemStack changedStack, boolean isAdded) {
+    default void otherOrganChange(ChestCavitySlotContext context, int changedIndex, ItemStack oldStack, ItemStack newStack) {
     }
 
     /**

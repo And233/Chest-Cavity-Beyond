@@ -113,6 +113,8 @@ public class ChestCavityUtil {
         OrganAttributeUtil.updateOrganAttributeModifier(data, entity, index, oldStack, newStack);
         ChestCavityUtil.organRemoved(data, entity, index, oldStack);
         ChestCavityUtil.organAdded(data, entity, index, newStack);
+        // 触发所有其他器官的变化回调
+        triggerOtherOrganChange(data, entity, index, oldStack, newStack);
         // 发布器官更换事件
         NeoForge.EVENT_BUS.post(new OrganChangeEvent(data, entity, index, oldStack, newStack));
     }
@@ -132,8 +134,6 @@ public class ChestCavityUtil {
         if (stack.isEmpty()) return;
         ChestCavitySlotContext changedContext = createContext(data, entity, index, stack);
         getOrganCap(stack).organAdded(changedContext);
-        // 触发所有其他器官的回调
-        triggerOtherOrganChange(data, entity, index, stack, true);
     }
 
     /**
@@ -143,8 +143,6 @@ public class ChestCavityUtil {
         if (stack.isEmpty()) return;
         ChestCavitySlotContext changedContext = createContext(data, entity, index, stack);
         getOrganCap(stack).organRemoved(changedContext);
-        // 触发所有其他器官的回调
-        triggerOtherOrganChange(data, entity, index, stack, false);
     }
 
     /**
@@ -153,15 +151,15 @@ public class ChestCavityUtil {
      * @param data         胸腔数据
      * @param entity       实体
      * @param changedIndex 变化的器官索引
-     * @param changedStack 变化的器官物品栈
-     * @param isAdded      true=添加，false=移除
+     * @param oldStack     旧器官物品栈（可能为空）
+     * @param newStack     新器官物品栈（可能为空）
      */
     private static void triggerOtherOrganChange(
         ChestCavityData data,
         LivingEntity entity,
         int changedIndex,
-        ItemStack changedStack,
-        boolean isAdded
+        ItemStack oldStack,
+        ItemStack newStack
     ) {
         for (int i = 0; i < data.getSlots(); i++) {
             // 跳过变化的器官本身
@@ -169,7 +167,7 @@ public class ChestCavityUtil {
             ItemStack otherStack = data.getStackInSlot(i);
             if (otherStack.isEmpty()) continue;
             ChestCavitySlotContext otherContext = createContext(data, entity, i, otherStack);
-            getOrganCap(otherStack).otherOrganChange(otherContext, changedIndex, changedStack, isAdded);
+            getOrganCap(otherStack).otherOrganChange(otherContext, changedIndex, oldStack, newStack);
         }
     }
 

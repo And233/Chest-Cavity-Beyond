@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class ChestCavityData extends ItemStackHandler {
@@ -220,6 +221,45 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
+     * 获取第一个匹配的器官
+     */
+    public Optional<ItemStack> getFirstOrgan(Item item) {
+        for (ItemStack organ : stacks) {
+            if (organ.getItem() == item) {
+                return Optional.of(organ);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ItemStack> getFirstOrgan(ItemStack stack) {
+        for (ItemStack organ : stacks) {
+            if (ItemStack.isSameItemSameComponents(organ, stack)) {
+                return Optional.of(organ);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ItemStack> getFirstOrgan(TagKey<Item> tag) {
+        for (ItemStack organ : stacks) {
+            if (organ.is(tag)) {
+                return Optional.of(organ);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ItemStack> getFirstOrgan(Predicate<ItemStack> predicate) {
+        for (ItemStack organ : stacks) {
+            if (predicate.test(organ)) {
+                return Optional.of(organ);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * 客户端同步用
      */
     public void sync(SyncChestCavityDataPacket packet) {
@@ -296,6 +336,106 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     /**
+     * 检查是否存在符合条件的任务
+     *
+     * @param predicate 匹配条件
+     * @return 是否存在符合条件的任务
+     */
+    public boolean hasTask(Predicate<IChestCavityTask> predicate) {
+        for (IChestCavityTask task : tasks) {
+            if (predicate.test(task)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取第一个符合条件的任务
+     *
+     * @param predicate 匹配条件
+     * @return 第一个符合条件的任务
+     */
+    public Optional<IChestCavityTask> getFirstTask(Predicate<IChestCavityTask> predicate) {
+        for (IChestCavityTask task : tasks) {
+            if (predicate.test(task)) {
+                return Optional.of(task);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 删除第一个符合条件的任务
+     *
+     * @param predicate 匹配条件
+     * @return 是否成功删除
+     */
+    public boolean removeTask(Predicate<IChestCavityTask> predicate) {
+        Iterator<IChestCavityTask> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            IChestCavityTask task = iterator.next();
+            if (predicate.test(task)) {
+                task.onRemoved(owner);
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 删除指定的任务实例
+     *
+     * @param task 要删除的任务
+     * @return 是否成功删除
+     */
+    public boolean removeTask(IChestCavityTask task) {
+        Iterator<IChestCavityTask> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            IChestCavityTask current = iterator.next();
+            if (current == task) {
+                task.onRemoved(owner);
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 删除所有符合条件的任务
+     *
+     * @param predicate 匹配条件
+     * @return 删除的任务数量
+     */
+    public int removeTasks(Predicate<IChestCavityTask> predicate) {
+        int removed = 0;
+        Iterator<IChestCavityTask> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            IChestCavityTask task = iterator.next();
+            if (predicate.test(task)) {
+                task.onRemoved(owner);
+                iterator.remove();
+                removed++;
+            }
+        }
+        return removed;
+    }
+
+    /**
+     * 清空所有任务
+     */
+    public void clearTasks() {
+        Iterator<IChestCavityTask> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            IChestCavityTask task = iterator.next();
+            task.onRemoved(owner);
+            iterator.remove();
+        }
+    }
+
+    /**
      * 如果健康小于等于0，就会持续受伤
      */
     private void applyHealth() {
@@ -364,12 +504,6 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
-        init = true;
-    }
-
-    @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         ItemStack oldStack = getStackInSlot(slot);
         super.setStackInSlot(slot, stack);
@@ -420,5 +554,11 @@ public class ChestCavityData extends ItemStackHandler {
                 tasks.add(task);
             }
         }
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        init = true;
     }
 }

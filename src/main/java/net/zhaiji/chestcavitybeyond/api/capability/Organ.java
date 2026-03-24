@@ -161,8 +161,8 @@ public class Organ implements IOrgan {
     }
 
     @Override
-    public void otherOrganChange(ChestCavitySlotContext context, int changedIndex, ItemStack changedStack, boolean isAdded) {
-        otherOrganChangeConsumer.accept(context, changedIndex, changedStack, isAdded);
+    public void otherOrganChange(ChestCavitySlotContext context, int changedIndex, ItemStack oldStack, ItemStack newStack) {
+        otherOrganChangeConsumer.accept(context, changedIndex, oldStack, newStack);
     }
 
     @Override
@@ -234,7 +234,7 @@ public class Organ implements IOrgan {
         };
         private static final Consumer<ChestCavitySlotContext> EMPTY_CHEST_CAVITY_CLOSE = context -> {
         };
-        private static final OtherOrganChangeConsumer EMPTY_OTHER_ORGAN_CHANGE = (context, changedIndex, changedStack, isAdded) -> {
+        private static final OtherOrganChangeConsumer EMPTY_OTHER_ORGAN_CHANGE = (context, changedIndex, oldStack, newStack) -> {
         };
         private final Item.Properties properties = new Item.Properties().stacksTo(1);
         private final List<AttributeEntry> attributeEntries = new ArrayList<>();

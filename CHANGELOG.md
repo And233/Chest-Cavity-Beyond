@@ -2,6 +2,12 @@
 
 本文档记录了 Chest Cavity Beyond 所有版本的更改。
 
+## 1.1.4
+
+- 改进 `otherOrganChange` 器官回调：参数从 `(ItemStack, boolean isAdded)` 改为 `(ItemStack oldStack, ItemStack newStack)`，支持检测器官替换操作
+- `ChestCavityData` 新增 `getFirstOrgan()` 方法
+- `ChestCavityData` 新增 Task 管理方法：`hasTask()`、`getFirstTask()`、`removeTask()`、`removeTasks()`、`clearTasks()`
+
 ## 1.1.3
 
 - 新增 `otherOrganChange` 器官回调：当胸腔内其他器官被添加或移除时触发
