@@ -4,14 +4,12 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
+import net.zhaiji.chestcavitybeyond.util.MixinUtil;
 import net.zhaiji.chestcavitybeyond.util.OrganAttributeUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,14 +48,7 @@ public abstract class LivingEntityMixin extends Entity {
             )
     )
     public void chestCavityBeyond$hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (source.getDirectEntity() instanceof LivingEntity entity) {
-            double launch = ChestCavityUtil.getData(entity).getCurrentValue(InitAttribute.LAUNCH);
-            if (launch > 0) {
-                double knockbackResistance = ChestCavityUtil.getData((LivingEntity) (Object) this).getCurrentValue(Attributes.KNOCKBACK_RESISTANCE) / 8;
-                double yAdd = Math.max(0.0, 1 - knockbackResistance);
-                setDeltaMovement(this.getDeltaMovement().add(0.0, 0.4 * yAdd, 0.0));
-            }
-        }
+        MixinUtil.applyLaunchEffect((LivingEntity) (Object) this, source);
     }
 
 
@@ -72,9 +63,6 @@ public abstract class LivingEntityMixin extends Entity {
             )
     )
     public boolean chestCavityBeyond$addEatEffect(LivingEntity instance, MobEffectInstance effectInstance) {
-        if (ChestCavityUtil.getData(instance).getCurrentValue(InitAttribute.SCAVENGER_DIGESTION) > 0) {
-            return effectInstance.getEffect() != MobEffects.POISON && effectInstance.getEffect() != MobEffects.HUNGER;
-        }
-        return true;
+        return MixinUtil.shouldAddEatEffect(instance, effectInstance);
     }
 }

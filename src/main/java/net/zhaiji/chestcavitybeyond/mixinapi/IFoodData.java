@@ -15,9 +15,65 @@ public interface IFoodData {
     void setChestCavityData(ChestCavityData data);
 
     /**
+     * 获取胸腔数据
+     *
+     * @return 胸腔数据
+     */
+    ChestCavityData getChestCavityData();
+
+    /**
      * 设置当前食用食物
      *
      * @param food 食物
      */
     void setFood(ItemStack food);
+
+    /**
+     * 获取当前食用食物
+     *
+     * @return 食物
+     */
+    ItemStack getFood();
+
+    /**
+     * 获取 tickTimer
+     *
+     * @return tickTimer
+     */
+    int getTickTimer();
+
+    /**
+     * 设置 tickTimer
+     *
+     * @param tickTimer tickTimer
+     */
+    void setTickTimer(int tickTimer);
+
+    /**
+     * 获取 metabolismRemainder
+     *
+     * @return metabolismRemainder
+     */
+    double getMetabolismRemainder();
+
+    /**
+     * 设置 metabolismRemainder
+     *
+     * @param metabolismRemainder metabolismRemainder
+     */
+    void setMetabolismRemainder(double metabolismRemainder);
+
+    /**
+     * 获取 photosynthesisTimer
+     *
+     * @return photosynthesisTimer
+     */
+    double getPhotosynthesisTimer();
+
+    /**
+     * 设置 photosynthesisTimer
+     *
+     * @param photosynthesisTimer photosynthesisTimer
+     */
+    void setPhotosynthesisTimer(double photosynthesisTimer);
 }

@@ -1,5 +1,6 @@
 package net.zhaiji.chestcavitybeyond.mixin;
 
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -19,9 +20,6 @@ public abstract class MobEffectInstanceMixin implements IMobEffectInstance {
     @Shadow
     public abstract Holder<MobEffect> getEffect();
 
-    @Shadow
-    public abstract boolean isInfiniteDuration();
-
     @Unique
     @Override
     public boolean isHarmful() {
@@ -31,7 +29,12 @@ public abstract class MobEffectInstanceMixin implements IMobEffectInstance {
     @Unique
     @Override
     public void setDuration(int duration) {
-        if (isInfiniteDuration()) return;
         this.duration = duration;
+    }
+
+    @Unique
+    @Override
+    public void setDuration(Int2IntFunction mapper) {
+        duration = mapper.applyAsInt(duration);
     }
 }

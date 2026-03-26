@@ -31,6 +31,7 @@ import net.zhaiji.chestcavitybeyond.util.TooltipUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Organ implements IOrgan {
     private final List<AttributeEntry> attributeEntries;
@@ -238,7 +239,7 @@ public class Organ implements IOrgan {
         };
         private final Item.Properties properties = new Item.Properties().stacksTo(1);
         private final List<AttributeEntry> attributeEntries = new ArrayList<>();
-        private Item item;
+        private Function<Item.Properties, Item> itemFunction = null;
         private OrganModifierConsumer organModifierConsumer = EMPTY_MODIFIER;
         private OrganTooltipConsumer descriptionTooltipConsumer = EMPTY_TOOLTIP;
         private OrganTooltipConsumer attributeTooltipConsumer = null;
@@ -261,7 +262,11 @@ public class Organ implements IOrgan {
         }
 
         public Builder(Item item) {
-            this.item = item;
+            itemFunction = properties -> item;
+        }
+
+        public Builder(Function<Item.Properties, Item> itemFunction) {
+            this.itemFunction = itemFunction;
         }
 
         /**
@@ -451,8 +456,11 @@ public class Organ implements IOrgan {
          * 构建
          */
         public Item build() {
-            if (item == null) {
+            Item item;
+            if (itemFunction == null) {
                 item = new Item(properties);
+            } else {
+                item = itemFunction.apply(properties);
             }
             OrganManager.getRegistry().put(item, new Organ(this));
             return item;

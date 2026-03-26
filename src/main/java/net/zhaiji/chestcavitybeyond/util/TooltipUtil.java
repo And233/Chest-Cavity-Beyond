@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.common.PercentageAttribute;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
@@ -28,33 +29,48 @@ public class TooltipUtil {
     /**
      * 为器官属性工具提示
      */
-    public static void addOrganAttributeTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public static void addOrganAttributeTooltip(
+        ChestCavityData data,
+        ItemStack stack,
+        TooltipsKeyContext keyContext,
+        Item.TooltipContext context,
+        List<Component> tooltipComponents,
+        TooltipFlag tooltipFlag
+    ) {
         Multimap<Holder<Attribute>, AttributeModifier> attributeModifiers = ChestCavityUtil.getAttributeModifiers(
-                new ChestCavitySlotContext(data, data.getOwner(), ChestCavityUtil.getSlotId(0), 0, stack)
+            new ChestCavitySlotContext(data, data.getOwner(), ChestCavityUtil.getSlotId(0), 0, stack)
         );
         if (attributeModifiers == null || attributeModifiers.isEmpty()) return;
         List<Component> tooltips = new ArrayList<>();
         attributeModifiers.forEach((attribute, modifier) -> {
             double value = modifier.amount();
-            if (modifier.operation() != AttributeModifier.Operation.ADD_VALUE) {
+            if (modifier.operation() != AttributeModifier.Operation.ADD_VALUE || attribute.value() instanceof PercentageAttribute) {
                 value *= 100;
             }
             if (value == (int) value) {
                 int i = (int) value;
+                String string = i > 0 ? "+" + i : String.valueOf(i);
+                if (modifier.operation() == AttributeModifier.Operation.ADD_VALUE && attribute.value() instanceof PercentageAttribute) {
+                    string += "%";
+                }
                 tooltips.add(
-                        Component.translatable(
-                                "organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + modifier.operation().ordinal(),
-                                i > 0 ? "+" + i : i,
-                                Component.translatable(attribute.value().getDescriptionId())
-                        )
+                    Component.translatable(
+                        "organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + modifier.operation().ordinal(),
+                        string,
+                        Component.translatable(attribute.value().getDescriptionId())
+                    )
                 );
             } else {
+                String string = value > 0 ? "+" + value : String.valueOf(value);
+                if (modifier.operation() == AttributeModifier.Operation.ADD_VALUE && attribute.value() instanceof PercentageAttribute) {
+                    string += "%";
+                }
                 tooltips.add(
-                        Component.translatable(
-                                "organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + modifier.operation().ordinal(),
-                                value > 0 ? "+" + value : value,
-                                Component.translatable(attribute.value().getDescriptionId())
-                        )
+                    Component.translatable(
+                        "organ." + ChestCavityBeyond.MOD_ID + ".attribute.tooltips_" + modifier.operation().ordinal(),
+                        string,
+                        Component.translatable(attribute.value().getDescriptionId())
+                    )
                 );
             }
         });
@@ -64,10 +80,18 @@ public class TooltipUtil {
     /**
      * 添加简单技能描述工具提示
      */
-    public static void simpleSkillTooltip(ChestCavityData data, ItemStack stack, TooltipsKeyContext keyContext, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public static void simpleSkillTooltip(
+        ChestCavityData data,
+        ItemStack stack,
+        TooltipsKeyContext keyContext,
+        Item.TooltipContext context,
+        List<Component> tooltipComponents,
+        TooltipFlag tooltipFlag
+    ) {
         List<Component> skillTooltips = new ArrayList<>();
         skillTooltips.add(Component.empty());
-        skillTooltips.add(Component.translatable("organ." + ChestCavityBeyond.MOD_ID + "." + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".skill"));
+        skillTooltips.add(Component.translatable("organ." + ChestCavityBeyond.MOD_ID + "." + BuiltInRegistries.ITEM.getKey(stack.getItem())
+            .getPath() + ".skill"));
         simpleTooltipAdd(tooltipComponents, skillTooltips);
     }
 

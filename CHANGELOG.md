@@ -2,6 +2,12 @@
 
 本文档记录了 Chest Cavity Beyond 所有版本的更改。
 
+## 1.1.5
+
+- 重构 Mixin 业务逻辑，将逻辑从 Mixin 类中提取到独立工具类：新增 `MixinUtil`和 `MixinClientUtil`
+- `Organ.Builder` 支持通过 `Function<Item.Properties, Item>` 构造自定义 Item 子类
+- `otherOrganChange` 回调时机优化：统一在 `setStackInSlot` 中触发（属性更新之后），不再在 `organAdded`/`organRemoved` 中分别触发
+
 ## 1.1.4
 
 - 改进 `otherOrganChange` 器官回调：参数从 `(ItemStack, boolean isAdded)` 改为 `(ItemStack oldStack, ItemStack newStack)`，支持检测器官替换操作

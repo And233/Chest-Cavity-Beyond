@@ -269,9 +269,9 @@ public class CommonEventHandler {
                 scale *= MathUtil.getInverseScale(withered);
             }
             double finalScale = scale;
-            int duration = instance.mapDuration(oldDuration -> (int) (oldDuration * finalScale));
+            // int duration = instance.mapDuration(oldDuration -> (int) (oldDuration * finalScale));
             // if (duration <= 20) event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-            mobEffectInstance.setDuration(duration);
+            mobEffectInstance.setDuration(oldDuration -> (int) (oldDuration * finalScale));
         }
     }
 
