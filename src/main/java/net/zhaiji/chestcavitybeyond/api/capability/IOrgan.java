@@ -39,6 +39,7 @@ public interface IOrgan {
      *
      * @param data              胸腔数据
      * @param stack             器官物品
+     * @param index             器官在胸腔中的槽位索引，若未在胸腔中则为 -1
      * @param keyContext        工具提示按键上下文
      * @param context           工具提示上下文
      * @param tooltipComponents 工具提示组件列表
@@ -47,6 +48,7 @@ public interface IOrgan {
     default void descriptionTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,
@@ -59,6 +61,7 @@ public interface IOrgan {
      *
      * @param data              胸腔数据
      * @param stack             器官物品
+     * @param index             器官在胸腔中的槽位索引，若未在胸腔中则为 -1
      * @param keyContext        工具提示按键上下文
      * @param context           工具提示上下文
      * @param tooltipComponents 工具提示组件列表
@@ -67,6 +70,7 @@ public interface IOrgan {
     default void attributeTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,
@@ -79,6 +83,7 @@ public interface IOrgan {
      *
      * @param data              胸腔数据
      * @param stack             器官物品
+     * @param index             器官在胸腔中的槽位索引，若未在胸腔中则为 -1
      * @param keyContext        工具提示按键上下文
      * @param context           工具提示上下文
      * @param tooltipComponents 工具提示组件列表
@@ -87,6 +92,7 @@ public interface IOrgan {
     default void skillTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,
@@ -196,9 +202,10 @@ public interface IOrgan {
     /**
      * 获取器官技能冷却时间（tick）
      *
+     * @param context 胸腔槽位上下文
      * @return 冷却时间（tick），0 表示无冷却
      */
-    default int getCooldownTicks() {
+    default int getCooldownTicks(ChestCavitySlotContext context) {
         return 0;
     }
 

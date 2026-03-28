@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 public class Organ implements IOrgan {
     private final List<AttributeEntry> attributeEntries;
@@ -47,7 +48,7 @@ public class Organ implements IOrgan {
     private final OtherOrganChangeConsumer otherOrganChangeConsumer;
     private final boolean hasSkill;
     private final Consumer<ChestCavitySlotContext> organSkillConsumer;
-    private final int cooldownTicks;
+    private final ToIntFunction<ChestCavitySlotContext> cooldownTicksFunction;
     private final Consumer<ChestCavitySlotContext> organSkillOnCooldownConsumer;
     private final AttackConsumer attackConsumer;
     private final HurtConsumer hurtConsumer;
@@ -68,7 +69,7 @@ public class Organ implements IOrgan {
         this.otherOrganChangeConsumer = builder.otherOrganChangeConsumer;
         this.hasSkill = builder.hasSkill;
         this.organSkillConsumer = builder.organSkillConsumer;
-        this.cooldownTicks = builder.cooldownTicks;
+        this.cooldownTicksFunction = builder.cooldownTicksFunction;
         this.organSkillOnCooldownConsumer = builder.organSkillOnCooldownConsumer;
         this.attackConsumer = builder.attackConsumer;
         this.hurtConsumer = builder.hurtConsumer;
@@ -114,18 +115,20 @@ public class Organ implements IOrgan {
     public void descriptionTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,
         TooltipFlag tooltipFlag
     ) {
-        descriptionTooltipConsumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
+        descriptionTooltipConsumer.accept(data, stack, index, keyContext, context, tooltipComponents, tooltipFlag);
     }
 
     @Override
     public void attributeTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,
@@ -135,19 +138,20 @@ public class Organ implements IOrgan {
         if (consumer == null) {
             consumer = TooltipUtil.DEFAULT_ATTRIBUTE_TOOLTIP;
         }
-        consumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
+        consumer.accept(data, stack, index, keyContext, context, tooltipComponents, tooltipFlag);
     }
 
     @Override
     public void skillTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,
         TooltipFlag tooltipFlag
     ) {
-        skillTooltipConsumer.accept(data, stack, keyContext, context, tooltipComponents, tooltipFlag);
+        skillTooltipConsumer.accept(data, stack, index, keyContext, context, tooltipComponents, tooltipFlag);
     }
 
     @Override
@@ -177,14 +181,15 @@ public class Organ implements IOrgan {
 
     @Override
     public void organSkill(ChestCavitySlotContext context) {
-        if (cooldownTicks > 0 && OrganSkillUtil.hasCooldown(context.entity(), context.stack())) {
+        if (OrganSkillUtil.hasCooldown(context.entity(), context.stack())) {
             organSkillOnCooldownConsumer.accept(context);
             return;
         }
-        organSkillConsumer.accept(context);
-        if (cooldownTicks > 0) {
-            OrganSkillUtil.addCooldown(context.entity(), context.stack(), cooldownTicks);
+        int cooldown = cooldownTicksFunction.applyAsInt(context);
+        if (cooldown > 0) {
+            OrganSkillUtil.addCooldown(context.entity(), context.stack(), cooldown);
         }
+        organSkillConsumer.accept(context);
     }
 
     @Override
@@ -213,8 +218,8 @@ public class Organ implements IOrgan {
     }
 
     @Override
-    public int getCooldownTicks() {
-        return cooldownTicks;
+    public int getCooldownTicks(ChestCavitySlotContext context) {
+        return cooldownTicksFunction.applyAsInt(context);
     }
 
     @Override
@@ -230,10 +235,11 @@ public class Organ implements IOrgan {
     public static class Builder {
         private static final OrganModifierConsumer EMPTY_MODIFIER = (context, modifiers) -> {
         };
-        private static final OrganTooltipConsumer EMPTY_TOOLTIP = (data, stack, keyContext, context, tooltipComponents, tooltipFlag) -> {
+        private static final OrganTooltipConsumer EMPTY_TOOLTIP = (data, stack, index, keyContext, context, tooltipComponents, tooltipFlag) -> {
         };
         private static final Consumer<ChestCavitySlotContext> EMPTY_CONSUMER = context -> {
         };
+        private static final ToIntFunction<ChestCavitySlotContext> EMPTY_COOLDOWN = context -> 0;
         private static final AttackConsumer EMPTY_ATTACK = (context, target, source, damageContainer) -> {
         };
         private static final HurtConsumer EMPTY_HURT = (context, source, damageContainer) -> {
@@ -261,7 +267,7 @@ public class Organ implements IOrgan {
         private OtherOrganChangeConsumer otherOrganChangeConsumer = EMPTY_OTHER_ORGAN_CHANGE;
         private boolean hasSkill = false;
         private Consumer<ChestCavitySlotContext> organSkillConsumer = EMPTY_CONSUMER;
-        private int cooldownTicks = 0;
+        private ToIntFunction<ChestCavitySlotContext> cooldownTicksFunction = EMPTY_COOLDOWN;
         private Consumer<ChestCavitySlotContext> organSkillOnCooldownConsumer = EMPTY_CONSUMER;
         private AttackConsumer attackConsumer = EMPTY_ATTACK;
         private HurtConsumer hurtConsumer = EMPTY_HURT;
@@ -412,7 +418,17 @@ public class Organ implements IOrgan {
          * 设置器官技能冷却时间（tick）
          */
         public Builder cooldown(int cooldownTicks) {
-            this.cooldownTicks = cooldownTicks;
+            this.cooldownTicksFunction = ctx -> cooldownTicks;
+            return this;
+        }
+
+        /**
+         * 设置器官技能动态冷却时间（tick）
+         *
+         * @param cooldownTicksFunction 根据上下文返回冷却时间的函数，返回 0 表示不冷却
+         */
+        public Builder cooldown(ToIntFunction<ChestCavitySlotContext> cooldownTicksFunction) {
+            this.cooldownTicksFunction = cooldownTicksFunction;
             return this;
         }
 

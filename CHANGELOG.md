@@ -2,6 +2,11 @@
 
 本文档记录了 Chest Cavity Beyond 所有版本的更改。
 
+## 1.1.7
+
+- `cooldown` 支持动态冷却，可根据上下文动态决定冷却时间
+- 器官 tooltip 系统新增槽位索引（index）参数，表示器官在胸腔中的槽位索引（-1 表示不在胸腔中）
+
 ## 1.1.6
 
 - 新增 `heal` 器官回调：在 `LivingHealEvent` 中触发

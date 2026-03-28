@@ -50,7 +50,7 @@ public class ChestOpenerItem extends Item {
         );
         DamageSource source = DamageSourceManager.openChest(level, player);
         float damage = EnchantmentUtil.calculateOpenDamage(level, stack, 4);
-        boolean hasDoor = false;
+        boolean hasDoor;
         if (hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof LivingEntity target) {
             // 检查胸腔类型是否可开胸
             ChestCavityType cavityType = ChestCavityTypeManager.getType(target);
@@ -58,7 +58,7 @@ public class ChestOpenerItem extends Item {
                 if (player instanceof ServerPlayer serverPlayer) {
                     PacketDistributor.sendToPlayer(serverPlayer, new UnopenableChestCavityMessagePacket(target.getId()));
                 }
-                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                return InteractionResultHolder.fail(stack);
             }
             boolean isOwner = target instanceof OwnableEntity ownable && ownable.getOwner() == player;
             int safeSurgeryLevel = EnchantmentUtil.getEnchantmentLevel(level, stack, InitEnchantment.SAFE_SURGERY);
@@ -71,7 +71,7 @@ public class ChestOpenerItem extends Item {
             );
             hasDoor = ChestCavityUtil.getData(target).hasOrgan(ItemTags.DOORS);
             boolean hasChestPlate = !target.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
-            if (!canOpenCavity && !hasDoor || hasChestPlate) {
+            if ((!canOpenCavity && !hasDoor) || hasChestPlate) {
                 if (player instanceof ServerPlayer serverPlayer) {
                     PacketDistributor.sendToPlayer(serverPlayer, new ChestOpenerMessagePacket(hasChestPlate));
                 } else {
@@ -81,16 +81,19 @@ public class ChestOpenerItem extends Item {
                         player.playNotifySound(SoundEvents.ARMOR_EQUIP_TURTLE.value(), player.getSoundSource(), 0.75F, 1);
                     }
                 }
+                return InteractionResultHolder.fail(stack);
             } else {
                 if (!hasDoor) target.hurt(source, damage);
                 if (target.isAlive()) ChestCavityUtil.openChestCavity(player, target);
             }
         } else {
             int safeSurgeryLevel = EnchantmentUtil.getEnchantmentLevel(level, stack, InitEnchantment.SAFE_SURGERY);
-            if (safeSurgeryLevel == 0 || safeSurgeryLevel == 1 && player.isShiftKeyDown()) {
+            if (safeSurgeryLevel == 0 || (safeSurgeryLevel == 1 && player.isShiftKeyDown())) {
                 hasDoor = ChestCavityUtil.getData(player).hasOrgan(ItemTags.DOORS);
                 if (!hasDoor) player.hurt(source, damage);
                 if (player.isAlive()) ChestCavityUtil.openChestCavity(player);
+            } else {
+                return InteractionResultHolder.fail(stack);
             }
         }
         if (level.isClientSide() && hasDoor) {

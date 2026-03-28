@@ -32,13 +32,14 @@ public class TooltipUtil {
     public static void addOrganAttributeTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,
         TooltipFlag tooltipFlag
     ) {
         Multimap<Holder<Attribute>, AttributeModifier> attributeModifiers = ChestCavityUtil.getAttributeModifiers(
-            new ChestCavitySlotContext(data, data.getOwner(), ChestCavityUtil.getSlotId(0), 0, stack)
+            new ChestCavitySlotContext(data, data.getOwner(), ChestCavityUtil.getSlotId(index), index, stack)
         );
         if (attributeModifiers == null || attributeModifiers.isEmpty()) return;
         List<Component> tooltips = new ArrayList<>();
@@ -83,6 +84,7 @@ public class TooltipUtil {
     public static void simpleSkillTooltip(
         ChestCavityData data,
         ItemStack stack,
+        int index,
         TooltipsKeyContext keyContext,
         Item.TooltipContext context,
         List<Component> tooltipComponents,

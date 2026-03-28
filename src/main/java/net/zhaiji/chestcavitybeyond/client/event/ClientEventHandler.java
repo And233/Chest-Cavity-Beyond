@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
@@ -24,6 +25,7 @@ import net.zhaiji.chestcavitybeyond.api.TooltipsKeyContext;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
 import net.zhaiji.chestcavitybeyond.api.client.task.IRenderTask;
 import net.zhaiji.chestcavitybeyond.api.task.IChestCavityTask;
+import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
 import net.zhaiji.chestcavitybeyond.client.overlay.OrganSelectedOverlay;
 import net.zhaiji.chestcavitybeyond.client.screen.ChestCavityScreen;
@@ -79,10 +81,10 @@ public class ClientEventHandler {
             for (IChestCavityTask task : ChestCavityUtil.getData(player).getTasks()) {
                 if (task instanceof IRenderTask rendererTask) {
                     rendererTask.render(
-                            player,
-                            event.getPartialTick().getGameTimeDeltaPartialTick(minecraft.level.tickRateManager().isEntityFrozen(player)),
-                            event.getPoseStack(),
-                            multibuffersource
+                        player,
+                        event.getPartialTick().getGameTimeDeltaPartialTick(minecraft.level.tickRateManager().isEntityFrozen(player)),
+                        event.getPoseStack(),
+                        multibuffersource
                     );
                 }
             }
@@ -100,40 +102,58 @@ public class ClientEventHandler {
         Minecraft minecraft = Minecraft.getInstance();
         Options options = minecraft.options;
         Player player = event.getEntity();
-        TooltipsKeyContext keyContext = new TooltipsKeyContext(
-                ChestCavityClientUtil.isKeyDown(options.keyShift),
-                ChestCavityClientUtil.isKeyDown(options.keySprint)
-        );
+        TooltipsKeyContext keyContext;
         // player为null的情况，可能是正在检索物品
         // 此时需要将所有tooltips显示，以便通过物品提示寻找物品
         if (player == null) {
             player = minecraft.player;
             keyContext = new TooltipsKeyContext(true, true);
+        } else {
+            keyContext = new TooltipsKeyContext(
+                ChestCavityClientUtil.isKeyDown(options.keyShift),
+                ChestCavityClientUtil.isKeyDown(options.keySprint)
+            );
         }
+
+        ChestCavityData data = ChestCavityUtil.getData(player);
+
+        // 通过引用匹配查找器官在胸腔中的槽位索引
+        int index = -1;
+        ItemStack tooltipStack = event.getItemStack();
+        for (int i = 0; i < data.getSlots(); i++) {
+            if (data.getStackInSlot(i) == tooltipStack) {
+                index = i;
+                break;
+            }
+        }
+
         // 由于需要更改添加顺序的缘故，此处按倒序执行
         organ.skillTooltip(
-                ChestCavityUtil.getData(player),
-                event.getItemStack(),
-                keyContext,
-                event.getContext(),
-                event.getToolTip(),
-                event.getFlags()
+            data,
+            event.getItemStack(),
+            index,
+            keyContext,
+            event.getContext(),
+            event.getToolTip(),
+            event.getFlags()
         );
         organ.attributeTooltip(
-                ChestCavityUtil.getData(player),
-                event.getItemStack(),
-                keyContext,
-                event.getContext(),
-                event.getToolTip(),
-                event.getFlags()
+            data,
+            event.getItemStack(),
+            index,
+            keyContext,
+            event.getContext(),
+            event.getToolTip(),
+            event.getFlags()
         );
         organ.descriptionTooltip(
-                ChestCavityUtil.getData(player),
-                event.getItemStack(),
-                keyContext,
-                event.getContext(),
-                event.getToolTip(),
-                event.getFlags()
+            data,
+            event.getItemStack(),
+            index,
+            keyContext,
+            event.getContext(),
+            event.getToolTip(),
+            event.getFlags()
         );
     }
 
