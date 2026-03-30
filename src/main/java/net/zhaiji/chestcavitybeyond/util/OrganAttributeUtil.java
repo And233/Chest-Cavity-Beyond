@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.api.AttributeBonus;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
@@ -113,10 +114,21 @@ public class OrganAttributeUtil {
     }
 
     /**
+     * 更新器官属性
+     *
+     * @param context 胸腔槽位上下文
+     */
+    public static void updateSlotOrganAttribute(ChestCavitySlotContext context) {
+        ItemStack organ = context.stack();
+        updateOrganAttributeModifier(context.data(), context.entity(), context.index(), organ, organ);
+    }
+
+    /**
      * 更新器官属性修饰符
      *
      * @param data     胸腔数据
      * @param entity   目标实体
+     * @param index    器官槽位索引
      * @param oldStack 旧器官
      * @param newStack 新器官
      */
@@ -127,7 +139,6 @@ public class OrganAttributeUtil {
         ItemStack oldStack,
         ItemStack newStack
     ) {
-        if (oldStack.equals(newStack)) return;
         Multimap<Holder<Attribute>, AttributeModifier> removeModifiers = ChestCavityUtil.getAttributeModifiers(
             ChestCavityUtil.createContext(
                 data,
