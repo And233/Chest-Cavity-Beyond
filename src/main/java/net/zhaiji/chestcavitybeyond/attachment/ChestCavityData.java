@@ -6,6 +6,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,12 +22,14 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.api.AttributeBonus;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySize;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
 import net.zhaiji.chestcavitybeyond.api.task.IChestCavityTask;
 import net.zhaiji.chestcavitybeyond.api.task.ISerializableTask;
 import net.zhaiji.chestcavitybeyond.manager.ChestCavityTypeManager;
 import net.zhaiji.chestcavitybeyond.manager.DamageSourceManager;
 import net.zhaiji.chestcavitybeyond.manager.TaskManager;
+import net.zhaiji.chestcavitybeyond.menu.ChestCavityMenu;
 import net.zhaiji.chestcavitybeyond.network.client.packet.SyncChestCavityDataPacket;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
@@ -64,7 +68,9 @@ public class ChestCavityData extends ItemStackHandler {
 
     private ChestCavityType type;
 
-    private @Nullable LivingEntity owner;
+    private ChestCavitySize size;
+
+    private LivingEntity owner;
 
     /**
      * 血液过滤周期
@@ -80,10 +86,12 @@ public class ChestCavityData extends ItemStackHandler {
     private int filtrationTickOffset;
 
     public ChestCavityData(IAttachmentHolder attachmentHolder) {
-        super(27);
+        // TODO: 此处槽位是硬编码54，但大概率不会改？先写个TODO后续再优化
+        super(54);
         if (attachmentHolder instanceof LivingEntity entity) {
-            this.owner = entity;
+            owner = entity;
             type = ChestCavityTypeManager.getType(entity);
+            size = type.getSize();
             filtrationPeriod = ChestCavityBeyondConfig.filtrationPeriod;
             filtrationTickOffset = entity.level().getRandom().nextInt(filtrationPeriod);
         }
@@ -110,6 +118,176 @@ public class ChestCavityData extends ItemStackHandler {
      */
     public ChestCavityType getType() {
         return type;
+    }
+
+    /**
+     * 获取当前胸腔容量大小
+     */
+    public ChestCavitySize getSize() {
+        return size;
+    }
+
+    @Override
+    public void setSize(int size) {
+        resize(ChestCavitySize.bySlots(size));
+    }
+
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack) {
+        ItemStack oldStack = getStackInSlot(slot);
+        super.setStackInSlot(slot, stack);
+        ChestCavityUtil.changeOrgan(this, owner, slot, oldStack, stack);
+    }
+
+    @Override
+    public int getSlots() {
+        return size.getSlots();
+    }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        ItemStack removeStack = super.extractItem(slot, amount, simulate);
+        if (!simulate) ChestCavityUtil.changeOrgan(this, owner, slot, removeStack, getStackInSlot(slot));
+        return removeStack;
+    }
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag compoundTag = new CompoundTag();
+        ListTag itemsTag = new ListTag();
+        for (int i = 0; i < getSlots(); i++) {
+            if (!stacks.get(i).isEmpty()) {
+                CompoundTag itemTag = new CompoundTag();
+                itemTag.putInt("slot", i);
+                itemsTag.add(stacks.get(i).save(provider, itemTag));
+            }
+        }
+        compoundTag.put("items", itemsTag);
+
+        compoundTag.putInt("selectedSlot", selectedSlot);
+        compoundTag.putBoolean("needBreath", needBreath);
+        compoundTag.putInt("chestCavitySize", size.getId());
+        // 序列化可序列化的tasks
+        ListTag tasksList = new ListTag();
+        for (IChestCavityTask task : tasks) {
+            if (task instanceof ISerializableTask serializableTask) {
+                CompoundTag taskTag = new CompoundTag();
+                taskTag.putString("type", serializableTask.getType().toString());
+                taskTag.put("data", serializableTask.serializeNBT(provider));
+                tasksList.add(taskTag);
+            }
+        }
+        compoundTag.put("tasks", tasksList);
+        return compoundTag;
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        // 先读取胸腔容量
+        size = ChestCavitySize.byId(nbt.getInt("chestCavitySize"));
+
+        // 读取物品
+        ListTag tagList = nbt.getList("items", 10);
+        for (int i = 0; i < tagList.size(); i++) {
+            CompoundTag itemTags = tagList.getCompound(i);
+            int slot = itemTags.getInt("slot");
+            if (slot >= 0 && slot < getSlots()) {
+                ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(slot, stack));
+            }
+        }
+
+        selectedSlot = nbt.getInt("selectedSlot");
+        needBreath = nbt.getBoolean("needBreath");
+
+        // 反序列化tasks
+        tasks.clear();
+        ListTag tasksList = nbt.getList("tasks", 10);
+        for (int i = 0; i < tasksList.size(); i++) {
+            CompoundTag taskTag = tasksList.getCompound(i);
+            ResourceLocation type = ResourceLocation.parse(taskTag.getString("type"));
+            CompoundTag data = taskTag.getCompound("data");
+            IChestCavityTask task = TaskManager.deserializeTask(this, type, provider, data);
+            if (task != null) {
+                tasks.add(task);
+            }
+        }
+
+        onLoad();
+    }
+
+    @Override
+    protected void validateSlotIndex(int slot) {
+        if (slot < 0 || slot >= getSlots()) {
+            throw new RuntimeException("Slot " + slot + " not in valid range - [0," + getSlots() + ")");
+        }
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        init = true;
+    }
+
+    /**
+     * 仅更新胸腔大小，不做副作用处理（缩小不掉落物品、不关闭菜单等）
+     * <p>
+     * 因为服务端不往客户端发size，所以需要在打开menu时，使用此方法来让客户端同步size
+     * </p>
+     */
+    public void updateSize(ChestCavitySize newSize) {
+        if (size != newSize) {
+            size = newSize;
+        }
+    }
+
+    /**
+     * 调整胸腔容量大小
+     * 缩小时多余器官先尝试放入玩家背包，放不下再掉落到脚下
+     */
+    public void resize(ChestCavitySize newSize) {
+        if (newSize == size || !owner.isAlive()) return;
+
+        int oldSlots = size.getSlots();
+        int newSlots = newSize.getSlots();
+
+        if (newSlots < oldSlots) {
+            // 缩小：处理多余器官
+            List<ItemStack> excess = new ArrayList<>();
+            for (int i = newSlots; i < oldSlots; i++) {
+                ItemStack stack = getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    excess.add(stack.copy());
+                    ChestCavityUtil.changeOrgan(this, owner, i, stack, ItemStack.EMPTY);
+                }
+                stacks.set(i, ItemStack.EMPTY);
+            }
+            // 尝试放入玩家背包
+            if (owner instanceof Player player) {
+                for (ItemStack stack : excess) {
+                    if (!player.getInventory().add(stack)) {
+                        player.drop(stack, false);
+                    }
+                }
+            } else {
+                // 非玩家实体，直接掉落
+                for (ItemStack stack : excess) {
+                    owner.spawnAtLocation(stack);
+                }
+            }
+        }
+
+        updateSize(newSize);
+        OrganAttributeUtil.updateScale(this, owner);
+
+        // 关闭后重新打开本实体胸腔的 GUI，更新布局
+        if (owner.level() instanceof ServerLevel serverLevel) {
+            for (ServerPlayer player : serverLevel.players()) {
+                if (player.containerMenu instanceof ChestCavityMenu menu && menu.getData() == this) {
+                    player.closeContainer();
+                    ChestCavityUtil.openChestCavity(player, owner);
+                }
+            }
+        }
     }
 
     /**
@@ -141,8 +319,8 @@ public class ChestCavityData extends ItemStackHandler {
      * 是否拥有某个器官
      */
     public boolean hasOrgan(Item item) {
-        for (ItemStack organ : stacks) {
-            if (organ.is(item)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (stacks.get(i).is(item)) {
                 return true;
             }
         }
@@ -150,8 +328,8 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     public boolean hasOrgan(ItemStack stack) {
-        for (ItemStack organ : stacks) {
-            if (ItemStack.isSameItemSameComponents(organ, stack)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (ItemStack.isSameItemSameComponents(stacks.get(i), stack)) {
                 return true;
             }
         }
@@ -159,8 +337,8 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     public boolean hasOrgan(TagKey<Item> tag) {
-        for (ItemStack organ : stacks) {
-            if (organ.is(tag)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (stacks.get(i).is(tag)) {
                 return true;
             }
         }
@@ -168,8 +346,8 @@ public class ChestCavityData extends ItemStackHandler {
     }
 
     public boolean hasOrgan(Predicate<ItemStack> predicate) {
-        for (ItemStack organ : stacks) {
-            if (predicate.test(organ)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (predicate.test(stacks.get(i))) {
                 return true;
             }
         }
@@ -181,8 +359,8 @@ public class ChestCavityData extends ItemStackHandler {
      */
     public int getOrganCount(Item item) {
         int count = 0;
-        for (ItemStack organ : stacks) {
-            if (organ.is(item)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (stacks.get(i).is(item)) {
                 count++;
             }
         }
@@ -191,8 +369,8 @@ public class ChestCavityData extends ItemStackHandler {
 
     public int getOrganCount(ItemStack stack) {
         int count = 0;
-        for (ItemStack organ : stacks) {
-            if (ItemStack.isSameItemSameComponents(organ, stack)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (ItemStack.isSameItemSameComponents(stacks.get(i), stack)) {
                 count++;
             }
         }
@@ -201,8 +379,8 @@ public class ChestCavityData extends ItemStackHandler {
 
     public int getOrganCount(TagKey<Item> tag) {
         int count = 0;
-        for (ItemStack organ : stacks) {
-            if (organ.is(tag)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (stacks.get(i).is(tag)) {
                 count++;
             }
         }
@@ -211,8 +389,8 @@ public class ChestCavityData extends ItemStackHandler {
 
     public int getOrganCount(Predicate<ItemStack> predicate) {
         int count = 0;
-        for (ItemStack organ : stacks) {
-            if (predicate.test(organ)) {
+        for (int i = 0; i < getSlots(); i++) {
+            if (predicate.test(stacks.get(i))) {
                 count++;
             }
         }
@@ -223,48 +401,66 @@ public class ChestCavityData extends ItemStackHandler {
      * 获取第一个匹配的器官
      */
     public Optional<ItemStack> getFirstOrgan(Item item) {
-        for (ItemStack organ : stacks) {
-            if (organ.getItem() == item) {
-                return Optional.of(organ);
+        for (int i = 0; i < getSlots(); i++) {
+            if (stacks.get(i).getItem() == item) {
+                return Optional.of(stacks.get(i));
             }
         }
         return Optional.empty();
     }
 
     public Optional<ItemStack> getFirstOrgan(ItemStack stack) {
-        for (ItemStack organ : stacks) {
-            if (ItemStack.isSameItemSameComponents(organ, stack)) {
-                return Optional.of(organ);
+        for (int i = 0; i < getSlots(); i++) {
+            if (ItemStack.isSameItemSameComponents(stacks.get(i), stack)) {
+                return Optional.of(stacks.get(i));
             }
         }
         return Optional.empty();
     }
 
     public Optional<ItemStack> getFirstOrgan(TagKey<Item> tag) {
-        for (ItemStack organ : stacks) {
-            if (organ.is(tag)) {
-                return Optional.of(organ);
+        for (int i = 0; i < getSlots(); i++) {
+            if (stacks.get(i).is(tag)) {
+                return Optional.of(stacks.get(i));
             }
         }
         return Optional.empty();
     }
 
     public Optional<ItemStack> getFirstOrgan(Predicate<ItemStack> predicate) {
-        for (ItemStack organ : stacks) {
-            if (predicate.test(organ)) {
-                return Optional.of(organ);
+        for (int i = 0; i < getSlots(); i++) {
+            if (predicate.test(stacks.get(i))) {
+                return Optional.of(stacks.get(i));
             }
         }
         return Optional.empty();
     }
 
     /**
+     * 根据指定条件筛选器官
+     *
+     * @param predicate 筛选条件
+     * @return 匹配的器官列表
+     */
+    public List<ItemStack> filterOrgans(Predicate<ItemStack> predicate) {
+        List<ItemStack> list = new ArrayList<>();
+        for (int i = 0; i < getSlots(); i++) {
+            if (predicate.test(stacks.get(i))) {
+                list.add(stacks.get(i));
+            }
+        }
+        return list;
+    }
+
+    /**
      * 客户端同步用
      */
     public void sync(SyncChestCavityDataPacket packet) {
+        this.size = packet.size();
         NonNullList<ItemStack> organs = packet.organs();
+        stacks.clear();
         for (int i = 0; i < organs.size(); i++) {
-            setStackInSlot(i, organs.get(i));
+            stacks.set(i, organs.get(i));
         }
     }
 
@@ -288,6 +484,7 @@ public class ChestCavityData extends ItemStackHandler {
             }
         }
         OrganAttributeUtil.updateDefaultModifier(this, owner);
+        OrganAttributeUtil.updateScale(this, owner);
     }
 
     /**
@@ -297,7 +494,7 @@ public class ChestCavityData extends ItemStackHandler {
         if (!owner.level().isClientSide()) {
             applyHealth();
             applyFiltration();
-            for (int i = 0; i < stacks.size(); i++) {
+            for (int i = 0; i < getSlots(); i++) {
                 ItemStack stack = stacks.get(i);
                 ChestCavityUtil.organTick(this, owner, i, stack);
             }
@@ -464,7 +661,8 @@ public class ChestCavityData extends ItemStackHandler {
     private void applyFiltration() {
         double filtration = getDifferenceValue(InitAttribute.FILTRATION);
         if (filtration < 0 && owner.tickCount % filtrationPeriod == filtrationTickOffset && !(owner instanceof Player player && player.getAbilities().invulnerable)) {
-            owner.addEffect(new MobEffectInstance(MobEffects.POISON, (int) (30 * MathUtil.getInverseScale(filtration))));
+            int amplifier = Math.max(0, (int) Math.floor(-filtration / 2));
+            owner.addEffect(new MobEffectInstance(MobEffects.POISON, (int) (30 * MathUtil.getInverseScale(filtration)), amplifier));
         }
     }
 
@@ -500,64 +698,5 @@ public class ChestCavityData extends ItemStackHandler {
             return instance.getValue();
         }
         return 0;
-    }
-
-    @Override
-    public void setStackInSlot(int slot, ItemStack stack) {
-        ItemStack oldStack = getStackInSlot(slot);
-        super.setStackInSlot(slot, stack);
-        ChestCavityUtil.changeOrgan(this, owner, slot, oldStack, stack);
-    }
-
-    @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        ItemStack removeStack = super.extractItem(slot, amount, simulate);
-        if (!simulate) ChestCavityUtil.changeOrgan(this, owner, slot, removeStack, getStackInSlot(slot));
-        return removeStack;
-    }
-
-    @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag compoundTag = super.serializeNBT(provider);
-        compoundTag.putInt("selectedSlot", selectedSlot);
-        compoundTag.putBoolean("needBreath", needBreath);
-        // 序列化可序列化的tasks
-        ListTag tasksList = new ListTag();
-        for (IChestCavityTask task : tasks) {
-            if (task instanceof ISerializableTask serializableTask) {
-                CompoundTag taskTag = new CompoundTag();
-                taskTag.putString("type", serializableTask.getType().toString());
-                taskTag.put("data", serializableTask.serializeNBT(provider));
-                tasksList.add(taskTag);
-            }
-        }
-        compoundTag.put("tasks", tasksList);
-        return compoundTag;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        super.deserializeNBT(provider, nbt);
-        selectedSlot = nbt.getInt("selectedSlot");
-        needBreath = nbt.getBoolean("needBreath");
-
-        // 反序列化tasks
-        tasks.clear();
-        ListTag tasksList = nbt.getList("tasks", 10);
-        for (int i = 0; i < tasksList.size(); i++) {
-            CompoundTag taskTag = tasksList.getCompound(i);
-            ResourceLocation type = ResourceLocation.parse(taskTag.getString("type"));
-            CompoundTag data = taskTag.getCompound("data");
-            IChestCavityTask task = TaskManager.deserializeTask(this, type, provider, data);
-            if (task != null) {
-                tasks.add(task);
-            }
-        }
-    }
-
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        init = true;
     }
 }

@@ -62,7 +62,7 @@ public class TooltipUtil {
                     )
                 );
             } else {
-                String string = value > 0 ? "+" + value : String.valueOf(value);
+                String string = value > 0 ? "+" + formatAttributeValue(value) : formatAttributeValue(value);
                 if (modifier.operation() == AttributeModifier.Operation.ADD_VALUE && attribute.value() instanceof PercentageAttribute) {
                     string += "%";
                 }
@@ -107,5 +107,21 @@ public class TooltipUtil {
         for (int i = 0; i < add.size(); i++) {
             total.add(i + 1, add.get(i));
         }
+    }
+
+    /**
+     * 格式化属性修饰符的数值显示
+     * <p>
+     * 整数：直接显示（如 "2", "+3"）
+     * 浮点数：保留最多3位小数，去除末尾多余的0（如 "0.5", "1.25", "1.5" 而非 "1.500"）
+     * </p>
+     */
+    private static String formatAttributeValue(double value) {
+        // 四舍五入到3位小数，消除浮点精度偏差
+        double rounded = Math.round(value * 1000.0) / 1000.0;
+        if (rounded == (int) rounded) {
+            return String.valueOf((int) rounded);
+        }
+        return String.valueOf(rounded);
     }
 }

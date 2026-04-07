@@ -1197,6 +1197,7 @@ public class InitItem {
         "gas_sac",
         () -> Organ.builder()
             .addValueAttribute(InitAttribute.BREATH_CAPACITY, 1.5)
+            .addValueAttribute(InitAttribute.BREATH_RECOVERY, 0.25)
             .addValueAttribute(InitAttribute.FIRE_RESISTANCE, 1)
             .baseMultipliedAttribute(Attributes.GRAVITY, -0.25)
             .build()

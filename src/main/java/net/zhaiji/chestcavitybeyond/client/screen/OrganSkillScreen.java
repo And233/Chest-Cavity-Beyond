@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
+import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.network.server.packet.SyncSelectedSlotPacket;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 
@@ -70,9 +71,9 @@ public class OrganSkillScreen extends Screen {
         centerX = width / 2;
         centerY = height / 2;
 
-        List<ItemStack> list = ChestCavityUtil.getData(minecraft.player).getOrgans();
-        for (int i = 0; i < 27; i++) {
-            ItemStack stack = list.get(i);
+        ChestCavityData data = ChestCavityUtil.getData(minecraft.player);
+        for (int i = 0; i < data.getSlots(); i++) {
+            ItemStack stack = data.getStackInSlot(i);
             IOrgan organ = ChestCavityUtil.getOrganCap(stack);
             if (organ.hasSkill() && organs.stream().noneMatch(itemStack -> itemStack.is(stack.getItem()))) {
                 indices.add(i);

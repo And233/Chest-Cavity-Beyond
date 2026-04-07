@@ -12,6 +12,7 @@ public class ChestCavityBeyondConfig {
     public static int shulkerBulletDistance;
     public static int sonicBoomDistance;
     public static int crystalEffectSearchRange;
+    public static boolean enableChestCavityScaleSideEffect;
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder()
             .comment(
@@ -116,6 +117,16 @@ public class ChestCavityBeyondConfig {
                     64
             );
 
+    private static final ModConfigSpec.BooleanValue ENABLE_CHEST_CAVITY_SCALE_SIDE_EFFECT = BUILDER
+            .comment(
+                    "是否启用胸腔容量增大时的实体尺寸副作用（每增加一排scale增加0.25）",
+                    "Enable entity scale side effect when chest cavity size increases (each extra row adds 0.25 scale)"
+            )
+            .define(
+                    "enableChestCavityScaleSideEffect",
+                    true
+            );
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     public static void handlerModConfigEvent(ModConfigEvent event) {
@@ -128,6 +139,7 @@ public class ChestCavityBeyondConfig {
             shulkerBulletDistance = SHULKER_BULLET_DISTANCE.get();
             sonicBoomDistance = SONIC_BOOM_DISTANCE.get();
             crystalEffectSearchRange = CRYSTAL_EFFECT_SEARCH_RANGE.get();
+            enableChestCavityScaleSideEffect = ENABLE_CHEST_CAVITY_SCALE_SIDE_EFFECT.get();
         }
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySize;
 import net.zhaiji.chestcavitybeyond.network.client.ClientPacketHandler;
 
 /**
@@ -16,22 +17,24 @@ import net.zhaiji.chestcavitybeyond.network.client.ClientPacketHandler;
  * 只进行一次同步，后续的物品同步由原版的Menu数据同步处理
  * </P>
  */
-public record SyncChestCavityDataPacket(NonNullList<ItemStack> organs, int slot) implements CustomPacketPayload {
+public record SyncChestCavityDataPacket(NonNullList<ItemStack> organs, int slot, ChestCavitySize size) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncChestCavityDataPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ChestCavityBeyond.MOD_ID, "sync_chestcavitydata"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncChestCavityDataPacket> STREAM_CODEC = StreamCodec.of(
             (buffer, packet) -> {
-                for (ItemStack stack : packet.organs()) {
-                    ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, stack);
+                buffer.writeEnum(packet.size());
+                for (int i = 0; i < packet.size().getSlots(); i++) {
+                    ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, packet.organs().get(i));
                 }
                 buffer.writeInt(packet.slot());
             },
             buffer -> {
-                NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
-                for (int i = 0; i < 27; i++) {
+                ChestCavitySize size = buffer.readEnum(ChestCavitySize.class);
+                NonNullList<ItemStack> items = NonNullList.withSize(size.getSlots(), ItemStack.EMPTY);
+                for (int i = 0; i < size.getSlots(); i++) {
                     items.set(i, ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer));
                 }
-                return new SyncChestCavityDataPacket(items, buffer.readInt());
+                return new SyncChestCavityDataPacket(items, buffer.readInt(), size);
             }
     );
 

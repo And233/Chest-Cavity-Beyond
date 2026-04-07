@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 public class ChestCavityType {
-    private final NonNullList<Item> organs = NonNullList.withSize(27, Items.AIR);
+    private final NonNullList<Item> organs = NonNullList.withSize(54, Items.AIR);
 
     private final Map<EntityType<?>, Map<Holder<Attribute>, Double>> defaultAttributes = new HashMap<>();
 
@@ -37,6 +37,8 @@ public class ChestCavityType {
     private final Map<Item, List<AttributeBonus>> attributeBonuses = new HashMap<>();
 
     private final List<AttributeBonus> typeDefaultBonuses = new ArrayList<>();
+
+    private ChestCavitySize size = ChestCavitySize.ROW_3;
 
     private boolean needBreath = true;
 
@@ -98,6 +100,37 @@ public class ChestCavityType {
     }
 
     /**
+     * 获取胸腔容量大小
+     */
+    public ChestCavitySize getSize() {
+        return size;
+    }
+
+    /**
+     * 设置胸腔容量大小
+     */
+    public ChestCavityType setSize(ChestCavitySize size) {
+        this.size = size;
+        return this;
+    }
+
+    public ChestCavityType set3RowSize() {
+        return setSize(ChestCavitySize.ROW_3);
+    }
+
+    public ChestCavityType set4RowSize() {
+        return setSize(ChestCavitySize.ROW_4);
+    }
+
+    public ChestCavityType set5RowSize() {
+        return setSize(ChestCavitySize.ROW_5);
+    }
+
+    public ChestCavityType set6RowsSize() {
+        return setSize(ChestCavitySize.ROW_6);
+    }
+
+    /**
      * 复制目标胸腔类型
      *
      * @param copyTarget 要复制属性的胸腔类型
@@ -109,16 +142,17 @@ public class ChestCavityType {
         }
         attributeBonuses.putAll(copyTarget.attributeBonuses);
         typeDefaultBonuses.addAll(copyTarget.typeDefaultBonuses);
-        this.needBreath = copyTarget.needBreath;
-        this.canOpen = copyTarget.canOpen;
-        this.unopenableMessage = copyTarget.unopenableMessage;
+        needBreath = copyTarget.needBreath;
+        canOpen = copyTarget.canOpen;
+        unopenableMessage = copyTarget.unopenableMessage;
+        size = copyTarget.size;
         return this;
     }
 
     /**
      * 为胸腔类型设置默认器官
      *
-     * @param index 小于27
+     * @param index 0 ~ 53
      * @param organ 器官
      * @return 胸腔类型
      */
@@ -272,7 +306,7 @@ public class ChestCavityType {
         Map<Holder<Attribute>, AttributeModifier> modifierMap = new HashMap<>();
 
         // 收集器官的所有修饰符
-        for (int i = 0; i < organs.size(); i++) {
+        for (int i = 0; i < size.getSlots(); i++) {
             Item organItem = organs.get(i);
             if (organItem == Items.AIR) continue;
             ItemStack organ = organItem.getDefaultInstance();

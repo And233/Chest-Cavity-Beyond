@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySize;
 import net.zhaiji.chestcavitybeyond.client.key.KeyMappings;
 import net.zhaiji.chestcavitybeyond.manager.ItemTagManager;
 import net.zhaiji.chestcavitybeyond.register.InitAttribute;
@@ -39,7 +40,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(KeyMappings.OPEN_SKILL_GUI_TRANSLATABLE, "Open Skill Gui");
         add(KeyMappings.USE_ORGAN_SKILL_TRANSLATABLE, "Use Organ Skill");
         add(KeyMappings.DESCEND_VEHICLE_TRANSLATABLE, "Descend Vehicle");
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i < ChestCavitySize.ROW_6.getSlots(); i++) {
             add(KeyMappings.USE_ORGAN_SKILLS_TRANSLATABLE + i, "Organ Skill " + (i < 9 ? "0" + (i + 1) : (i + 1)));
         }
 
@@ -331,6 +332,10 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add("message." + ChestCavityBeyond.MOD_ID + ".healthy", "Target is too healthy");
         add("message." + ChestCavityBeyond.MOD_ID + ".unopenable", "This entity cannot be opened");
 
+        add("commands.chestcavitybeyond.resize.failed", "No valid targets found");
+        add("commands.chestcavitybeyond.resize.success.single", "Resized %s's chest cavity to %s(%s slots)");
+        add("commands.chestcavitybeyond.resize.success.multiple", "Resized chest cavity of %s entities to %s(%s slots)");
+
         add(ItemTagManager.ORGANS, "Organs");
         add(ItemTagManager.HEART, "Hearts");
         add(ItemTagManager.LUNG, "Lungs");
@@ -357,7 +362,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add(KeyMappings.OPEN_SKILL_GUI_TRANSLATABLE, "打开技能界面");
         add(KeyMappings.USE_ORGAN_SKILL_TRANSLATABLE, "使用器官技能");
         add(KeyMappings.DESCEND_VEHICLE_TRANSLATABLE, "乘坐实体下降");
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i < ChestCavitySize.ROW_6.getSlots(); i++) {
             add(KeyMappings.USE_ORGAN_SKILLS_TRANSLATABLE + i, "器官技能" + (i < 9 ? "0" + (i + 1) : (i + 1)));
         }
 
@@ -664,6 +669,10 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
         add("message." + ChestCavityBeyond.MOD_ID + ".obstructed", "目标的胸腔被装备阻挡");
         add("message." + ChestCavityBeyond.MOD_ID + ".healthy", "目标太过健康");
         add("message." + ChestCavityBeyond.MOD_ID + ".unopenable", "此生物无法被开胸");
+
+        add("commands.chestcavitybeyond.resize.failed", "没有找到有效目标");
+        add("commands.chestcavitybeyond.resize.success.single", "已将%s的胸腔容量调整为%s（%s个槽位）");
+        add("commands.chestcavitybeyond.resize.success.multiple", "已将%s个实体的胸腔容量调整为%s（%s个槽位）");
     }
 
     private void addAttribute(Holder<Attribute> attribute, String value) {

@@ -12,63 +12,74 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySize;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
 import net.zhaiji.chestcavitybeyond.register.InitMenuType;
 import net.zhaiji.chestcavitybeyond.util.ChestCavityUtil;
 
 public class ChestCavityMenu extends AbstractContainerMenu {
     private final ChestCavityData data;
+    private final ChestCavitySize size;
 
     // 客户端使用的构造函数
     public ChestCavityMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
-        this(containerId, playerInventory, (LivingEntity) playerInventory.player.level().getEntity(extraData.readInt()));
+        this(
+            containerId,
+            playerInventory,
+            extraData.readEnum(ChestCavitySize.class),
+            (LivingEntity) playerInventory.player.level().getEntity(extraData.readInt())
+        );
     }
 
-    public ChestCavityMenu(int containerId, Inventory playerInventory, LivingEntity entity) {
+    public ChestCavityMenu(int containerId, Inventory playerInventory, ChestCavitySize size, LivingEntity entity) {
         super(InitMenuType.CHEST_CAVITY.get(), containerId);
+        this.size = size;
         data = ChestCavityUtil.getData(entity);
-        for (int i = 0; i < 3; ++i) {
+        // 确保数据大小与菜单一致
+        data.updateSize(size);
+        int rows = size.getRows();
+        for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < 9; ++j) {
-                this.addSlot(new SlotItemHandler(data, j + i * 9, 8 + j * 18, 18 + i * 18));
+                addSlot(new SlotItemHandler(data, j + i * 9, 8 + j * 18, 18 + i * 18));
             }
         }
+
+        int playerInvY = size.getPlayerInventoryY();
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
-                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, playerInvY + i * 18));
             }
         }
+
+        int hotbarY = size.getHotbarY();
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+            addSlot(new Slot(playerInventory, i, 8 + i * 18, hotbarY));
         }
         // 触发胸腔打开回调
         ChestCavityUtil.chestCavityOpen(data, entity);
     }
 
-    @Override
-    public void removed(Player player) {
-        super.removed(player);
-        Level level = player.level();
-        if (level.isClientSide()) {
-            if (ChestCavityUtil.getData(data.getOwner()).hasOrgan(ItemTags.DOORS)) {
-                player.playNotifySound(SoundEvents.CHEST_CLOSE, player.getSoundSource(), 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
-            }
-        }
-        // 触发胸腔关闭回调
-        ChestCavityUtil.chestCavityClose(data, data.getOwner());
+    public ChestCavityData getData() {
+        return data;
+    }
+
+    public ChestCavitySize getChestCavitySize() {
+        return size;
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+        Slot slot = slots.get(index);
         if (slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < 27) {
-                if (!this.moveItemStackTo(itemstack1, 27, this.slots.size(), true)) {
+            int chestCavitySlots = size.getSlots();
+            if (index < chestCavitySlots) {
+                if (!this.moveItemStackTo(itemstack1, chestCavitySlots, slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 0, 27, false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, chestCavitySlots, false)) {
                 return ItemStack.EMPTY;
             }
             if (itemstack1.isEmpty()) {
@@ -78,7 +89,7 @@ public class ChestCavityMenu extends AbstractContainerMenu {
                 slot.setChanged();
             }
             // 因为moveItemStackTo使用shrink减少物品数量，所以当选择的是胸腔槽位时，需要额外更新器官
-            if (index < 27) {
+            if (index < chestCavitySlots) {
                 ChestCavityUtil.changeOrgan(data, data.getOwner(), index, itemstack, itemstack1);
             }
         }
@@ -86,11 +97,25 @@ public class ChestCavityMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public void removed(Player player) {
+        super.removed(player);
+        Level level = player.level();
+        LivingEntity entity = data.getOwner();
+        if (level.isClientSide()) {
+            if (ChestCavityUtil.getData(entity).hasOrgan(ItemTags.DOORS)) {
+                player.playNotifySound(SoundEvents.CHEST_CLOSE, player.getSoundSource(), 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+            }
+        }
+        // 触发胸腔关闭回调
+        ChestCavityUtil.chestCavityClose(data, entity);
+    }
+
+    @Override
     public boolean stillValid(Player player) {
+        LivingEntity entity = data.getOwner();
         return player.level().isClientSide()
-                || data.getOwner() instanceof LivingEntity entity
-                && entity.isAlive()
-                // 最大距离为实体交互距离的2倍
-                && player.canInteractWithEntity(entity, player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue() * 2);
+               || entity.isAlive()
+                  // 最大距离为实体交互距离的2倍
+                  && player.canInteractWithEntity(entity, player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).getValue() * 2);
     }
 }

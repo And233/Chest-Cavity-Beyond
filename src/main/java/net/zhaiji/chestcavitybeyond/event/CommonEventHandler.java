@@ -19,6 +19,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -33,6 +34,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.zhaiji.chestcavitybeyond.api.capability.Organ;
 import net.zhaiji.chestcavitybeyond.api.event.RegisterChestCavityEvent;
 import net.zhaiji.chestcavitybeyond.attachment.ChestCavityData;
+import net.zhaiji.chestcavitybeyond.command.ChestCavityCommand;
 import net.zhaiji.chestcavitybeyond.manager.CapabilityManager;
 import net.zhaiji.chestcavitybeyond.manager.ChestCavityTypeManager;
 import net.zhaiji.chestcavitybeyond.manager.OrganManager;
@@ -211,7 +213,7 @@ public class CommonEventHandler {
             ChestCavityData data = entity.getData(InitAttachmentType.CHEST_CAVITY);
             data.init();
             if (entity instanceof ServerPlayer player) {
-                PacketDistributor.sendToPlayer(player, new SyncChestCavityDataPacket(data.getOrgans(), data.selectedSlot));
+                PacketDistributor.sendToPlayer(player, new SyncChestCavityDataPacket(data.getOrgans(), data.selectedSlot, data.getSize()));
             }
         }
     }
@@ -424,5 +426,13 @@ public class CommonEventHandler {
         if (event.getEntity() instanceof LivingEntity entity) {
             ChestCavityUtil.getData(entity).tick();
         }
+    }
+
+
+    /**
+     * @param event 注册命令事件
+     */
+    public static void handlerRegisterCommandsEvent(RegisterCommandsEvent event) {
+        ChestCavityCommand.register(event.getDispatcher());
     }
 }

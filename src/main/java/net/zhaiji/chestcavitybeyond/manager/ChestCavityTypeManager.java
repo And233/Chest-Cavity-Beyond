@@ -223,6 +223,7 @@ public class ChestCavityTypeManager {
             .setThirdRow(4, Items.SLIME_BALL)
 
             .addValueBonuses(InitItem.SLIME_CORE.get(), Map.of(
+                    InitAttribute.NERVES, 1.0,
                     InitAttribute.BREATH_CAPACITY, 1.0,
                     InitAttribute.BREATH_RECOVERY, 1.0
             ));
@@ -237,6 +238,7 @@ public class ChestCavityTypeManager {
             .setThirdRow(4, Items.MAGMA_CREAM)
 
             .addValueBonuses(InitItem.MAGMA_CUBE_CORE.get(), Map.of(
+                    InitAttribute.NERVES, 1.0,
                     InitAttribute.BREATH_CAPACITY, 1.0,
                     InitAttribute.BREATH_RECOVERY, 1.0
             ));
@@ -678,6 +680,9 @@ public class ChestCavityTypeManager {
             .addValueBonuses(Items.WIND_CHARGE, Map.of(
                     InitAttribute.BREATH_CAPACITY, 2.0,
                     InitAttribute.BREATH_RECOVERY, 2.0
+            ))
+            .addValueBonuses(InitItem.BREEZE_CORE.get(), Map.of(
+                    InitAttribute.NERVES, 1.0
             ));
 
     public static final ChestCavityType IRON_GOLEM = register("iron_golem")
@@ -727,6 +732,7 @@ public class ChestCavityTypeManager {
             .setThirdRow(5, Items.SNOWBALL)
 
             .addValueBonuses(InitItem.SNOW_CORE.get(), Map.of(
+                    InitAttribute.NERVES, 1.0,
                     InitAttribute.BREATH_CAPACITY, 1.0,
                     InitAttribute.BREATH_RECOVERY, 1.0
             ));
@@ -827,14 +833,7 @@ public class ChestCavityTypeManager {
 
             .setSecondRow(4, Items.STICK)
 
-            .setThirdRow(4, Items.STICK)
-
-            .addValueBonuses(InitItem.SCULK_CORE.get(), Map.of(
-                    InitAttribute.HEALTH, 1.0,
-                    InitAttribute.BREATH_CAPACITY, 1.0,
-                    InitAttribute.BREATH_RECOVERY, 1.0,
-                    InitAttribute.WATER_BREATH, 1.0
-            ));
+            .setThirdRow(4, Items.STICK);
 
     /**
      * 获取实体的胸腔类型

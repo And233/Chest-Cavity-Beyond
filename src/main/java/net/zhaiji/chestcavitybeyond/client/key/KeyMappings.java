@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class KeyMappings {
 
     // 快捷技能使用
     static {
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i < ChestCavitySize.ROW_6.getSlots(); i++) {
             register(
                     USE_ORGAN_SKILLS_TRANSLATABLE + i,
                     KeyConflictContext.IN_GAME,

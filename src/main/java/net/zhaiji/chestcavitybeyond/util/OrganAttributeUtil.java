@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
+import net.zhaiji.chestcavitybeyond.ChestCavityBeyondConfig;
 import net.zhaiji.chestcavitybeyond.api.AttributeBonus;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.ChestCavityType;
@@ -319,5 +320,22 @@ public class OrganAttributeUtil {
             ? createMultipliedBaseModifier("leaping", safeFallDistanceFactor / 4)
             : createMultipliedBaseModifier("leaping", safeFallDistanceFactor - 1)
         );
+    }
+
+    /**
+     * 更新胸腔容量附带的实体尺寸副作用
+     * 3排无副作用，每增加一排 scale 增加 0.25
+     */
+    public static void updateScale(ChestCavityData data, LivingEntity entity) {
+        double bonus = 0;
+        if (!ChestCavityBeyondConfig.enableChestCavityScaleSideEffect) {
+            bonus = 0.25 * switch (data.getSize()) {
+                case ROW_3 -> 0;    // 3排 = 0
+                case ROW_4 -> 1;    // 4排 = 1
+                case ROW_5 -> 2;    // 5排 = 2
+                case ROW_6 -> 3;    // 6排 = 3
+            };
+        }
+        updateAttributeModifier(entity, Attributes.SCALE, createMultipliedBaseModifier("chest_cavity_scale", bonus));
     }
 }

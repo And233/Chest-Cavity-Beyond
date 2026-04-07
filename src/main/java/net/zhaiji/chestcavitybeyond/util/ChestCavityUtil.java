@@ -18,6 +18,7 @@ import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.zhaiji.chestcavitybeyond.ChestCavityBeyond;
+import net.zhaiji.chestcavitybeyond.api.ChestCavitySize;
 import net.zhaiji.chestcavitybeyond.api.ChestCavitySlotContext;
 import net.zhaiji.chestcavitybeyond.api.capability.IOrgan;
 import net.zhaiji.chestcavitybeyond.api.event.OrganChangeEvent;
@@ -265,13 +266,17 @@ public class ChestCavityUtil {
      * @param entity 被打开的目标
      */
     public static void openChestCavity(Player player, LivingEntity entity) {
+        ChestCavitySize size = ChestCavityUtil.getData(entity).getSize();
         player.openMenu(
             new SimpleMenuProvider(
                 (containerId, playerInventory, player1) ->
-                    new ChestCavityMenu(containerId, playerInventory, entity),
+                    new ChestCavityMenu(containerId, playerInventory, size, entity),
                 entity.getName()
             ),
-            (extraData) -> extraData.writeInt(entity.getId())
+            extraData -> {
+                extraData.writeEnum(size);
+                extraData.writeInt(entity.getId());
+            }
         );
     }
 

@@ -29,5 +29,6 @@ public class CommonEventManager {
         gameBus.addListener(CommonEventHandler::handlerLivingDeathEvent);
         gameBus.addListener(CommonEventHandler::handlerPlayerEvent$BreakSpeed);
         gameBus.addListener(CommonEventHandler::handlerEntityTickEvent$Post);
+        gameBus.addListener(CommonEventHandler::handlerRegisterCommandsEvent);
     }
 }
